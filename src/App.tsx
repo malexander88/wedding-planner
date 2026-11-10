@@ -1,0 +1,57 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { Layout } from './components/Layout'
+import { ComingSoon } from './screens/ComingSoon'
+import { Budget } from './screens/Budget'
+import { Checklist } from './screens/Checklist'
+import { Dates } from './screens/Dates'
+import { Guests } from './screens/Guests'
+import { Home } from './screens/Home'
+import { Onboarding } from './screens/Onboarding'
+import { Settings } from './screens/Settings'
+import { SupplierDetail } from './screens/SupplierDetail'
+import { Suppliers } from './screens/Suppliers'
+import { StoreProvider, useStore } from './state/store'
+
+function ReadyApp() {
+  const { state, ready } = useStore()
+  if (!ready) {
+    return (
+      <div className="wizard">
+        <p>Loading your wedding…</p>
+      </div>
+    )
+  }
+  if (!state.profile.onboardingComplete) return <Onboarding />
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/plan" element={<Checklist />} />
+        <Route path="/dates" element={<Dates />} />
+        <Route path="/find" element={<Suppliers />} />
+        <Route path="/find/:id" element={<SupplierDetail />} />
+        <Route path="/budget" element={<Budget />} />
+        <Route path="/guests" element={<Guests />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/rsvp" element={<ComingSoon kind="rsvp" />} />
+        <Route path="/seating" element={<ComingSoon kind="seating" />} />
+        <Route path="/run-sheet" element={<ComingSoon kind="run-sheet" />} />
+        <Route path="/gifts" element={<ComingSoon kind="gifts" />} />
+        <Route path="/mood" element={<ComingSoon kind="mood" />} />
+        <Route path="/helpers" element={<ComingSoon kind="helpers" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
+  )
+}
+
+export default function App() {
+  const basename = import.meta.env.BASE_URL.replace(/\/$/, '')
+  return (
+    <StoreProvider>
+      <BrowserRouter basename={basename || undefined}>
+        <ReadyApp />
+      </BrowserRouter>
+    </StoreProvider>
+  )
+}
