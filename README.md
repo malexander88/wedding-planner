@@ -10,6 +10,8 @@ Data is stored on your device. Two-phone sharing and a public RSVP page need a c
 
 Install it from the browser: on iPhone use Share → Add to Home Screen; on Android use the install prompt or the browser menu.
 
+The live site is https://malexander88.github.io/wedding-planner/
+
 See `PLAN.md` for the full picture and later rounds.
 
 ## Develop

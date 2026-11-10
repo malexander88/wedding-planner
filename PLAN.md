@@ -174,5 +174,5 @@ The database schema, row-level security, and the Supabase storage adapter belong
 - Vite, React and TypeScript.
 - A `StorageAdapter` (`getState` / `setState`) with an IndexedDB implementation now; a Supabase implementation later that upserts the same document or normalised tables, with row-level security.
 - PWA via `vite-plugin-pwa` so Android and iPhone can “Add to Home Screen”. A Capacitor Android wrapper can come in round 3.
-- GitHub Pages at `/wedding-planner/`.
+- GitHub Pages at https://malexander88.github.io/wedding-planner/ (project path `/wedding-planner/`). The first publish used the `gh-pages` branch because the available GitHub token could not push Actions workflow files (`workflow` scope). A workflow file lives in `.github/workflows/pages.yml` locally for when that scope is available.
 - No guest identity documents, no vendor marketplace, no selling of guest data.
