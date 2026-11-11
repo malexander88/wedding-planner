@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState, type TextareaHTMLAttributes } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { HIDDEN_EXTRAS } from '../data/hiddenExtras'
 import { draftEnquiry } from '../lib/enquiry'
@@ -7,6 +7,27 @@ import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
 import type { Quote, SupplierStatus } from '../types'
 import { IconBack } from '../components/Icons'
+
+
+function AutoGrowTextarea({ value, onChange, className, ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  const ref = useRef<HTMLTextAreaElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    el.style.height = '0px'
+    el.style.height = `${el.scrollHeight + 2}px`
+  }, [value])
+  return (
+    <textarea
+      ref={ref}
+      className={['autogrow', className].filter(Boolean).join(' ')}
+      value={value}
+      onChange={onChange}
+      rows={2}
+      {...rest}
+    />
+  )
+}
 
 const FLOW: SupplierStatus[] = ['shortlisted', 'enquired', 'quoted', 'viewed', 'booked']
 
@@ -101,20 +122,18 @@ export function SupplierDetail() {
             )
           })}
         </div>
-        <div className="btn-row" style={{ marginTop: 14 }}>
-          <button
-            className={`chip ${supplier.status === 'rejected' ? 'on' : ''}`}
-            type="button"
-            onClick={() => setStatus('rejected')}
-          >
-            Not for us
-          </button>
-        </div>
-        <div className="btn-row" style={{ marginTop: 14 }}>
+        <button
+          className={`text-btn reject-action${supplier.status === 'rejected' ? ' on' : ''}`}
+          type="button"
+          onClick={() => setStatus('rejected')}
+        >
+          Not for us
+        </button>
+        <div className="supplier-actions">
+          <button className="btn enquiry" type="button" onClick={() => setShowDraft(true)}>Draft an enquiry</button>
           {supplier.website && (
             <a className="btn secondary" href={supplier.website} target="_blank" rel="noreferrer">Website</a>
           )}
-          <button className="btn" type="button" onClick={() => setShowDraft(true)}>Draft an enquiry</button>
           {supplier.status !== 'booked' && (
             <button className="btn secondary" type="button" onClick={() => setBooking(true)}>Book them</button>
           )}
@@ -123,7 +142,7 @@ export function SupplierDetail() {
 
       <section className="card">
         <h2>Notes</h2>
-        <textarea
+        <AutoGrowTextarea
           value={supplier.notes}
           onChange={(e) => dispatch({ type: 'updateSupplier', id: supplier.id, patch: { notes: e.target.value } })}
           placeholder="What you liked, questions to ask, who you spoke to…"
@@ -132,31 +151,36 @@ export function SupplierDetail() {
 
       <section className="card">
         <h2>Add a quote</h2>
-        <div className="grid-2">
-          <label className="field">
-            <span>Label</span>
-            <input value={quoteForm.label} onChange={(e) => setQuoteForm({ ...quoteForm, label: e.target.value })} />
-          </label>
-          <label className="field">
-            <span>Amount (£)</span>
-            <input type="number" value={quoteForm.amount} onChange={(e) => setQuoteForm({ ...quoteForm, amount: e.target.value })} />
-          </label>
-        </div>
-        <label className="inline" style={{ marginBottom: 12 }}>
-          <input type="checkbox" checked={quoteForm.vatIncluded} onChange={(e) => setQuoteForm({ ...quoteForm, vatIncluded: e.target.checked })} />
-          Quote includes VAT
-        </label>
+        <details className="fold" open>
+          <summary>The figure</summary>
+          <div className="fold-body">
+            <div className="grid-2">
+              <label className="field">
+                <span>Label</span>
+                <input type="text" value={quoteForm.label} onChange={(e) => setQuoteForm({ ...quoteForm, label: e.target.value })} />
+              </label>
+              <label className="field">
+                <span>Amount (£)</span>
+                <input type="number" value={quoteForm.amount} onChange={(e) => setQuoteForm({ ...quoteForm, amount: e.target.value })} />
+              </label>
+            </div>
+            <label className="inline">
+              <input type="checkbox" checked={quoteForm.vatIncluded} onChange={(e) => setQuoteForm({ ...quoteForm, vatIncluded: e.target.checked })} />
+              Quote includes VAT
+            </label>
+          </div>
+        </details>
 
         <details className="fold">
           <summary>What’s included and not</summary>
           <div className="fold-body">
             <label className="field">
               <span>What’s included</span>
-              <textarea value={quoteForm.inclusions} onChange={(e) => setQuoteForm({ ...quoteForm, inclusions: e.target.value })} />
+              <AutoGrowTextarea value={quoteForm.inclusions} onChange={(e) => setQuoteForm({ ...quoteForm, inclusions: e.target.value })} placeholder="What they said is included" />
             </label>
             <label className="field">
               <span>What’s not included</span>
-              <textarea value={quoteForm.exclusions} onChange={(e) => setQuoteForm({ ...quoteForm, exclusions: e.target.value })} />
+              <AutoGrowTextarea value={quoteForm.exclusions} onChange={(e) => setQuoteForm({ ...quoteForm, exclusions: e.target.value })} placeholder="What’s left out" />
             </label>
           </div>
         </details>

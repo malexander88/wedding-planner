@@ -30,12 +30,6 @@ const FEATURED = [
   { cat: 'entertainment', label: 'Music' },
 ] as const
 
-function shortLine(text: string, n = 68) {
-  const t = text.replace(/\s+/g, ' ').trim()
-  if (!t) return ''
-  return t.length <= n ? t : `${t.slice(0, n - 1).trimEnd()}…`
-}
-
 function taskIcon(stage: string, title: string) {
   const t = title.toLowerCase()
   if (t.includes('ceremon') || t.includes('officiant') || t.includes('notice')) return <IconRings />
@@ -138,7 +132,7 @@ export function Home() {
                 <div className="well">{taskIcon(t.stage, t.title)}</div>
                 <div className="task-copy">
                   <strong>{t.title}</strong>
-                  <span>{t.dueDate ? `Due ${formatLong(t.dueDate)}` : shortLine(t.body)}</span>
+                  <span>{t.dueDate ? `Due ${formatLong(t.dueDate)}` : t.body}</span>
                 </div>
                 <input type="checkbox" checked={!!t.done} onChange={() => dispatch({ type: 'toggleTask', key: t.key })} />
               </label>
