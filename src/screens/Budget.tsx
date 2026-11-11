@@ -16,17 +16,19 @@ export function Budget() {
 
   return (
     <div className="grid">
-      <section className="card hero">
+      <header className="page-head">
         <div className="kicker">Money</div>
         <h1>Budget and payments</h1>
         <p>
           Working budget {gbp(state.profile.totalBudget)}. Estimated {gbp(money.estimate)}, quoted {gbp(money.quoted)},
           actually spent {gbp(money.actual)}. Paid so far {gbp(money.paid)}; still marked as due {gbp(money.due)}.
         </p>
-        <div className="progress">
-          <div style={{ width: `${Math.min(100, (money.quoted / Math.max(state.profile.totalBudget, 1)) * 100)}%` }} />
+        <div className="bar-row" style={{ marginTop: 12 }}>
+          <div className="progress">
+            <div style={{ width: `${Math.min(100, ((money.quoted || money.estimate) / Math.max(state.profile.totalBudget, 1)) * 100)}%` }} />
+          </div>
         </div>
-      </section>
+      </header>
 
       <section className="card">
         <div className="row" style={{ paddingTop: 0 }}>

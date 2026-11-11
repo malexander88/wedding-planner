@@ -18,11 +18,12 @@ export function Guests() {
 
   return (
     <div className="grid">
-      <section className="card hero">
+      <header className="page-head">
         <div className="kicker">People</div>
         <h1>Guest list</h1>
         <p>
-          {state.guests.length} people in {state.households.length} households.
+          {state.guests.length} {state.guests.length === 1 ? 'person' : 'people'} in {state.households.length}{' '}
+          {state.households.length === 1 ? 'household' : 'households'}.
           About {day} for the day and {eve} for the evening (not counting people who have said no).
           Your first guess was {state.profile.estimatedDayGuests} day / {state.profile.estimatedEveningGuests} evening.
         </p>
@@ -35,7 +36,7 @@ export function Guests() {
             Export CSV
           </button>
         </div>
-      </section>
+      </header>
 
       <section className="card">
         <h2>Add a household</h2>

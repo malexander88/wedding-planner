@@ -43,6 +43,10 @@ export function Onboarding() {
 
   return (
     <div className="wizard">
+      <div className="wizard-brand">
+        <div className="brand-mark">W</div>
+        <div className="brand-name">Wedding Planner</div>
+      </div>
       <div className="kicker">Welcome</div>
       <h1>Let’s start from the beginning</h1>
       <p>You do not need a date or anything booked. A few rough answers will shape your checklist and the places we suggest first.</p>

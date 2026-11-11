@@ -12,13 +12,17 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'favicon.png', 'pwa-192.png', 'pwa-512.png'],
+      includeAssets: ['favicon.svg', 'favicon.png', 'pwa-192.png', 'pwa-512.png', 'images/hero.webp'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,webp,woff,woff2,ttf}'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+      },
       manifest: {
         name: 'Wedding Planner',
         short_name: 'Wedding',
         description: 'Plan a Northern Ireland wedding together, from the first ideas to the last thank-you.',
-        theme_color: '#C4787A',
-        background_color: '#FBF6F0',
+        theme_color: '#1F3B2D',
+        background_color: '#F4EFE4',
         display: 'standalone',
         orientation: 'portrait',
         start_url: base,

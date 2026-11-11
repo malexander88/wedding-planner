@@ -16,8 +16,11 @@ function ReadyApp() {
   const { state, ready } = useStore()
   if (!ready) {
     return (
-      <div className="wizard">
-        <p>Loading your wedding…</p>
+      <div className="loading">
+        <div>
+          <div className="brand-mark" style={{ width: 52, height: 52, borderRadius: 16, fontSize: '1.6rem', margin: '0 auto 14px' }}>W</div>
+          <p>Loading your wedding…</p>
+        </div>
       </div>
     )
   }

@@ -1,13 +1,22 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useStore } from '../state/store'
+import {
+  IconBudget,
+  IconGear,
+  IconGuests,
+  IconHome,
+  IconHomeFill,
+  IconPlan,
+  IconSearch,
+} from './Icons'
 
 const mainNav = [
-  { to: '/', label: 'Home', icon: '⌂' },
-  { to: '/plan', label: 'Plan', icon: '✓' },
-  { to: '/find', label: 'Find', icon: '⌕' },
-  { to: '/budget', label: 'Budget', icon: '£' },
-  { to: '/guests', label: 'Guests', icon: '☺' },
-]
+  { to: '/', label: 'Home', icon: 'home' },
+  { to: '/plan', label: 'Plan', icon: 'plan' },
+  { to: '/find', label: 'Find', icon: 'find' },
+  { to: '/budget', label: 'Budget', icon: 'budget' },
+  { to: '/guests', label: 'Guests', icon: 'guests' },
+] as const
 
 const moreNav = [
   { to: '/dates', label: 'Dates' },
@@ -20,6 +29,14 @@ const moreNav = [
   { to: '/helpers', label: 'Helpers', soon: true },
 ]
 
+function NavGlyph({ name, filled }: { name: (typeof mainNav)[number]['icon']; filled?: boolean }) {
+  if (name === 'home') return filled ? <IconHomeFill /> : <IconHome />
+  if (name === 'plan') return <IconPlan />
+  if (name === 'find') return <IconSearch />
+  if (name === 'budget') return <IconBudget />
+  return <IconGuests />
+}
+
 export function Layout() {
   const { state } = useStore()
   const names = [state.profile.partnerAName, state.profile.partnerBName].filter(Boolean).join(' & ')
@@ -30,13 +47,14 @@ export function Layout() {
         <NavLink to="/" className="brand">
           <div className="brand-mark">W</div>
           <div>
-            <strong>Wedding Planner</strong>
+            <div className="brand-name">Wedding Planner</div>
             <small>{names || 'Your wedding'}</small>
           </div>
         </NavLink>
         {mainNav.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
-            <span>{n.icon}</span> {n.label}
+            <NavGlyph name={n.icon} filled />
+            {n.label}
           </NavLink>
         ))}
         <div className="nav-section">More</div>
@@ -48,22 +66,25 @@ export function Layout() {
       </aside>
       <main className="main">
         <div className="topbar">
-          <div>
-            <div className="kicker">Wedding Planner</div>
-            <div className="names">{names || 'Add your names in settings'}</div>
+          <div className="brand">
+            <div className="brand-mark">W</div>
+            <div className="brand-name">Wedding Planner</div>
           </div>
-          <div className="btn-row">
-            <NavLink to="/dates" className="btn ghost small">Dates</NavLink>
-            <NavLink to="/settings" className="btn ghost small">Backup</NavLink>
-          </div>
+          <NavLink to="/settings" className="icon-btn" aria-label="Settings">
+            <IconGear />
+          </NavLink>
         </div>
         <Outlet />
       </main>
       <nav className="bottom-nav">
         {mainNav.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
-            <span>{n.icon}</span>
-            {n.label}
+            {({ isActive }) => (
+              <>
+                <NavGlyph name={n.icon} filled={isActive && n.icon === 'home'} />
+                {n.label}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

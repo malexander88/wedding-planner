@@ -39,14 +39,14 @@ export function Dates() {
 
   return (
     <div className="grid">
-      <section className="card hero">
+      <header className="page-head">
         <div className="kicker">Date comparer</div>
         <h1>Find a day that works</h1>
         <p>
           Add a few possible dates. We’ll show Northern Ireland bank holidays and the registrar fee band published by Antrim & Newtownabbey
           Borough Council. Mark whether each shortlisted venue is free — the app cannot see their diaries, so this is for notes after you ask.
         </p>
-      </section>
+      </header>
 
       <section className="card">
         <div className="row" style={{ paddingTop: 0 }}>

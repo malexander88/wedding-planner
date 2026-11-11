@@ -31,7 +31,7 @@ export function ComingSoon({ kind }: { kind: keyof typeof copy }) {
   const item = copy[kind]
   return (
     <div className="card soon-page">
-      <div className="mark">✧</div>
+      <div className="mark">W</div>
       <h1>{item.title}</h1>
       <p>{item.body}</p>
       <p className="tiny">This first version focuses on finding a date, a venue and your key suppliers, then keeping the budget and guest list in one place.</p>

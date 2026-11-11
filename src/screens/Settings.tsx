@@ -28,11 +28,11 @@ export function Settings() {
 
   return (
     <div className="grid">
-      <section className="card hero">
+      <header className="page-head">
         <div className="kicker">Settings</div>
         <h1>Your wedding details</h1>
         <p>These shape the checklist, search buttons and budget. They stay on this device until cloud sharing is switched on.</p>
-      </section>
+      </header>
 
       <section className="card">
         <h2>The basics</h2>

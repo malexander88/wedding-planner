@@ -6,8 +6,9 @@ import { uid } from '../lib/ids'
 import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
 import type { Quote, SupplierStatus } from '../types'
+import { IconBack } from '../components/Icons'
 
-const STATUSES: SupplierStatus[] = ['shortlisted', 'enquired', 'quoted', 'viewed', 'booked', 'rejected']
+const FLOW: SupplierStatus[] = ['shortlisted', 'enquired', 'quoted', 'viewed', 'booked']
 
 export function SupplierDetail() {
   const { id } = useParams()
@@ -33,18 +34,20 @@ export function SupplierDetail() {
     exclusions: '',
   })
   const [extras, setExtras] = useState<Record<string, string>>({})
+  const [openExtra, setOpenExtra] = useState<string | null>(null)
 
   if (!supplier) {
     return (
       <div className="card">
         <p>We couldn’t find that supplier.</p>
-        <Link to="/find">Back to Find</Link>
+        <Link to="/find" className="btn">Back to Find</Link>
       </div>
     )
   }
 
   const draft = draftEnquiry(state, supplier)
   const latest = quotes[quotes.length - 1]
+  const flowIndex = FLOW.indexOf(supplier.status)
 
   const addQuote = () => {
     const quote: Quote = {
@@ -64,25 +67,48 @@ export function SupplierDetail() {
     dispatch({ type: 'addQuote', quote })
     setQuoteForm({ label: 'Main package', amount: '', vatIncluded: true, inclusions: '', exclusions: '' })
     setExtras({})
+    setOpenExtra(null)
   }
+
+  const setStatus = (status: SupplierStatus) => dispatch({ type: 'setSupplierStatus', id: supplier.id, status })
 
   return (
     <div className="grid">
-      <section className="card hero">
-        <Link to="/find" className="tiny">← All suppliers</Link>
+      <header className="page-head">
+        <Link to="/find" className="text-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+          <IconBack style={{ width: 16, height: 16 }} /> All suppliers
+        </Link>
         <h1>{supplier.name}</h1>
         <p>{supplier.area}{supplier.phone ? ` · ${supplier.phone}` : ''}</p>
-        <div className="chips">
-          {STATUSES.map((st) => (
-            <button
-              key={st}
-              className={`chip ${supplier.status === st ? 'on' : ''}`}
-              type="button"
-              onClick={() => dispatch({ type: 'setSupplierStatus', id: supplier.id, status: st })}
-            >
-              {st}
-            </button>
-          ))}
+      </header>
+
+      <section className="card">
+        <div className="kicker">Status</div>
+        <div className="stepper" role="list">
+          {FLOW.map((st, i) => {
+            const on = supplier.status === st
+            const done = flowIndex > i
+            return (
+              <button
+                key={st}
+                type="button"
+                className={`step${on ? ' on' : ''}${done ? ' done' : ''}`}
+                onClick={() => setStatus(st)}
+              >
+                <span className="dot" />
+                <span className="lbl">{st}</span>
+              </button>
+            )
+          })}
+        </div>
+        <div className="btn-row" style={{ marginTop: 14 }}>
+          <button
+            className={`chip ${supplier.status === 'rejected' ? 'on' : ''}`}
+            type="button"
+            onClick={() => setStatus('rejected')}
+          >
+            Not for us
+          </button>
         </div>
         <div className="btn-row" style={{ marginTop: 14 }}>
           {supplier.website && (
@@ -90,7 +116,7 @@ export function SupplierDetail() {
           )}
           <button className="btn" type="button" onClick={() => setShowDraft(true)}>Draft an enquiry</button>
           {supplier.status !== 'booked' && (
-            <button className="btn sage" type="button" onClick={() => setBooking(true)}>Book them</button>
+            <button className="btn secondary" type="button" onClick={() => setBooking(true)}>Book them</button>
           )}
         </div>
       </section>
@@ -120,26 +146,59 @@ export function SupplierDetail() {
           <input type="checkbox" checked={quoteForm.vatIncluded} onChange={(e) => setQuoteForm({ ...quoteForm, vatIncluded: e.target.checked })} />
           Quote includes VAT
         </label>
-        <label className="field">
-          <span>What’s included</span>
-          <textarea value={quoteForm.inclusions} onChange={(e) => setQuoteForm({ ...quoteForm, inclusions: e.target.value })} />
-        </label>
-        <label className="field">
-          <span>What’s not included</span>
-          <textarea value={quoteForm.exclusions} onChange={(e) => setQuoteForm({ ...quoteForm, exclusions: e.target.value })} />
-        </label>
-        <h3>Hidden extras to ask about</h3>
-        {HIDDEN_EXTRAS.map((ex) => (
-          <label className="field" key={ex.id}>
-            <span>{ex.question}</span>
-            <input
-              value={extras[ex.id] ?? ''}
-              onChange={(e) => setExtras({ ...extras, [ex.id]: e.target.value })}
-              placeholder="Their answer"
-            />
-          </label>
-        ))}
-        <button className="btn" type="button" onClick={addQuote}>Save quote</button>
+
+        <details className="fold">
+          <summary>What’s included and not</summary>
+          <div className="fold-body">
+            <label className="field">
+              <span>What’s included</span>
+              <textarea value={quoteForm.inclusions} onChange={(e) => setQuoteForm({ ...quoteForm, inclusions: e.target.value })} />
+            </label>
+            <label className="field">
+              <span>What’s not included</span>
+              <textarea value={quoteForm.exclusions} onChange={(e) => setQuoteForm({ ...quoteForm, exclusions: e.target.value })} />
+            </label>
+          </div>
+        </details>
+
+        <details className="fold">
+          <summary>Hidden extras to ask about</summary>
+          <div className="fold-body">
+            {HIDDEN_EXTRAS.map((ex) => {
+              const open = openExtra === ex.id || extras[ex.id] !== undefined
+              return (
+                <div className="extra-row" key={ex.id}>
+                  <button
+                    className="extra-toggle"
+                    type="button"
+                    onClick={() => {
+                      setOpenExtra(openExtra === ex.id ? null : ex.id)
+                      setExtras((cur) => (cur[ex.id] === undefined ? { ...cur, [ex.id]: '' } : cur))
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={Boolean(extras[ex.id])}
+                      readOnly
+                      tabIndex={-1}
+                    />
+                    {ex.question}
+                  </button>
+                  {open && (
+                    <input
+                      type="text"
+                      value={extras[ex.id] ?? ''}
+                      onChange={(e) => setExtras({ ...extras, [ex.id]: e.target.value })}
+                      placeholder="Their answer"
+                    />
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </details>
+
+        <button className="btn" type="button" onClick={addQuote} style={{ marginTop: 12 }}>Save quote</button>
       </section>
 
       {others.length > 0 && (
@@ -148,7 +207,7 @@ export function SupplierDetail() {
           <div className="compare-list">
             {others.map((q) => {
               const owner = state.suppliers.find((s) => s.id === q.supplierId)
-              const extras = Object.entries(q.hiddenExtras).filter(([, v]) => v)
+              const extraRows = Object.entries(q.hiddenExtras).filter(([, v]) => v)
               return (
                 <article key={q.id} className="compare-card">
                   <div className="row" style={{ paddingTop: 0 }}>
@@ -160,7 +219,7 @@ export function SupplierDetail() {
                   </div>
                   <p className="tiny">{q.vatIncluded ? 'VAT included' : 'Plus VAT'}</p>
                   {q.inclusions && <p>Included: {q.inclusions}</p>}
-                  {extras.length > 0 && extras.map(([k, v]) => (
+                  {extraRows.length > 0 && extraRows.map(([k, v]) => (
                     <div key={k} className="tiny">
                       {HIDDEN_EXTRAS.find((h) => h.id === k)?.question} {v}
                     </div>

@@ -1,15 +1,21 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { CATALOGUE } from '../data/catalogue'
 import { CATEGORIES, categoryLabel } from '../data/categories'
 import { searchUrls } from '../data/searchLinks'
 import { newSupplier, useStore } from '../state/store'
 import type { SupplierCategory } from '../types'
+import { CategoryIcon } from '../components/Icons'
+
+const VALID = new Set<string>(CATEGORIES.map((c) => c.id))
 
 export function Suppliers() {
   const { state, dispatch } = useStore()
   const navigate = useNavigate()
-  const [category, setCategory] = useState<SupplierCategory>('venue')
+  const [params, setParams] = useSearchParams()
+  const raw = params.get('cat') || 'venue'
+  const category = (VALID.has(raw) ? raw : 'venue') as SupplierCategory
+  const setCategory = (id: SupplierCategory) => setParams({ cat: id }, { replace: true })
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
   const [website, setWebsite] = useState('')
@@ -36,21 +42,23 @@ export function Suppliers() {
 
   return (
     <div className="grid">
-      <section className="card hero">
+      <header className="page-head">
         <div className="kicker">Find</div>
         <h1>Discover venues and suppliers</h1>
         <p>
           Start with places we have checked from public official pages, then search more widely or add someone you already like.
           Nothing here is an advert — and the app never emails anyone for you.
         </p>
-        <div className="chips">
-          {CATEGORIES.map((c) => (
-            <button key={c.id} className={`chip ${category === c.id ? 'on' : ''}`} type="button" onClick={() => setCategory(c.id)}>
-              {c.label}
-            </button>
-          ))}
-        </div>
-      </section>
+      </header>
+
+      <div className="chips">
+        {CATEGORIES.map((c) => (
+          <button key={c.id} className={`chip ${category === c.id ? 'on' : ''}`} type="button" onClick={() => setCategory(c.id)}>
+            <CategoryIcon category={c.id} />
+            {c.label}
+          </button>
+        ))}
+      </div>
 
       <section className="card">
         <h2>Search the web for {categoryLabel(category).toLowerCase()}</h2>
@@ -67,30 +75,31 @@ export function Suppliers() {
         <section className="card">
           <h2>Starter list</h2>
           <p>Checked against a public official page. We only store the facts we verified.</p>
-          <div className="list">
+          <div className="supplier-list">
             {catalog.map((item) => {
               const saved = state.suppliers.find((s) => s.catalogueId === item.id)
               return (
-                <article key={item.id} className="supplier">
-                  <div className="meta">
-                    <div>
-                      <strong>{item.name}</strong>
-                      <div className="tiny">{item.area}{item.phone ? ` · ${item.phone}` : ''}</div>
+                <article key={item.id} className="supplier-card">
+                  <div className="supplier-cover" data-cat={item.category}>
+                    <CategoryIcon category={item.category} />
+                  </div>
+                  <div className="supplier-body">
+                    <strong>{item.name}</strong>
+                    <div className="tiny">{item.area}{item.phone ? ` · ${item.phone}` : ''}</div>
+                    {item.note && <p className="tiny" style={{ margin: '4px 0 0' }}>{item.note}</p>}
+                    <div className="tiny meta-line">
+                      <a href={item.website} target="_blank" rel="noreferrer">Website</a>
+                      {' · '}
+                      Source: <a href={item.sourceUrl} target="_blank" rel="noreferrer">{item.source}</a>
                     </div>
-                    {saved ? (
-                      <Link className="btn small" to={`/find/${saved.id}`}>Open card</Link>
-                    ) : (
-                      <button className="btn small" type="button" onClick={() => addFromCatalogue(item.id)}>
-                        Shortlist
-                      </button>
-                    )}
                   </div>
-                  {item.note && <p>{item.note}</p>}
-                  <div className="tiny">
-                    <a href={item.website} target="_blank" rel="noreferrer">Website</a>
-                    {' · '}
-                    Source: <a href={item.sourceUrl} target="_blank" rel="noreferrer">{item.source}</a>
-                  </div>
+                  {saved ? (
+                    <Link className="btn small" to={`/find/${saved.id}`}>Open</Link>
+                  ) : (
+                    <button className="btn small" type="button" onClick={() => addFromCatalogue(item.id)}>
+                      Shortlist
+                    </button>
+                  )}
                 </article>
               )
             })}
@@ -131,10 +140,13 @@ export function Suppliers() {
         {mine.length === 0 ? (
           <div className="empty">Nobody in this category yet. Shortlist a starter or add your own.</div>
         ) : (
-          <div className="list">
+          <div className="supplier-list">
             {mine.map((s) => (
-              <Link key={s.id} to={`/find/${s.id}`} className="row" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div>
+              <Link key={s.id} to={`/find/${s.id}`} className="supplier-card">
+                <div className="supplier-cover" data-cat={s.category}>
+                  <CategoryIcon category={s.category} />
+                </div>
+                <div className="supplier-body">
                   <strong>{s.name}</strong>
                   <div className="tiny">{s.area}</div>
                 </div>
