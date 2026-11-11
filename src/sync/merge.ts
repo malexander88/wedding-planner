@@ -71,15 +71,19 @@ export const COLLECTIONS: Record<CollectionName, (r: AnyRecord) => string> = {
   taskDetails: byId,
 }
 
-/** Collections whose records also merge field by field (flattened: `p:prop`, `v:valueKey`). */
-const NESTED: Partial<Record<CollectionName, string>> = { taskDetails: 'values' }
+/**
+ * Collections whose records also merge field by field (flattened: `p:prop`, `v:valueKey`).
+ * The value names an inner object that merges key by key too; '' means top-level properties only.
+ * Tasks merge per field so one phone re-dating a task and the other assigning it both stick.
+ */
+const NESTED: Partial<Record<CollectionName, string>> = { taskDetails: 'values', tasks: '' }
 const nestedKey = (name: string, id: string) => `${name}/${id}`
 
 function flatten(rec: AnyRecord | undefined, inner: string): AnyRecord {
   const out: AnyRecord = {}
   if (!rec) return out
   for (const [k, v] of Object.entries(rec)) {
-    if (k === inner && v && typeof v === 'object') {
+    if (inner && k === inner && v && typeof v === 'object') {
       for (const [ik, iv] of Object.entries(v as AnyRecord)) out[`v:${ik}`] = iv
     } else out[`p:${k}`] = v
   }
@@ -87,7 +91,7 @@ function flatten(rec: AnyRecord | undefined, inner: string): AnyRecord {
 }
 
 function unflatten(flat: AnyRecord, inner: string): AnyRecord {
-  const out: AnyRecord = { [inner]: {} }
+  const out: AnyRecord = inner ? { [inner]: {} } : {}
   for (const k of Object.keys(flat).sort()) {
     const v = flat[k]
     if (v === undefined) continue
@@ -184,7 +188,7 @@ export function stampChanges(
       const old = before.get(k)
       if (!old || (old !== rec && stableStringify(old) !== stableStringify(rec))) {
         put(k, { ...now() })
-        if (inner) {
+        if (inner !== undefined) {
           const fa = flatten(old, inner)
           const fb = flatten(rec, inner)
           const fk = nestedKey(name, k)
@@ -199,7 +203,7 @@ export function stampChanges(
     for (const k of before.keys()) {
       if (!after.has(k)) {
         put(k, { ...now(), del: true })
-        if (inner) delete fields[nestedKey(name, k)]
+        if (inner !== undefined) delete fields[nestedKey(name, k)]
       }
     }
     if (col) records[name] = col
@@ -315,7 +319,7 @@ export function mergeDocs(local: SyncDoc, remote: SyncDoc, now = Date.now()): Sy
       let rec = side === 'l' ? lRecs.get(k) : rRecs.get(k)
       if (entry) outMeta[k] = entry
       const inner = NESTED[name]
-      if (inner && rec && !entry?.del) {
+      if (inner !== undefined && rec && !entry?.del) {
         const fk = nestedKey(name, k)
         const l = lRecs.get(k)
         const r = rRecs.get(k)

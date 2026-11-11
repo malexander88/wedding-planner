@@ -3,7 +3,8 @@
 // agree), create or update payments, and apply profile decisions.
 // Plus the Northern Ireland date checks and Home reminders. All pure.
 
-import type { AppState, BudgetLine, Payment, Supplier, SupplierCategory, Task, TaskDetail } from '../types'
+import type { AppState, BudgetLine, Payment, PlanTask, Supplier, SupplierCategory, Task, TaskDetail } from '../types'
+import { catchUpBefore, isCatchUp } from './plan'
 import { addDays, formatShort, noticeDueDate, noticeMinimumDate, scheduleFromDate, scheduleReturnDate } from './legal'
 import { allFields, budgetCategory, money, templateFor, TEMPLATES, type TemplateDef } from './taskTemplates'
 
@@ -311,7 +312,7 @@ export interface Reminder {
   overdue: boolean
 }
 
-export function reminders(state: AppState, tasks: Task[], from = today(), horizonDays = 120): Reminder[] {
+export function reminders(state: AppState, tasks: PlanTask[], from = today(), horizonDays = 120): Reminder[] {
   const until = addDays(from, horizonDays)
   const out: Reminder[] = []
   for (const pay of state.payments) {
@@ -347,8 +348,13 @@ export function reminders(state: AppState, tasks: Task[], from = today(), horizo
       })
     }
   }
+  const before = catchUpBefore(state.profile)
   for (const task of tasks) {
-    if (task.done || !task.dueDate || task.dueDate > until) continue
+    if (task.done || !task.dueDate || task.dueDate > until || task.hidden || task.removed) continue
+    // The full dated checklist lives on Plan (and Home's "Next deadlines"); here only the hard dates:
+    // legal steps and dates the couple set or already had. Catch-up items are never "coming up".
+    if (!task.legal && !task.strict && !task.dueOverride && task.graceBefore === undefined) continue
+    if (isCatchUp(task, from, before)) continue
     out.push({
       id: `t_${task.key}`,
       date: task.dueDate,

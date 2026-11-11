@@ -4,6 +4,7 @@
 
 import type { BudgetLine, SupplierCategory, Task, TemplateId, WeddingProfile } from '../types'
 import { formatShort } from './legal'
+import { CATALOGUE_TASKS } from './taskCatalogue'
 
 export type FieldType =
   | 'text'
@@ -598,8 +599,10 @@ const TASK_MAP: Record<string, { template: TemplateId; preset?: Record<string, s
   'details-insurance': { template: 'admin', preset: { category: 'insurance' } },
 }
 
+const CATALOGUE_MAP = new Map(CATALOGUE_TASKS.map((c) => [c.key, { template: c.template, preset: c.preset }]))
+
 export function templateFor(task: Pick<Task, 'key' | 'template' | 'legal'>): { template: TemplateDef; preset: Record<string, string> } {
-  const mapped = TASK_MAP[task.key]
+  const mapped = CATALOGUE_MAP.get(task.key) ?? TASK_MAP[task.key]
   if (mapped) return { template: TEMPLATES[mapped.template], preset: mapped.preset ?? {} }
   if (task.template) return { template: TEMPLATES[task.template], preset: {} }
   return { template: TEMPLATES[task.legal ? 'legal-info' : 'generic'], preset: {} }

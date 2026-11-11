@@ -54,6 +54,8 @@ export interface WeddingProfile {
   candidateDates: string[]
   venueSupplierId?: string
   onboardingComplete: boolean
+  /** Day the current wedding date was set; worked-out dates before it show as "catch up". */
+  datesFrom?: string
 }
 
 export interface Household {
@@ -200,6 +202,39 @@ export interface Task {
   done: boolean
   /** Custom tasks choose a details template; built-in tasks map by key. */
   template?: TemplateId
+  // ---- the couple's own edits (on a custom task, or on a built-in task's override record) ----
+  /** Their own title for a built-in task. */
+  titleOverride?: string
+  /** Their own due date (YYYY-MM-DD) for a built-in task; always wins over the worked-out one. */
+  dueOverride?: string
+  /** Their own notes. */
+  notes?: string
+  /** Who's doing it: partner A, partner B, or both. */
+  assignee?: Assignee
+  /** Hidden from the list (still shown under "Hidden"). */
+  hidden?: boolean
+  /** A built-in task the couple deleted (custom tasks are removed outright). */
+  removed?: boolean
+  /** Manual position within a date group, as an offset in days from the due date. */
+  rankDate?: number
+  /** Manual position within a stage. */
+  rankStage?: number
+}
+
+export type Assignee = 'a' | 'b' | 'both'
+
+/** What a task looks like on screen: catalogue + rules + the couple's edits. */
+export interface PlanTask extends Task {
+  /** Catch-up threshold for this task when it differs from the plan's (dates that existed before the fuller checklist). */
+  graceBefore?: string
+  /** The worked-out date before any override (empty when there's no wedding date). */
+  suggestedDue: string
+  /** True when the date came from a legal rule (notice periods etc.). */
+  ruleDated: boolean
+  /** Had a deadline before the fuller checklist (or the couple set it): past dates show as overdue, not "catch up". */
+  strict: boolean
+  /** Position in the built-in list (custom tasks after). */
+  index: number
 }
 
 export interface SeatingTable {

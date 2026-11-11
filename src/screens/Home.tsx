@@ -5,6 +5,7 @@ import { budgetSummary } from '../data/budget'
 import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
 import { comingUp, reminders } from '../data/taskDetails'
+import { catchUpBefore, isCatchUp, nextDeadlines, sortTasks } from '../data/plan'
 import { useTaskSheet } from '../components/TaskDetailsSheet'
 import {
   CategoryIcon,
@@ -62,9 +63,14 @@ export function Home() {
   const pct = stageDone / stageTotal
   const circ = 2 * Math.PI * 34
   const dash = `${(pct * circ).toFixed(2)} ${(circ).toFixed(2)}`
-  const nextTasks = tasks.filter((t) => !t.done).slice(0, 3)
   const { openSheet, sheet } = useTaskSheet()
   const todayIso = localToday()
+  const before = catchUpBefore(p)
+  const dated = Boolean(p.date)
+  const nextTasks = dated
+    ? nextDeadlines(tasks, todayIso, before, 3)
+    : sortTasks(tasks, 'stage').filter((t) => !t.done).slice(0, 3)
+  const catchUp = dated ? tasks.filter((t) => isCatchUp(t, todayIso, before)).length : 0
   const coming = comingUp(reminders(state, tasks, todayIso, 3650), todayIso)
   const allDone = tasks.filter((t) => t.done).length
   const nextLegal = tasks
@@ -145,13 +151,13 @@ export function Home() {
 
       <section className="card">
         <div className="sec-head">
-          <h2>Next up</h2>
+          <h2>{dated ? 'Next deadlines' : 'Next up'}</h2>
           <Link className="text-btn" to="/plan">
             See all
           </Link>
         </div>
         {nextTasks.length === 0 ? (
-          <p>Everything on the list is ticked. Enjoy that for a moment.</p>
+          <p>{dated ? 'No dated deadlines left.' : 'Everything on the list is ticked. Enjoy that for a moment.'}</p>
         ) : (
           <div className="list">
             {nextTasks.map((t) => (
@@ -159,7 +165,9 @@ export function Home() {
                 <div className="well">{taskIcon(t.stage, t.title)}</div>
                 <div className="task-copy">
                   <strong>{t.title}</strong>
-                  <span>{t.dueDate ? `Due ${formatLong(t.dueDate)}` : t.body}</span>
+                  <span className={t.dueDate && t.dueDate < todayIso ? 'warn-text' : undefined}>
+                    {t.dueDate ? `${t.dueDate < todayIso ? 'Was due' : 'Due'} ${formatLong(t.dueDate)}` : t.body}
+                  </span>
                 </div>
                 <input
                   type="checkbox"
@@ -170,6 +178,11 @@ export function Home() {
               </label>
             ))}
           </div>
+        )}
+        {catchUp > 0 && (
+          <Link to="/plan" className="catchup-note">
+            {catchUp} {catchUp === 1 ? 'task is' : 'tasks are'} usually done by now — catch up when you can
+          </Link>
         )}
       </section>
 

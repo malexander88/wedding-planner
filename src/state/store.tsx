@@ -10,7 +10,8 @@ import {
   type ReactNode,
 } from 'react'
 import { pruneStarterLines } from '../data/budget'
-import { isTaskDone, mergeTasks } from '../data/checklist'
+import { activeTasks, EDIT_FIELDS, generatedSpecs, isTaskDone, mergeTasks, overrideId, type TaskEdits } from '../data/checklist'
+import { stableStringify } from '../sync/merge'
 import { applyTaskDetail } from '../data/taskDetails'
 import { uid } from '../lib/ids'
 import { backupState, indexedDbStorage, saveStateNow } from '../storage/indexeddb'
@@ -25,6 +26,9 @@ import type {
   Supplier,
   SupplierCategory,
   SupplierStatus,
+  Assignee,
+  PlanTask,
+  Task,
   TaskDetail,
   TemplateId,
   WeddingProfile,
@@ -85,7 +89,12 @@ export type Action =
   | { type: 'setAvailability'; supplierId: string; date: string; availability: AppState['venueDates'][0]['availability'] }
   | { type: 'toggleTask'; key: string }
   | { type: 'setTaskDone'; key: string; done: boolean }
-  | { type: 'addCustomTask'; title: string; stage: string; template?: TemplateId }
+  | { type: 'addCustomTask'; title: string; stage: string; template?: TemplateId; dueDate?: string; assignee?: Assignee; key?: string }
+  | { type: 'editTask'; key: string; patch: TaskEdits }
+  /** Custom tasks are removed (tombstoned); built-in ones are marked removed so they can come back. */
+  | { type: 'removeTask'; key: string }
+  /** Undo of removeTask for a custom task: put the record back as it was. */
+  | { type: 'restoreTask'; task: Task }
   | { type: 'saveTaskDetail'; detail: TaskDetail; markDone?: boolean }
   | { type: 'removeTaskDetail'; taskKey: string }
   | { type: 'addSupplier'; supplier: Supplier }
@@ -125,7 +134,67 @@ function touch(state: AppState): AppState {
   return { ...state, updatedAt: new Date().toISOString() }
 }
 
+/** Moving the wedding date restarts the "catch up" clock, so a new date doesn't flood the plan with overdue items. */
 export function reducer(state: AppState, action: Action): AppState {
+  const next = baseReducer(state, action)
+  const after = next.profile.date
+  // Only the couple's own date changes — never hydrate or sync, so loading never writes.
+  const own = action.type === 'patchProfile' || action.type === 'setDate' || action.type === 'completeOnboarding'
+  if (own && next !== state && after && after !== state.profile.date) {
+    return { ...next, profile: { ...next.profile, datesFrom: localToday() } }
+  }
+  return next
+}
+
+function localToday(now = new Date()): string {
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+}
+
+/** Apply a task edit; null when nothing would change (so nothing is written or synced). */
+function applyTaskEdit(state: AppState, key: string, patch: TaskEdits): AppState | null {
+  const idx = state.tasks.findIndex((t) => t.key === key)
+  const cur = idx >= 0 ? state.tasks[idx] : undefined
+  const builtIn = generatedSpecs(state.profile).find((s) => s.key === key)
+  if (!cur && !builtIn) return null
+  const custom = !builtIn
+  const rec: Task = cur
+    ? { ...cur }
+    : { id: overrideId(key), key, title: '', body: '', stage: '', dueDate: '', officialUrl: '', officialLabel: '', legal: false, custom: false, done: false }
+  const p: Record<string, unknown> = { ...patch }
+  if (!custom) {
+    // Built-in: title and date edits are overrides; stage and kind come from the catalogue.
+    if ('title' in p) {
+      const t = String(p.title ?? '').trim()
+      p.titleOverride = t && t !== builtIn.title ? t : undefined
+      delete p.title
+    }
+    delete p.stage
+    delete p.template
+    if ('dueOverride' in p && p.dueOverride === builtIn.dueDate) p.dueOverride = undefined
+  } else {
+    if ('title' in p) {
+      const t = String(p.title ?? '').trim()
+      if (t) p.title = t
+      else delete p.title
+    }
+    // A custom task's date is simply its date.
+    if ('dueOverride' in p) {
+      p.dueDate = (p.dueOverride as string | undefined) ?? ''
+      delete p.dueOverride
+    }
+  }
+  const out = { ...rec, ...p } as Record<string, unknown>
+  // Keep records small: drop cleared edits rather than storing blanks.
+  for (const f of EDIT_FIELDS) if (out[f] === undefined || out[f] === '' || out[f] === false) delete out[f]
+  if (cur && stableStringify(out) === stableStringify(cur)) return null
+  if (!cur && EDIT_FIELDS.every((f) => out[f] === undefined)) return null
+  const tasks = [...state.tasks]
+  if (idx >= 0) tasks[idx] = out as unknown as Task
+  else tasks.push(out as unknown as Task)
+  return { ...state, tasks }
+}
+
+function baseReducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'hydrate':
     case 'importState':
@@ -213,22 +282,41 @@ export function reducer(state: AppState, action: Action): AppState {
       // Budget lines and payments it created stay; they're real money and live in Budget now.
       return touch({ ...state, taskDetails: state.taskDetails.filter((d) => d.taskKey !== action.taskKey) })
     case 'addCustomTask': {
-      const key = `custom_${uid('t')}`
-      const task = {
+      const key = action.key ?? `custom_${uid('t')}`
+      if (!action.title.trim() || state.tasks.some((t) => t.key === key)) return state
+      const task: Task = {
         id: key,
         key,
-        title: action.title,
+        title: action.title.trim(),
         body: '',
         stage: action.stage,
-        dueDate: '',
+        dueDate: action.dueDate ?? '',
         officialUrl: '',
         officialLabel: '',
         legal: false,
         custom: true,
         done: false,
         template: action.template ?? 'generic',
+        ...(action.assignee ? { assignee: action.assignee } : {}),
       }
       return touch({ ...state, tasks: [...state.tasks, task] })
+    }
+    case 'editTask': {
+      const next = applyTaskEdit(state, action.key, action.patch)
+      return next ? touch(next) : state
+    }
+    case 'removeTask': {
+      const builtIn = generatedSpecs(state.profile).some((s) => s.key === action.key)
+      if (!builtIn) {
+        if (!state.tasks.some((t) => t.key === action.key)) return state
+        return touch({ ...state, tasks: state.tasks.filter((t) => t.key !== action.key) })
+      }
+      const next = applyTaskEdit(state, action.key, { removed: true })
+      return next ? touch(next) : state
+    }
+    case 'restoreTask': {
+      if (state.tasks.some((t) => t.key === action.task.key)) return state
+      return touch({ ...state, tasks: [...state.tasks, action.task] })
     }
     case 'addSupplier':
       if (action.supplier.catalogueId && state.suppliers.some((s) => s.catalogueId === action.supplier.catalogueId)) {
@@ -417,7 +505,10 @@ type Ctx = {
   /** 'ok' only when the saved plan was actually read; nothing is saved or synced otherwise. */
   loadStatus: LoadStatus
   dispatch: (action: Action) => void
-  tasks: ReturnType<typeof mergeTasks>
+  /** Tasks that count (not hidden or deleted), with the couple's edits applied. */
+  tasks: PlanTask[]
+  /** Every task including hidden and deleted ones (for the Plan's "Hidden" filter). */
+  allTasks: PlanTask[]
   /** Set (timestamp) when the couple explicitly erased; lets a blank plan be saved/synced. */
   wipeIntent: { current: number }
 }
@@ -503,11 +594,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const tasks = useMemo(() => mergeTasks(state), [state])
+  const allTasks = useMemo(() => mergeTasks(state), [state])
+  const tasks = useMemo(() => activeTasks(allTasks), [allTasks])
   const ready = loadStatus !== 'loading'
   const value = useMemo(
-    () => ({ state, ready, loadStatus, dispatch, tasks, wipeIntent }),
-    [state, ready, loadStatus, dispatch, tasks],
+    () => ({ state, ready, loadStatus, dispatch, tasks, allTasks, wipeIntent }),
+    [state, ready, loadStatus, dispatch, tasks, allTasks],
   )
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }
