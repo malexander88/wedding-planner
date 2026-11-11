@@ -10,22 +10,34 @@ import { Onboarding } from './screens/Onboarding'
 import { Settings } from './screens/Settings'
 import { SupplierDetail } from './screens/SupplierDetail'
 import { Suppliers } from './screens/Suppliers'
+import { JoinPrompt } from './components/JoinPrompt'
 import { StoreProvider, useStore } from './state/store'
+import { SyncProvider, useSync } from './sync/SyncProvider'
 
 function ReadyApp() {
   const { state, ready } = useStore()
-  if (!ready) {
+  const { joining } = useSync()
+  if (!ready || (joining && !state.profile.onboardingComplete)) {
     return (
       <div className="loading">
         <div>
           <div className="brand-mark" style={{ width: 52, height: 52, borderRadius: 16, fontSize: '1.6rem', margin: '0 auto 14px' }}>W</div>
-          <p>Loading your wedding…</p>
+          <p>{joining ? 'Joining your shared plan…' : 'Loading your wedding…'}</p>
         </div>
       </div>
     )
   }
-  if (!state.profile.onboardingComplete) return <Onboarding />
+  if (!state.profile.onboardingComplete) {
+    return (
+      <>
+        <Onboarding />
+        <JoinPrompt />
+      </>
+    )
+  }
   return (
+    <>
+    <JoinPrompt />
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
@@ -45,6 +57,7 @@ function ReadyApp() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
+    </>
   )
 }
 
@@ -52,9 +65,11 @@ export default function App() {
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '')
   return (
     <StoreProvider>
-      <BrowserRouter basename={basename || undefined}>
-        <ReadyApp />
-      </BrowserRouter>
+      <SyncProvider>
+        <BrowserRouter basename={basename || undefined}>
+          <ReadyApp />
+        </BrowserRouter>
+      </SyncProvider>
     </StoreProvider>
   )
 }

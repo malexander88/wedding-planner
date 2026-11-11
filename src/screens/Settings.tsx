@@ -1,9 +1,12 @@
+import { SharingCard } from '../components/SharingCard'
 import { downloadText } from '../lib/csv'
 import { emptyState, useStore } from '../state/store'
+import { useSync } from '../sync/SyncProvider'
 import type { AppState, CeremonyType, Season, StyleTag } from '../types'
 
 export function Settings() {
   const { state, dispatch } = useStore()
+  const sync = useSync()
   const p = state.profile
 
   const exportJson = () => {
@@ -31,7 +34,10 @@ export function Settings() {
       <header className="page-head">
         <div className="kicker">Settings</div>
         <h1>Your wedding details</h1>
-        <p>These shape the checklist, search buttons and budget. They stay on this device until cloud sharing is switched on.</p>
+        <p>
+          These shape the checklist, search buttons and budget.{' '}
+          {sync.paired ? 'Changes are shared with your partner’s phone.' : 'They stay on this phone until you switch on sharing.'}
+        </p>
       </header>
 
       <section className="card">
@@ -99,9 +105,11 @@ export function Settings() {
         )}
       </section>
 
+      <SharingCard />
+
       <section className="card">
         <h2>Backup</h2>
-        <p>Download a copy of everything on this phone, or restore one. This is how you can share with your partner until cloud sync is set up — send the file privately.</p>
+        <p>Download a copy of everything on this phone, or restore one from a file.</p>
         <div className="btn-row">
           <button className="btn" type="button" onClick={exportJson}>Download JSON backup</button>
           <label className="btn secondary">
@@ -122,15 +130,22 @@ export function Settings() {
 
       <section className="card">
         <h2>Privacy</h2>
-        <p>
-          Guest names, emails and dietary notes stay in this browser. Dietary needs can be sensitive — only store what the caterer needs,
-          and do not upload passports or birth certificates here. Sharing between two phones and a public RSVP page will need a European cloud database (Supabase), which has not been connected yet.
-        </p>
+        <ul className="plain-list">
+          <li>Everything is saved on this phone first, so the app works offline.</li>
+          <li>
+            When sharing is on, your plan is also stored with Supabase in its EU London region, so both phones see the same thing.
+            There are no accounts — only someone with your sharing link can see or change the plan, so keep the link between the two of you.
+          </li>
+          <li>Guest details are never shared with anyone else, and never sold.</li>
+          <li>Only note dietary needs with the guest’s consent, and only what the caterer needs. Don’t store passports or birth certificates here.</li>
+        </ul>
         <button
           className="btn ghost"
           type="button"
           onClick={() => {
-            if (confirm('Erase this wedding from this device? This cannot be undone unless you have a backup.')) {
+            if (confirm(sync.paired
+              ? 'Erase this wedding from this phone? It is shared, so this will also clear it on your partner’s phone the next time they sync. Use “Stop sharing on this phone” first if you only want to clear this phone.'
+              : 'Erase this wedding from this device? This cannot be undone unless you have a backup.')) {
               dispatch({ type: 'importState', state: emptyState() })
             }
           }}

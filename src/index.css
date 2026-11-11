@@ -610,3 +610,25 @@ details.fold .fold-body { padding-top: 12px; }
 
 .supplier-body { min-width: 0; }
 .supplier-body strong { overflow-wrap: anywhere; line-height: 1.25; }
+
+/* Sharing */
+.sharing .sec-head { align-items: center; }
+.share-link { display: grid; gap: 14px; justify-items: center; }
+.share-link .qr {
+  border-radius: 14px; border: 1px solid var(--line); padding: 6px; background: #fff;
+  width: 184px; height: 184px;
+}
+.share-copy { width: 100%; min-width: 0; }
+.share-copy input[readonly] { font-size: 0.8rem; color: var(--muted); text-overflow: ellipsis; }
+@media (min-width: 720px) {
+  .share-link { grid-template-columns: auto 1fr; justify-items: start; align-items: center; }
+}
+.notice { background: var(--ivory-2); border-radius: 14px; padding: 12px 14px; }
+.warn-text { color: var(--danger); }
+.quiet-action { display: block; margin-top: 14px; color: var(--muted); }
+.quiet-action:hover { color: var(--danger); }
+.plain-list { margin: 0 0 14px; padding-left: 18px; color: var(--muted); }
+.plain-list li { margin-bottom: 6px; }
+.btn:disabled { opacity: 0.6; cursor: default; }
+
+.sharing .pill { text-transform: none; white-space: nowrap; }
