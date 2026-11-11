@@ -384,3 +384,80 @@ describe('two phones syncing through the server', () => {
     expect(docsEqual(a.doc, b.doc)).toBe(true)
   })
 })
+
+describe('task details merge field by field', () => {
+  const td = (values: Record<string, string>) => ({
+    id: 'td_book-venue',
+    taskKey: 'book-venue',
+    template: 'booking' as const,
+    values,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  })
+
+  function pair() {
+    const time = fakeTime()
+    const start: SyncDoc = { state: base(), meta: emptyMeta() }
+    const a = device('a', start, time)
+    a.edit((s) => ({ ...s, taskDetails: [td({ supplierName: 'Belfast City Hall', total: '2400' })] }))
+    const b = device('b', a.doc, time)
+    return { a, b, time }
+  }
+
+  it('keeps concurrent edits to different fields of the same task', () => {
+    const { a, b, time } = pair()
+    time.advance()
+    a.edit((s) => ({ ...s, taskDetails: s.taskDetails.map((d) => ({ ...d, values: { ...d.values, deposit: '500' } })) }))
+    time.advance()
+    b.edit((s) => ({ ...s, taskDetails: s.taskDetails.map((d) => ({ ...d, values: { ...d.values, bookingRef: 'BCH-77' } })) }))
+    const ab = mergeDocs(a.doc, b.doc, time.now())
+    const ba = mergeDocs(b.doc, a.doc, time.now())
+    expect(ab.state.taskDetails[0].values).toMatchObject({ supplierName: 'Belfast City Hall', total: '2400', deposit: '500', bookingRef: 'BCH-77' })
+    expect(docsEqual(ab, ba)).toBe(true)
+  })
+
+  it('the later edit of the same field wins', () => {
+    const { a, b, time } = pair()
+    time.advance()
+    a.edit((s) => ({ ...s, taskDetails: s.taskDetails.map((d) => ({ ...d, values: { ...d.values, total: '2500' } })) }))
+    time.advance()
+    b.edit((s) => ({ ...s, taskDetails: s.taskDetails.map((d) => ({ ...d, values: { ...d.values, total: '2600' } })) }))
+    expect(mergeDocs(a.doc, b.doc, time.now()).state.taskDetails[0].values.total).toBe('2600')
+    expect(mergeDocs(b.doc, a.doc, time.now()).state.taskDetails[0].values.total).toBe('2600')
+  })
+
+  it('clearing a field on one phone is kept', () => {
+    const { a, b, time } = pair()
+    time.advance()
+    a.edit((s) => ({ ...s, taskDetails: s.taskDetails.map((d) => ({ ...d, values: { ...d.values, total: '' } })) }))
+    b.absorb(a.doc)
+    expect(b.doc.state.taskDetails[0].values.total).toBe('')
+  })
+
+  it('both phones creating details for the same task merge into one record', () => {
+    const time = fakeTime()
+    const start: SyncDoc = { state: base(), meta: emptyMeta() }
+    const a = device('a', start, time)
+    const b = device('b', start, time)
+    a.edit((s) => ({ ...s, taskDetails: [td({ supplierName: 'Hall' })] }))
+    time.advance()
+    b.edit((s) => ({ ...s, taskDetails: [td({ total: '900' })] }))
+    const m = mergeDocs(a.doc, b.doc, time.now())
+    expect(m.state.taskDetails).toHaveLength(1)
+    expect(m.state.taskDetails[0].values).toMatchObject({ supplierName: 'Hall', total: '900' })
+  })
+
+  it('a later delete removes the record and its field clocks; an older delete loses to a newer edit', () => {
+    const { a, b, time } = pair()
+    time.advance()
+    a.edit((s) => ({ ...s, taskDetails: [] }))
+    const m = mergeDocs(b.doc, a.doc, time.now())
+    expect(m.state.taskDetails).toHaveLength(0)
+    expect(m.meta.fields['taskDetails/td_book-venue']).toBeUndefined()
+
+    time.advance()
+    b.edit((s) => ({ ...s, taskDetails: s.taskDetails.map((d) => ({ ...d, values: { ...d.values, notes: 'still on' } })) }))
+    const m2 = mergeDocs(a.doc, b.doc, time.now())
+    expect(m2.state.taskDetails).toHaveLength(1)
+    expect(m2.state.taskDetails[0].values.notes).toBe('still on')
+  })
+})

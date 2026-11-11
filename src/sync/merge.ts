@@ -4,7 +4,10 @@
 // small "meta" ledger with a clock per record and per profile field:
 //   * collections of records (suppliers, guests, quotes, …) are keyed by id
 //     (or a natural key for the two id-less lists);
-//   * `profile` and `taskDone` are merged field by field.
+//   * `profile` and `taskDone` are merged field by field;
+//   * task details are records, but their properties and `values` also carry
+//     per-field clocks (meta.fields["taskDetails/<id>"]) so two phones editing
+//     different fields of the same task both keep their changes.
 // A clock is { t: milliseconds, d: deviceId }. The newer clock wins per record
 // (last-writer-wins); deletes leave a tombstone so they are not resurrected by
 // the other phone. Ties are broken deterministically so both phones converge.
@@ -44,6 +47,7 @@ type CollectionName =
   | 'gifts'
   | 'moodBoard'
   | 'venueDates'
+  | 'taskDetails'
 
 const byId = (r: AnyRecord) => String(r.id)
 
@@ -63,6 +67,33 @@ export const COLLECTIONS: Record<CollectionName, (r: AnyRecord) => string> = {
   gifts: byId,
   moodBoard: byId,
   venueDates: (r) => `${String(r.supplierId)}|${String(r.date)}`,
+  taskDetails: byId,
+}
+
+/** Collections whose records also merge field by field (flattened: `p:prop`, `v:valueKey`). */
+const NESTED: Partial<Record<CollectionName, string>> = { taskDetails: 'values' }
+const nestedKey = (name: string, id: string) => `${name}/${id}`
+
+function flatten(rec: AnyRecord | undefined, inner: string): AnyRecord {
+  const out: AnyRecord = {}
+  if (!rec) return out
+  for (const [k, v] of Object.entries(rec)) {
+    if (k === inner && v && typeof v === 'object') {
+      for (const [ik, iv] of Object.entries(v as AnyRecord)) out[`v:${ik}`] = iv
+    } else out[`p:${k}`] = v
+  }
+  return out
+}
+
+function unflatten(flat: AnyRecord, inner: string): AnyRecord {
+  const out: AnyRecord = { [inner]: {} }
+  for (const k of Object.keys(flat).sort()) {
+    const v = flat[k]
+    if (v === undefined) continue
+    if (k.startsWith('v:')) (out[inner] as AnyRecord)[k.slice(2)] = v
+    else out[k.slice(2)] = v
+  }
+  return out
 }
 
 export const FIELD_MAPS = ['profile', 'taskDone'] as const
@@ -147,12 +178,28 @@ export function stampChanges(
       col[k] = e
       changed = true
     }
+    const inner = NESTED[name]
     for (const [k, rec] of after) {
       const old = before.get(k)
-      if (!old || (old !== rec && stableStringify(old) !== stableStringify(rec))) put(k, { ...now() })
+      if (!old || (old !== rec && stableStringify(old) !== stableStringify(rec))) {
+        put(k, { ...now() })
+        if (inner) {
+          const fa = flatten(old, inner)
+          const fb = flatten(rec, inner)
+          const fk = nestedKey(name, k)
+          const fcol = { ...(fields[fk] ?? {}) }
+          for (const key of new Set([...Object.keys(fa), ...Object.keys(fb)])) {
+            if (stableStringify(fa[key]) !== stableStringify(fb[key])) fcol[key] = { ...now() }
+          }
+          fields[fk] = fcol
+        }
+      }
     }
     for (const k of before.keys()) {
-      if (!after.has(k)) put(k, { ...now(), del: true })
+      if (!after.has(k)) {
+        put(k, { ...now(), del: true })
+        if (inner) delete fields[nestedKey(name, k)]
+      }
     }
     if (col) records[name] = col
   }
@@ -227,8 +274,35 @@ export function mergeDocs(local: SyncDoc, remote: SyncDoc, now = Date.now()): Sy
       seen.add(k)
       const side = pick(lMeta[k], lRecs.get(k), rMeta[k], rRecs.get(k))
       const entry = side === 'l' ? lMeta[k] : rMeta[k]
-      const rec = side === 'l' ? lRecs.get(k) : rRecs.get(k)
+      let rec = side === 'l' ? lRecs.get(k) : rRecs.get(k)
       if (entry) outMeta[k] = entry
+      const inner = NESTED[name]
+      if (inner && rec && !entry?.del) {
+        const fk = nestedKey(name, k)
+        const l = lRecs.get(k)
+        const r = rRecs.get(k)
+        const lf = local.meta.fields[fk] ?? {}
+        const rf = remote.meta.fields[fk] ?? {}
+        if (l && r) {
+          // Both phones have it: merge property by property.
+          const fl = flatten(l, inner)
+          const fr = flatten(r, inner)
+          const flat: AnyRecord = {}
+          const fm: Record<string, Clock> = {}
+          for (const key of new Set([...Object.keys(fl), ...Object.keys(fr), ...Object.keys(lf), ...Object.keys(rf)])) {
+            const s2 = pick(lf[key], fl[key], rf[key], fr[key])
+            const v = s2 === 'l' ? fl[key] : fr[key]
+            const c = s2 === 'l' ? lf[key] : rf[key]
+            if (v !== undefined) flat[key] = v
+            if (c) fm[key] = c
+          }
+          rec = unflatten(flat, inner)
+          if (Object.keys(fm).length) fields[fk] = fm
+        } else {
+          const fm = side === 'l' ? lf : rf
+          if (Object.keys(fm).length) fields[fk] = fm
+        }
+      }
       if (rec && !entry?.del) outList.push(rec)
     }
     state[name] = outList

@@ -128,6 +128,8 @@ export interface BudgetLine {
   actual: number
   vatIncluded: boolean
   supplierId?: string
+  /** Set when a checklist task's details created or adopted this line. */
+  taskKey?: string
   notes: string
 }
 
@@ -140,6 +142,41 @@ export interface Payment {
   dueDate: string
   paidDate: string
   notes: string
+  /** Set when a checklist task's details created or adopted this payment. */
+  taskKey?: string
+}
+
+export type TemplateId =
+  | 'booking'
+  | 'purchase'
+  | 'admin'
+  | 'guests'
+  | 'decision'
+  | 'vision'
+  | 'research'
+  | 'legal-notice'
+  | 'legal-appointment'
+  | 'legal-docs'
+  | 'legal-officiant'
+  | 'legal-schedule'
+  | 'legal-witnesses'
+  | 'legal-certificates'
+  | 'legal-info'
+  | 'generic'
+
+/**
+ * What you noted when doing a checklist task. One record per task, id-keyed so
+ * the sync merge can reconcile it; `values` merge field by field.
+ * All values are strings (money as pounds, dates as YYYY-MM-DD, ticks as 'true').
+ */
+export interface TaskDetail {
+  id: string
+  taskKey: string
+  template: TemplateId
+  values: Record<string, string>
+  supplierId?: string
+  budgetLineId?: string
+  updatedAt: string
 }
 
 export interface Task {
@@ -154,6 +191,8 @@ export interface Task {
   legal: boolean
   custom: boolean
   done: boolean
+  /** Custom tasks choose a details template; built-in tasks map by key. */
+  template?: TemplateId
 }
 
 export interface SeatingTable {
@@ -225,6 +264,7 @@ export interface AppState {
   gifts: Gift[]
   moodBoard: MoodItem[]
   venueDates: VenueDateMark[]
+  taskDetails: TaskDetail[]
   updatedAt: string
 }
 

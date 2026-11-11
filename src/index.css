@@ -632,3 +632,76 @@ details.fold .fold-body { padding-top: 12px; }
 .btn:disabled { opacity: 0.6; cursor: default; }
 
 .sharing .pill { text-transform: none; white-space: nowrap; }
+
+/* ---- task details sheet ---------------------------------------------- */
+.sheet { padding: 8px 18px 0; outline: none; position: relative; }
+.sheet-grip { width: 42px; height: 5px; border-radius: 99px; background: var(--line-strong); margin: 4px auto 10px; }
+@media (min-width: 720px) { .sheet-grip { display: none; } .sheet { padding-top: 20px; width: min(640px, 100%); } }
+.sheet-head { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+.sheet-head h2 { margin: 4px 0 6px; }
+.icon-close {
+  border: 0; background: var(--ivory-2); width: 34px; height: 34px; border-radius: 50%;
+  font-size: 1.3rem; line-height: 1; cursor: pointer; flex-shrink: 0; color: var(--ink);
+}
+.fold { border: 1px solid var(--line); border-radius: 16px; background: #fff; margin-bottom: 10px; }
+.fold > summary {
+  list-style: none; cursor: pointer; padding: 12px 14px; font-weight: 700; display: flex;
+  justify-content: space-between; align-items: center; letter-spacing: -0.01em;
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: '+'; color: var(--gold-ink); font-size: 1.2rem; font-weight: 600; }
+.fold[open] > summary::after { content: '–'; }
+.td-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; padding: 0 14px 6px; }
+.td-grid > * { grid-column: 1 / -1; min-width: 0; }
+.td-grid > .half { grid-column: auto; }
+.td-grid .field input, .td-grid .field select, .td-grid .field textarea { width: 100%; min-width: 0; }
+.td-check { padding: 8px 0 14px; font-weight: 600; font-size: 0.92rem; align-items: flex-start !important; }
+.td-check span { line-height: 1.3; padding-top: 1px; }
+.td-warnings { display: grid; gap: 8px; margin: 4px 0 12px; }
+.td-warn { border-radius: 12px; padding: 10px 12px 10px 36px; font-size: 0.9rem; position: relative; line-height: 1.35; }
+.td-warn::before { position: absolute; left: 12px; top: 9px; font-weight: 800; }
+.td-warn.error { background: #F3E0D8; color: var(--danger); }
+.td-warn.error::before { content: '!'; }
+.td-warn.warn { background: #F4EAD6; color: var(--gold-ink); }
+.td-warn.warn::before { content: '!'; }
+.td-warn.ok { background: #E4EEE0; color: var(--ok); }
+.td-warn.ok::before { content: '✓'; }
+.td-warn.info { background: var(--ivory-2); color: var(--muted); }
+.td-warn.info::before { content: 'i'; font-style: italic; }
+.td-budget { background: #E4EEE0; color: var(--ok); border-radius: 14px; padding: 12px 14px; margin: 4px 0 12px; font-size: 0.92rem; }
+.td-budget ul { margin: 6px 0 0; padding-left: 18px; }
+.sheet-actions {
+  position: sticky; bottom: 0; background: var(--card); display: flex; flex-wrap: wrap; gap: 8px;
+  align-items: center; padding: 12px 0 calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line);
+  margin-top: 6px;
+}
+.sheet-actions .btn { flex: 1 1 140px; justify-content: center; }
+.text-btn.danger { color: var(--danger); background: none; border: 0; cursor: pointer; font-weight: 650; }
+
+/* task rows with details */
+.task-row { align-items: flex-start; }
+.task-row > label.title { cursor: pointer; display: block; }
+.td-summary {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 6px 10px;
+  background: #E4EEE0; color: var(--ok); border-radius: 10px; font-size: 0.86rem; font-weight: 600;
+  max-width: 100%;
+}
+.td-summary span { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-width: 0; line-height: 1.35; }
+.td-link { background: none; border: 0; padding: 0; margin-top: 8px; color: var(--forest); font-weight: 650; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 4px; }
+.td-link + .td-link { margin-left: 14px; }
+
+/* coming up on Home */
+.reminder { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); color: var(--ink); }
+.reminder:first-of-type { border-top: 0; padding-top: 2px; }
+.reminder .when {
+  width: 48px; flex-shrink: 0; text-align: center; border-radius: 12px; background: var(--icon-well);
+  padding: 6px 0; line-height: 1.05; font-weight: 700; color: var(--forest);
+}
+.reminder .when b { display: block; font-size: 1.15rem; }
+.reminder .when small { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gold-ink); }
+.reminder.overdue .when { background: #F3E0D8; color: var(--danger); }
+.reminder .copy { flex: 1; min-width: 0; }
+.reminder .copy strong { display: block; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reminder .copy span { font-size: 0.84rem; color: var(--muted); }
+.reminder .amt { font-weight: 700; white-space: nowrap; }
+a.linked { color: var(--gold-ink); font-weight: 650; }

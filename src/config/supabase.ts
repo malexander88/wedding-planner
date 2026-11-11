@@ -5,10 +5,10 @@
 // sync functions in supabase/001_sync.sql and cannot read the table directly.
 // Never paste a `service_role` or `sb_secret_` key — the app refuses to use one.
 //
-// Leave SUPABASE_ANON_KEY empty and the app runs offline-only, exactly as before.
+// Set SUPABASE_ANON_KEY to an empty string and the app runs offline-only.
 
 export const SUPABASE_URL = 'https://edytqwcnxqqzxeepgdjn.supabase.co'
-export const SUPABASE_ANON_KEY = ''
+export const SUPABASE_ANON_KEY = 'sb_publishable_cm3leEyZBQUQkdlaeraiEw__yzVHP26'
 
 function jwtRole(key: string): string | null {
   const parts = key.split('.')

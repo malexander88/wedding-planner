@@ -3,11 +3,13 @@ import { categoryLabel } from '../data/categories'
 import { formatShort } from '../data/legal'
 import { uid } from '../lib/ids'
 import { gbp } from '../lib/money'
+import { Link } from 'react-router-dom'
 import { useStore } from '../state/store'
 import type { BudgetLine } from '../types'
 
 export function Budget() {
-  const { state, dispatch } = useStore()
+  const { state, dispatch, tasks } = useStore()
+  const taskTitle = (key?: string) => (key ? tasks.find((t) => t.key === key)?.title : undefined)
   const money = totals(state)
   const upcoming = [...state.payments].sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
 
@@ -61,7 +63,15 @@ export function Budget() {
               <label className="field">
                 <span>Name</span>
                 <input value={line.name} onChange={(e) => update(line, { name: e.target.value })} />
-                <div className="tiny">{categoryLabel(line.category)}</div>
+                <div className="tiny">
+                  {categoryLabel(line.category)}
+                  {taskTitle(line.taskKey) && (
+                    <>
+                      {' · '}
+                      <Link to="/plan" className="linked">From Plan: {taskTitle(line.taskKey)}</Link>
+                    </>
+                  )}
+                </div>
               </label>
               <div className="money-grid">
                 <label className="field">
@@ -126,7 +136,16 @@ export function Budget() {
                     value={p.notes}
                     onChange={(e) => dispatch({ type: 'updatePayment', id: p.id, patch: { notes: e.target.value } })}
                   />
-                  <div className="tiny">{p.kind} · {gbp(p.amount)} {p.dueDate && `· due ${formatShort(p.dueDate)}`}</div>
+                  <div className="tiny">
+                    <span style={{ textTransform: 'capitalize' }}>{p.kind}</span> · {gbp(p.amount)}
+                    {p.paidDate ? ` · paid ${formatShort(p.paidDate)}` : p.dueDate ? ` · due ${formatShort(p.dueDate)}` : ''}
+                    {taskTitle(p.taskKey) && (
+                      <>
+                        {' · '}
+                        <Link to="/plan" className="linked">From Plan: {taskTitle(p.taskKey)}</Link>
+                      </>
+                    )}
+                  </div>
                   <div className="grid-2" style={{ marginTop: 8 }}>
                     <label className="field">
                       <span>Amount</span>

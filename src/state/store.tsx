@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { seedBudget } from '../data/budgetSeeds'
 import { mergeTasks } from '../data/checklist'
+import { applyTaskDetail } from '../data/taskDetails'
 import { uid } from '../lib/ids'
 import { indexedDbStorage } from '../storage/indexeddb'
 import type {
@@ -22,6 +23,8 @@ import type {
   Supplier,
   SupplierCategory,
   SupplierStatus,
+  TaskDetail,
+  TemplateId,
   WeddingProfile,
 } from '../types'
 
@@ -65,6 +68,7 @@ export function emptyState(): AppState {
     gifts: [],
     moodBoard: [],
     venueDates: [],
+    taskDetails: [],
     updatedAt: new Date().toISOString(),
   }
 }
@@ -78,7 +82,10 @@ export type Action =
   | { type: 'removeCandidate'; date: string }
   | { type: 'setAvailability'; supplierId: string; date: string; availability: AppState['venueDates'][0]['availability'] }
   | { type: 'toggleTask'; key: string }
-  | { type: 'addCustomTask'; title: string; stage: string }
+  | { type: 'setTaskDone'; key: string; done: boolean }
+  | { type: 'addCustomTask'; title: string; stage: string; template?: TemplateId }
+  | { type: 'saveTaskDetail'; detail: TaskDetail; markDone?: boolean }
+  | { type: 'removeTaskDetail'; taskKey: string }
   | { type: 'addSupplier'; supplier: Supplier }
   | { type: 'updateSupplier'; id: string; patch: Partial<Supplier> }
   | { type: 'setSupplierStatus'; id: string; status: SupplierStatus }
@@ -166,6 +173,18 @@ function reducer(state: AppState, action: Action): AppState {
         ...state,
         taskDone: { ...state.taskDone, [action.key]: !state.taskDone[action.key] },
       })
+    case 'setTaskDone':
+      if (!!state.taskDone[action.key] === action.done) return state
+      return touch({ ...state, taskDone: { ...state.taskDone, [action.key]: action.done } })
+    case 'saveTaskDetail': {
+      const next = applyTaskDetail(state, action.detail)
+      return touch(
+        action.markDone ? { ...next, taskDone: { ...next.taskDone, [action.detail.taskKey]: true } } : next,
+      )
+    }
+    case 'removeTaskDetail':
+      // Budget lines and payments it created stay; they're real money and live in Budget now.
+      return touch({ ...state, taskDetails: state.taskDetails.filter((d) => d.taskKey !== action.taskKey) })
     case 'addCustomTask': {
       const key = `custom_${uid('t')}`
       const task = {
@@ -180,6 +199,7 @@ function reducer(state: AppState, action: Action): AppState {
         legal: false,
         custom: true,
         done: false,
+        template: action.template ?? 'generic',
       }
       return touch({ ...state, tasks: [...state.tasks, task] })
     }

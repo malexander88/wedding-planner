@@ -4,10 +4,16 @@ import { STAGES } from '../data/checklist'
 import { formatShort } from '../data/legal'
 import { useStore } from '../state/store'
 import { IconCalendar, IconChevron, StageIcon } from '../components/Icons'
+import { useDetailSummary, useTaskSheet } from '../components/TaskDetailsSheet'
+import { CUSTOM_TEMPLATE_CHOICES, TEMPLATES } from '../data/taskTemplates'
+import type { TemplateId } from '../types'
 
 export function Checklist() {
   const { state, tasks, dispatch } = useStore()
   const [title, setTitle] = useState('')
+  const [kind, setKind] = useState<TemplateId>('generic')
+  const { openSheet, sheet } = useTaskSheet()
+  const summaryOf = useDetailSummary()
   const dated = Boolean(state.profile.date)
 
   return (
@@ -56,44 +62,77 @@ export function Checklist() {
             <div className="progress" style={{ margin: '4px 0 12px' }}>
               <div style={{ width: `${(done / items.length) * 100}%` }} />
             </div>
-            {items.map((t) => (
-              <label key={t.key} className="row" style={{ alignItems: 'flex-start' }}>
-                <input type="checkbox" checked={!!t.done} onChange={() => dispatch({ type: 'toggleTask', key: t.key })} />
-                <div style={{ flex: 1 }}>
-                  <strong>{t.title}</strong>
-                  {t.dueDate && (
-                    <div className="tiny">
-                      Due {formatShort(t.dueDate)} {t.legal && <span className="pill warn">Legal</span>}
+            {items.map((t) => {
+              const summary = summaryOf(t)
+              const id = `task-${t.key}`
+              return (
+                <div key={t.key} className="row task-row">
+                  <input
+                    id={id}
+                    type="checkbox"
+                    checked={!!t.done}
+                    aria-label={t.done ? `Mark “${t.title}” not done` : `Mark “${t.title}” done`}
+                    onChange={() =>
+                      t.done ? dispatch({ type: 'setTaskDone', key: t.key, done: false }) : openSheet(t, 'tick')
+                    }
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <label htmlFor={id} className="title">
+                      <strong>{t.title}</strong>
+                    </label>
+                    {t.dueDate && (
+                      <div className="tiny">
+                        Due {formatShort(t.dueDate)} {t.legal && <span className="pill warn">Legal</span>}
+                      </div>
+                    )}
+                    {!t.done && t.body && <p style={{ margin: '6px 0 0' }}>{t.body}</p>}
+                    {summary && (
+                      <div className="td-summary">
+                        <span>{summary}</span>
+                      </div>
+                    )}
+                    <div>
+                      <button type="button" className="td-link" onClick={() => openSheet(t, 'edit')}>
+                        {summary ? 'Edit details' : 'Add details'}
+                      </button>
+                      {!t.done && t.officialUrl && (
+                        <a className="td-link" href={t.officialUrl} target="_blank" rel="noreferrer" style={{ marginLeft: 14 }}>
+                          {t.officialLabel || 'Official information'}
+                        </a>
+                      )}
                     </div>
-                  )}
-                  <p style={{ margin: '6px 0 0' }}>{t.body}</p>
-                  {t.officialUrl && (
-                    <a href={t.officialUrl} target="_blank" rel="noreferrer">
-                      {t.officialLabel || 'Official information'}
-                    </a>
-                  )}
+                  </div>
                 </div>
-              </label>
-            ))}
+              )
+            })}
           </section>
         )
       })}
 
       <section className="card">
         <h2>Add your own task</h2>
+        <p className="tiny">Pick what kind it is so ticking it off asks the right questions.</p>
         <div className="btn-row">
           <input
             style={{ flex: 1, minWidth: 180 }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Ask auntie about family tartan"
+            aria-label="New task"
           />
+          <select value={kind} onChange={(e) => setKind(e.target.value as TemplateId)} aria-label="Kind of task" style={{ flex: '0 1 220px' }}>
+            {CUSTOM_TEMPLATE_CHOICES.map((id) => (
+              <option key={id} value={id}>
+                {TEMPLATES[id].label}
+              </option>
+            ))}
+          </select>
           <button
             className="btn"
             type="button"
             onClick={() => {
               if (!title.trim()) return
-              dispatch({ type: 'addCustomTask', title: title.trim(), stage: 'details' })
+              dispatch({ type: 'addCustomTask', title: title.trim(), stage: 'details', template: kind })
               setTitle('')
             }}
           >
@@ -101,6 +140,7 @@ export function Checklist() {
           </button>
         </div>
       </section>
+      {sheet}
     </div>
   )
 }

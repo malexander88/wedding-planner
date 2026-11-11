@@ -4,6 +4,8 @@ import { daysUntil, formatLong } from '../data/legal'
 import { totals } from '../data/budgetSeeds'
 import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
+import { reminders } from '../data/taskDetails'
+import { useTaskSheet } from '../components/TaskDetailsSheet'
 import {
   CategoryIcon,
   IconBloom,
@@ -61,6 +63,9 @@ export function Home() {
   const circ = 2 * Math.PI * 34
   const dash = `${(pct * circ).toFixed(2)} ${(circ).toFixed(2)}`
   const nextTasks = tasks.filter((t) => !t.done).slice(0, 3)
+  const { openSheet, sheet } = useTaskSheet()
+  const todayIso = new Date().toISOString().slice(0, 10)
+  const coming = reminders(state, tasks, todayIso, 90).slice(0, 4)
   const money = totals(state)
   const spend = money.quoted || p.totalBudget
   const barPct = Math.min(100, ((money.quoted || 0) / Math.max(p.totalBudget, 1)) * 100)
@@ -134,12 +139,46 @@ export function Home() {
                   <strong>{t.title}</strong>
                   <span>{t.dueDate ? `Due ${formatLong(t.dueDate)}` : t.body}</span>
                 </div>
-                <input type="checkbox" checked={!!t.done} onChange={() => dispatch({ type: 'toggleTask', key: t.key })} />
+                <input
+                  type="checkbox"
+                  checked={!!t.done}
+                  aria-label={`Mark “${t.title}” done`}
+                  onChange={() => (t.done ? dispatch({ type: 'setTaskDone', key: t.key, done: false }) : openSheet(t, 'tick'))}
+                />
               </label>
             ))}
           </div>
         )}
       </section>
+
+      {coming.length > 0 && (
+        <section className="card">
+          <div className="sec-head">
+            <h2>Coming up</h2>
+            <Link className="text-btn" to="/budget">
+              Payments
+            </Link>
+          </div>
+          <div className="list">
+            {coming.map((r) => {
+              const d = new Date(`${r.date}T12:00:00`)
+              return (
+                <Link key={r.id} to={r.kind === 'payment' ? '/budget' : '/plan'} className={`reminder${r.overdue ? ' overdue' : ''}`}>
+                  <div className="when">
+                    <b>{d.getDate()}</b>
+                    <small>{d.toLocaleDateString('en-GB', { month: 'short' })}</small>
+                  </div>
+                  <div className="copy">
+                    <strong>{r.title}</strong>
+                    <span>{r.overdue ? 'Overdue · ' : ''}{r.sub}</span>
+                  </div>
+                  {r.amount ? <span className="amt">{gbp(r.amount)}</span> : null}
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="card">
         <div className="budget-glance">
@@ -178,6 +217,7 @@ export function Home() {
           ))}
         </div>
       </section>
+      {sheet}
     </div>
   )
 }
