@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from 'react'
 import { pruneStarterLines } from '../data/budget'
-import { mergeTasks } from '../data/checklist'
+import { isTaskDone, mergeTasks } from '../data/checklist'
 import { applyTaskDetail } from '../data/taskDetails'
 import { uid } from '../lib/ids'
 import { backupState, indexedDbStorage, saveStateNow } from '../storage/indexeddb'
@@ -114,6 +114,7 @@ export type Action =
   | { type: 'addGuest'; guest: Guest }
   | { type: 'updateGuest'; id: string; patch: Partial<Guest> }
   | { type: 'removeGuest'; id: string }
+  | { type: 'restoreGuests'; household?: Household; householdIndex?: number; guests: Guest[]; guestIndex?: number }
   | { type: 'importState'; state: AppState }
   | { type: 'reset' }
   /** Explicit 'erase everything' from Settings: the only way a blank plan may replace a real one. */
@@ -124,7 +125,7 @@ function touch(state: AppState): AppState {
   return { ...state, updatedAt: new Date().toISOString() }
 }
 
-function reducer(state: AppState, action: Action): AppState {
+export function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'hydrate':
     case 'importState':
@@ -138,17 +139,32 @@ function reducer(state: AppState, action: Action): AppState {
       const next = pruneStarterLines(state)
       return next === state ? state : touch(next)
     }
-    case 'patchProfile':
-      return touch({ ...state, profile: { ...state.profile, ...action.patch } })
+    case 'patchProfile': {
+      const next = touch({ ...state, profile: { ...state.profile, ...action.patch } })
+      // Setting a total budget for the first time ticks 'Agree your total budget'.
+      if ((action.patch.totalBudget ?? 0) > 0 && !(state.profile.totalBudget > 0) && state.taskDone['vision-budget'] === undefined)
+        next.taskDone = { ...next.taskDone, 'vision-budget': true }
+      return next
+    }
     case 'completeOnboarding': {
       const profile = { ...action.profile, onboardingComplete: true }
+      // The answers already cover the first two Plan tasks.
+      const taskDone = { ...state.taskDone }
+      if (profile.totalBudget > 0) taskDone['vision-budget'] = true
+      if (profile.estimatedDayGuests > 0) taskDone['vision-guests'] = true
       return touch({
         ...state,
         profile,
+        taskDone,
       })
     }
     case 'setDate':
-      return touch({ ...state, profile: { ...state.profile, date: action.date } })
+      return touch({
+        ...state,
+        profile: { ...state.profile, date: action.date },
+        // Choosing a date is the outcome of comparing them.
+        taskDone: action.date ? { ...state.taskDone, 'date-compare': true } : state.taskDone,
+      })
     case 'addCandidate': {
       if (state.profile.candidateDates.includes(action.date)) return state
       return touch({
@@ -180,10 +196,12 @@ function reducer(state: AppState, action: Action): AppState {
     case 'toggleTask':
       return touch({
         ...state,
-        taskDone: { ...state.taskDone, [action.key]: !state.taskDone[action.key] },
+        taskDone: { ...state.taskDone, [action.key]: !isTaskDone(state, action.key) },
       })
     case 'setTaskDone':
-      if (!!state.taskDone[action.key] === action.done) return state
+      // Compare with the explicit value: unticking a task the data ticked must still be recorded.
+      if (state.taskDone[action.key] === action.done) return state
+      if (state.taskDone[action.key] === undefined && isTaskDone(state, action.key) === action.done && !action.done) return state
       return touch({ ...state, taskDone: { ...state.taskDone, [action.key]: action.done } })
     case 'saveTaskDetail': {
       const next = applyTaskDetail(state, action.detail)
@@ -372,6 +390,17 @@ function reducer(state: AppState, action: Action): AppState {
         ...state,
         guests: state.guests.map((g) => (g.id === action.id ? { ...g, ...action.patch } : g)),
       })
+    case 'restoreGuests': {
+      // Undo for a removed person or household: put the same records back.
+      const households = [...state.households]
+      if (action.household && !households.some((h) => h.id === action.household!.id))
+        households.splice(Math.min(action.householdIndex ?? households.length, households.length), 0, action.household)
+      const ids = new Set(state.guests.map((g) => g.id))
+      const back = action.guests.filter((g) => !ids.has(g.id))
+      const guests = [...state.guests]
+      guests.splice(Math.min(action.guestIndex ?? guests.length, guests.length), 0, ...back)
+      return touch({ ...state, households, guests })
+    }
     case 'removeGuest':
       return touch({ ...state, guests: state.guests.filter((g) => g.id !== action.id) })
     default:

@@ -12,9 +12,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'favicon.png', 'pwa-192.png', 'pwa-512.png', 'images/hero.webp'],
+      includeAssets: ['favicon.svg', 'favicon.png', 'apple-touch-icon.png', 'pwa-192.png', 'pwa-512.png', 'maskable-192.png', 'maskable-512.png', 'images/hero.webp'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webp,woff,woff2,ttf}'],
+        // Launch screens are read by iOS when the app is added to the home screen; no need to precache 2.5 MB of them.
+        globIgnores: ['**/splash/**'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
       manifest: {
@@ -28,8 +30,10 @@ export default defineConfig({
         start_url: base,
         scope: base,
         icons: [
-          { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'maskable-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+          { src: 'maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
     }),

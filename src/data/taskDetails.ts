@@ -305,7 +305,8 @@ export interface Reminder {
   date: string
   title: string
   sub: string
-  kind: 'payment' | 'date'
+  kind: 'payment' | 'date' | 'task'
+  legal?: boolean
   amount?: number
   overdue: boolean
 }
@@ -346,7 +347,26 @@ export function reminders(state: AppState, tasks: Task[], from = today(), horizo
       })
     }
   }
+  for (const task of tasks) {
+    if (task.done || !task.dueDate || task.dueDate > until) continue
+    out.push({
+      id: `t_${task.key}`,
+      date: task.dueDate,
+      title: task.title,
+      sub: task.legal ? 'Legal deadline' : 'Plan',
+      kind: 'task',
+      legal: task.legal,
+      overdue: task.dueDate < from,
+    })
+  }
   return out.sort((a, b) => a.date.localeCompare(b.date))
+}
+
+/** Home's 'Coming up': everything in the next 90 days, and never fewer than the next five things. */
+export function comingUp(all: Reminder[], from = today(), windowDays = 90, atLeast = 5): Reminder[] {
+  const until = addDays(from, windowDays)
+  const within = all.filter((r) => r.date <= until).length
+  return all.slice(0, Math.max(atLeast, within))
 }
 
 /** Payment words from the real payments (so ticking "Paid" in Budget shows on the task). */

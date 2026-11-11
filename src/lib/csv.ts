@@ -33,8 +33,9 @@ export function guestsCsv(state: AppState): string {
       g.invitedTo.includes('evening') ? 'yes' : 'no',
       g.rsvp,
       g.meal,
-      g.dietary,
-      g.dietaryConsent ? 'yes' : '',
+      // Dietary needs are health data: only exported when the guest agreed to them being kept.
+      g.dietaryConsent ? g.dietary : '',
+      g.dietaryConsent ? 'yes' : 'no',
       g.travelFrom,
       g.notes,
     ].map((v) => esc(String(v)))

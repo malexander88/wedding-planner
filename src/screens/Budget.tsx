@@ -46,6 +46,7 @@ export function Budget() {
           <label className="field" style={{ marginBottom: 6 }}>
             <span>Total budget (£)</span>
             <input
+              id="total-budget"
               type="number"
               inputMode="numeric"
               min={0}
@@ -63,10 +64,22 @@ export function Budget() {
           <div><dt>Committed</dt><dd>{gbp(sum.committed)}</dd></div>
           <div><dt>Paid so far</dt><dd>{gbp(sum.paid)}</dd></div>
           <div><dt>Still to pay</dt><dd>{gbp(sum.toPay)}</dd></div>
-          <div className={`left ${sum.left < 0 ? 'neg' : ''}`}>
-            <dt>Left to allocate</dt>
-            <dd>{sum.total ? (sum.left < 0 ? `−${gbp(-sum.left)}` : gbp(sum.left)) : '—'}</dd>
-          </div>
+          {sum.total ? (
+            <div className={`left ${sum.left < 0 ? 'neg' : ''}`}>
+              <dt>Left to allocate</dt>
+              <dd>{sum.left < 0 ? `−${gbp(-sum.left)}` : gbp(sum.left)}</dd>
+            </div>
+          ) : (
+            <div className="left unset">
+              <dt>Left to allocate</dt>
+              <dd>
+                <button className="text-btn" type="button" onClick={() => document.getElementById('total-budget')?.focus()}>
+                  Set a budget
+                </button>
+              </dd>
+              <p className="tiny" style={{ margin: '4px 0 0' }}>Add one total and we’ll show what’s left as you book things.</p>
+            </div>
+          )}
         </dl>
       </section>
 

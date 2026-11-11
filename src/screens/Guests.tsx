@@ -1,11 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { guestsCsv, downloadText } from '../lib/csv'
 import { newGuest, newHousehold, useStore } from '../state/store'
-import type { Guest, InvitePart } from '../types'
+import type { Guest, Household, InvitePart } from '../types'
+
+type Removed = { label: string; household?: Household; householdIndex?: number; guests: Guest[]; guestIndex?: number }
 
 export function Guests() {
   const { state, dispatch } = useStore()
   const [hhName, setHhName] = useState('')
+  const [removed, setRemoved] = useState<Removed | null>(null)
+  useEffect(() => {
+    if (!removed) return
+    const t = window.setTimeout(() => setRemoved(null), 10000)
+    return () => window.clearTimeout(t)
+  }, [removed])
+
+  const removeHousehold = (hh: Household) => {
+    const people = state.guests.filter((g) => g.householdId === hh.id)
+    const who = people.length ? ` and ${people.length === 1 ? 'the 1 person' : `all ${people.length} people`} in it` : ''
+    if (!window.confirm(`Remove ${hh.name || 'this household'}${who} from the guest list?`)) return
+    dispatch({ type: 'removeHousehold', id: hh.id })
+    setRemoved({
+      label: `${hh.name || 'Household'} removed`,
+      household: hh,
+      householdIndex: state.households.findIndex((h) => h.id === hh.id),
+      guests: people,
+      guestIndex: state.guests.findIndex((g) => g.householdId === hh.id),
+    })
+  }
+  const removeGuest = (g: Guest) => {
+    const name = [g.firstName, g.lastName].filter(Boolean).join(' ') || (g.isPlusOne ? 'this plus-one' : 'this person')
+    if (!window.confirm(`Remove ${name} from the guest list?`)) return
+    dispatch({ type: 'removeGuest', id: g.id })
+    setRemoved({ label: `${name} removed`, guests: [g], guestIndex: state.guests.findIndex((x) => x.id === g.id) })
+  }
   const day = state.guests.filter((g) => g.invitedTo.includes('day') && g.rsvp !== 'no').length
   const eve = state.guests.filter((g) => g.invitedTo.includes('evening') && g.rsvp !== 'no').length
 
@@ -75,7 +103,7 @@ export function Guests() {
                 value={hh.name}
                 onChange={(e) => dispatch({ type: 'updateHousehold', id: hh.id, patch: { name: e.target.value } })}
               />
-              <button className="btn ghost small" type="button" onClick={() => dispatch({ type: 'removeHousehold', id: hh.id })}>
+              <button className="btn ghost small" type="button" onClick={() => removeHousehold(hh)}>
                 Remove
               </button>
             </div>
@@ -127,7 +155,7 @@ export function Guests() {
                   </label>
                 )}
                 {g.isPlusOne && !g.firstName && <p className="tiny">This plus-one still needs a name before you can seat or cater for them properly.</p>}
-                <button className="btn ghost small" type="button" onClick={() => dispatch({ type: 'removeGuest', id: g.id })}>Remove person</button>
+                <button className="btn ghost small" type="button" onClick={() => removeGuest(g)}>Remove person</button>
               </div>
             ))}
             <div className="btn-row" style={{ marginTop: 12 }}>
@@ -153,6 +181,22 @@ export function Guests() {
           </section>
         )
       })}
+      {removed && (
+        <div className="toast" role="status">
+          <span>{removed.label}</span>
+          <button
+            className="text-btn"
+            type="button"
+            onClick={() => {
+              const { household, householdIndex, guests, guestIndex } = removed
+              dispatch({ type: 'restoreGuests', household, householdIndex, guests, guestIndex })
+              setRemoved(null)
+            }}
+          >
+            Undo
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 import { currentStage, STAGES } from '../data/checklist'
-import { daysUntil, formatLong } from '../data/legal'
+import { daysBetween, daysUntil, formatLong, formatShort, todayIso as localToday } from '../data/legal'
 import { budgetSummary } from '../data/budget'
 import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
-import { reminders } from '../data/taskDetails'
+import { comingUp, reminders } from '../data/taskDetails'
 import { useTaskSheet } from '../components/TaskDetailsSheet'
 import {
   CategoryIcon,
@@ -64,8 +64,13 @@ export function Home() {
   const dash = `${(pct * circ).toFixed(2)} ${(circ).toFixed(2)}`
   const nextTasks = tasks.filter((t) => !t.done).slice(0, 3)
   const { openSheet, sheet } = useTaskSheet()
-  const todayIso = new Date().toISOString().slice(0, 10)
-  const coming = reminders(state, tasks, todayIso, 90).slice(0, 4)
+  const todayIso = localToday()
+  const coming = comingUp(reminders(state, tasks, todayIso, 3650), todayIso)
+  const allDone = tasks.filter((t) => t.done).length
+  const nextLegal = tasks
+    .filter((t) => t.legal && !t.done && t.dueDate)
+    .sort((x, y) => x.dueDate.localeCompare(y.dueDate))[0]
+  const legalDays = nextLegal ? daysBetween(todayIso, nextLegal.dueDate) : 0
   const money = budgetSummary(state)
   const barPct = Math.min(100, money.ratio * 100)
   const hero = `${import.meta.env.BASE_URL}images/hero.webp`
@@ -111,7 +116,7 @@ export function Home() {
           <div className="kicker">Planning stage</div>
           <h2>{stage.title}</h2>
           <p>
-            {stageDone} of {stageTotal} done
+            {stageDone} of {stageTotal} done · {allDone} of {tasks.length} overall
           </p>
         </div>
         <Link className="btn small" to="/plan">
@@ -119,6 +124,24 @@ export function Home() {
           <IconChevron />
         </Link>
       </section>
+
+      {nextLegal && (
+        <button type="button" className={`card legal-next${legalDays < 0 ? ' overdue' : legalDays <= 30 ? ' soon' : ''}`} onClick={() => openSheet(nextLegal, 'edit')}>
+          <div className="well"><IconRings /></div>
+          <div className="grow">
+            <div className="kicker">Next legal deadline</div>
+            <strong>{nextLegal.title}</strong>
+            <span>
+              {legalDays < 0
+                ? `Was due ${formatShort(nextLegal.dueDate)} — ${-legalDays} day${legalDays === -1 ? '' : 's'} ago`
+                : legalDays === 0
+                  ? 'Due today'
+                  : `By ${formatShort(nextLegal.dueDate)} · ${legalDays} day${legalDays === 1 ? '' : 's'} to go`}
+            </span>
+          </div>
+          <IconChevron />
+        </button>
+      )}
 
       <section className="card">
         <div className="sec-head">
@@ -162,10 +185,10 @@ export function Home() {
             {coming.map((r) => {
               const d = new Date(`${r.date}T12:00:00`)
               return (
-                <Link key={r.id} to={r.kind === 'payment' ? '/budget' : '/plan'} className={`reminder${r.overdue ? ' overdue' : ''}`}>
+                <Link key={r.id} to={r.kind === 'payment' ? '/budget' : '/plan'} className={`reminder${r.overdue ? ' overdue' : ''}${r.legal ? ' legal' : ''}`}>
                   <div className="when">
                     <b>{d.getDate()}</b>
-                    <small>{d.toLocaleDateString('en-GB', { month: 'short' })}</small>
+                    <small>{d.toLocaleDateString('en-GB', r.date.slice(0, 4) === todayIso.slice(0, 4) ? { month: 'short' } : { month: 'short', year: '2-digit' })}</small>
                   </div>
                   <div className="copy">
                     <strong>{r.title}</strong>
@@ -202,7 +225,7 @@ export function Home() {
           <div className={`progress level-${money.level}`} role="img" aria-label={money.total ? `${Math.round(money.ratio * 100)} percent of your budget committed` : 'No total budget set'}>
             <div style={{ width: `${barPct}%` }} />
           </div>
-          <span className="bar-pct">{money.total ? `${Math.round(money.ratio * 100)}%` : '—'}</span>
+          <span className="bar-pct">{money.total ? `${Math.round(money.ratio * 100)}%` : 'Set a budget'}</span>
         </div>
       </Link>
 

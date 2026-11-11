@@ -96,6 +96,8 @@ export interface Supplier {
   name: string
   category: SupplierCategory
   area: string
+  /** Registrar council for a venue, when the couple picked it (otherwise worked out from the area). */
+  council?: 'anbc' | 'belfast' | 'mea'
   website: string
   phone: string
   email: string

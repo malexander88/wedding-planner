@@ -1,6 +1,8 @@
 import type { AppState, Task, WeddingProfile } from '../types'
 import {
   LINKS,
+  addDays,
+  addMonths,
   formatShort,
   noticeDueDate,
   noticeMinimumDate,
@@ -146,10 +148,10 @@ export function generatedSpecs(profile: WeddingProfile): Spec[] {
       spec({
         key: 'legal-book-appointment',
         title: 'Book an appointment to give notice',
-        body: `Antrim & Newtownabbey need an appointment. Newtownabbey is at Mossley Mill (028 9034 0180). Antrim Civic Centre is 028 9448 1315. Aim to have notice in around ${formatShort(rec)}. The absolute minimum is 28 days before (${formatShort(min)}), which is risky.`,
+        body: `Registrars give notice by appointment, and slots go a few weeks out. In Antrim & Newtownabbey: Mossley Mill, Newtownabbey (028 9034 0180) or Antrim Civic Centre (028 9448 1315). Book about two weeks before you plan to give notice, which should be around ${formatShort(rec)}. The absolute minimum is 28 days before the wedding (${formatShort(min)}), which is risky.`,
         stage: 'legal',
         legal: true,
-        dueDate: rec,
+        dueDate: addDays(rec, -14),
         officialUrl: LINKS.newtownabbey,
         officialLabel: 'Newtownabbey registrar',
       }),
@@ -214,9 +216,9 @@ export function generatedSpecs(profile: WeddingProfile): Spec[] {
       spec({
         key: 'people-savethedates',
         title: 'Send save-the-dates',
-        body: 'Especially important if guests are travelling from Great Britain or further.',
+        body: 'Usually six to twelve months ahead, and earlier still if guests are travelling from Great Britain or further.',
         stage: 'people',
-        dueDate: noticeDueDate(profile.date, false),
+        dueDate: addMonths(profile.date, -9),
       }),
       spec({
         key: 'people-invites',
@@ -231,6 +233,25 @@ export function generatedSpecs(profile: WeddingProfile): Spec[] {
   return items
 }
 
+/**
+ * Tasks the plan's own data already answers. Used only when the couple hasn't
+ * ticked or unticked the task themselves, so nothing is written for it.
+ */
+export function derivedDone(state: AppState, key: string): boolean {
+  const p = state.profile
+  if (key === 'vision-budget') return p.totalBudget > 0
+  if (key === 'vision-guests') return p.onboardingComplete && p.estimatedDayGuests > 0
+  if (key === 'date-compare') return Boolean(p.date)
+  return false
+}
+
+export function isTaskDone(state: AppState, key: string): boolean {
+  const explicit = state.taskDone[key]
+  if (explicit !== undefined) return explicit
+  const legacy = state.tasks.find((t) => t.key === key)?.done
+  return legacy || derivedDone(state, key)
+}
+
 export function mergeTasks(state: AppState): Task[] {
   const specs = generatedSpecs(state.profile)
   const existing = new Map(state.tasks.map((t) => [t.key, t]))
@@ -239,7 +260,7 @@ export function mergeTasks(state: AppState): Task[] {
     return {
       ...s,
       id: prev?.id ?? `task_${s.key}`,
-      done: state.taskDone[s.key] ?? prev?.done ?? false,
+      done: state.taskDone[s.key] ?? (prev?.done || derivedDone(state, s.key)),
     }
   })
   for (const t of state.tasks) {

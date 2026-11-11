@@ -1,6 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
-import { ComingSoon } from './screens/ComingSoon'
 import { Budget } from './screens/Budget'
 import { Checklist } from './screens/Checklist'
 import { Dates } from './screens/Dates'
@@ -62,12 +61,6 @@ function ReadyApp() {
         <Route path="/budget" element={<Budget />} />
         <Route path="/guests" element={<Guests />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/rsvp" element={<ComingSoon kind="rsvp" />} />
-        <Route path="/seating" element={<ComingSoon kind="seating" />} />
-        <Route path="/run-sheet" element={<ComingSoon kind="run-sheet" />} />
-        <Route path="/gifts" element={<ComingSoon kind="gifts" />} />
-        <Route path="/mood" element={<ComingSoon kind="mood" />} />
-        <Route path="/helpers" element={<ComingSoon kind="helpers" />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

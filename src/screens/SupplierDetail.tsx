@@ -5,7 +5,9 @@ import { draftEnquiry } from '../lib/enquiry'
 import { uid } from '../lib/ids'
 import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
-import type { Quote, SupplierStatus } from '../types'
+import type { Quote, Supplier, SupplierStatus } from '../types'
+import { COUNCILS } from '../data/legal'
+import { venueFee } from '../data/venueFee'
 import { IconBack } from '../components/Icons'
 
 
@@ -67,6 +69,7 @@ export function SupplierDetail() {
   }
 
   const draft = draftEnquiry(state, supplier)
+  const fee = venueFee(supplier)
   const latest = quotes[quotes.length - 1]
   const flowIndex = FLOW.indexOf(supplier.status)
 
@@ -100,8 +103,51 @@ export function SupplierDetail() {
           <IconBack style={{ width: 16, height: 16 }} /> All suppliers
         </Link>
         <h1>{supplier.name}</h1>
-        <p>{supplier.area}{supplier.phone ? ` · ${supplier.phone}` : ''}</p>
+        <p>{supplier.area || 'Area not set'}{supplier.phone ? ` · ${supplier.phone}` : ''}</p>
       </header>
+
+      {!supplier.catalogueId && (
+        <section className="card">
+          <h2>Where they are</h2>
+          <div className="grid-2">
+            <label className="field">
+              <span>Town or area</span>
+              <input
+                value={supplier.area}
+                placeholder="e.g. Ballymena"
+                onChange={(e) => dispatch({ type: 'updateSupplier', id: supplier.id, patch: { area: e.target.value } })}
+              />
+            </label>
+            {supplier.category === 'venue' && (
+              <label className="field">
+                <span>Registrar council</span>
+                <select
+                  value={supplier.council ?? ''}
+                  onChange={(e) =>
+                    dispatch({
+                      type: 'updateSupplier',
+                      id: supplier.id,
+                      patch: { council: (e.target.value || undefined) as Supplier['council'] },
+                    })
+                  }
+                >
+                  <option value="">{fee.council && !supplier.council ? `Worked out: ${COUNCILS[fee.council].short}` : 'Not sure yet'}</option>
+                  {Object.values(COUNCILS).map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
+          {supplier.category === 'venue' && (
+            <p className="tiny" style={{ margin: 0 }}>
+              {fee.band
+                ? `Registrar fees use ${fee.label.toLowerCase()} rates: ${gbp(fee.band.weekday)} weekday, ${gbp(fee.band.saturday)} Saturday, ${gbp(fee.band.holiday)} bank holiday.`
+                : 'Add the town, or pick the council, so the date comparer can show the right registrar fees. Councils other than these three: ask the local registrar.'}
+            </p>
+          )}
+        </section>
+      )}
 
       <section className="card">
         <div className="kicker">Status</div>

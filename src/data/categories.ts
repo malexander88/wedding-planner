@@ -22,3 +22,27 @@ export const CATEGORIES: { id: SupplierCategory; label: string; search: string }
 export function categoryLabel(id: string): string {
   return CATEGORIES.find((c) => c.id === id)?.label ?? id
 }
+
+/** How to talk about several of them: "Search the web for photographers". */
+const PLURAL: Record<SupplierCategory, string> = {
+  venue: 'venues',
+  officiant: 'registrars and celebrants',
+  photographer: 'photographers',
+  videographer: 'videographers',
+  catering: 'caterers',
+  florist: 'florists',
+  entertainment: 'bands, DJs and musicians',
+  cake: 'cake makers',
+  attire: 'wedding outfits',
+  hair: 'hair stylists',
+  makeup: 'makeup artists',
+  transport: 'wedding transport',
+  stationery: 'stationers',
+  decor: 'decor and hire',
+  planner: 'wedding planners',
+  other: 'other suppliers',
+}
+
+export function categoryPlural(id: string): string {
+  return PLURAL[id as SupplierCategory] ?? categoryLabel(id).toLowerCase()
+}

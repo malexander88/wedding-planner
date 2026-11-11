@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { useEffect } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useStore } from '../state/store'
 import {
   IconBudget,
@@ -18,15 +19,10 @@ const mainNav = [
   { to: '/guests', label: 'Guests', icon: 'guests' },
 ] as const
 
+// Pages that aren't built yet stay out of the nav (phone and desktop alike) until they are.
 const moreNav = [
   { to: '/dates', label: 'Dates' },
   { to: '/settings', label: 'Settings & backup' },
-  { to: '/rsvp', label: 'RSVP site', soon: true },
-  { to: '/seating', label: 'Seating', soon: true },
-  { to: '/run-sheet', label: 'Run sheet', soon: true },
-  { to: '/gifts', label: 'Gifts & thank-yous', soon: true },
-  { to: '/mood', label: 'Mood board', soon: true },
-  { to: '/helpers', label: 'Helpers', soon: true },
 ]
 
 function NavGlyph({ name, filled }: { name: (typeof mainNav)[number]['icon']; filled?: boolean }) {
@@ -39,6 +35,11 @@ function NavGlyph({ name, filled }: { name: (typeof mainNav)[number]['icon']; fi
 
 export function Layout() {
   const { state } = useStore()
+  const { pathname } = useLocation()
+  // A new page starts at the top (otherwise opening a supplier lands half-way down).
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
   const names = [state.profile.partnerAName, state.profile.partnerBName].filter(Boolean).join(' & ')
 
   return (
@@ -59,7 +60,7 @@ export function Layout() {
         ))}
         <div className="nav-section">More</div>
         {moreNav.map((n) => (
-          <NavLink key={n.to} to={n.to} className={({ isActive }) => `nav-link${n.soon ? ' soon' : ''}${isActive ? ' active' : ''}`}>
+          <NavLink key={n.to} to={n.to} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
             {n.label}
           </NavLink>
         ))}

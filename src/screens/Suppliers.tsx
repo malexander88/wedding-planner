@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { CATALOGUE } from '../data/catalogue'
-import { CATEGORIES, categoryLabel } from '../data/categories'
+import { CATEGORIES, categoryLabel, categoryPlural } from '../data/categories'
 import { searchUrls } from '../data/searchLinks'
 import { newSupplier, useStore } from '../state/store'
 import type { SupplierCategory } from '../types'
@@ -19,6 +19,7 @@ export function Suppliers() {
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
   const [website, setWebsite] = useState('')
+  const [place, setPlace] = useState('')
   const area = useMemo(() => state.profile.area || 'Belfast Antrim Newtownabbey', [state.profile.area])
   const urls = searchUrls(category, area)
   const catalog = CATALOGUE.filter((c) => c.category === category)
@@ -61,7 +62,7 @@ export function Suppliers() {
       </div>
 
       <section className="card">
-        <h2>Search the web for {categoryLabel(category).toLowerCase()}</h2>
+        <h2>Search the web for {categoryPlural(category)}</h2>
         <p className="tiny">Opens in a new tab, already searched for “{categoryLabel(category).toLowerCase()} {area}”.</p>
         <div className="btn-row">
           <a className="btn" href={urls.google} target="_blank" rel="noreferrer">Google</a>
@@ -122,14 +123,19 @@ export function Suppliers() {
               <span>Website</span>
               <input value={website} onChange={(e) => setWebsite(e.target.value)} />
             </label>
+            <label className="field">
+              <span>Town or area (optional)</span>
+              <input value={place} onChange={(e) => setPlace(e.target.value)} placeholder="e.g. Ballymena" />
+            </label>
             <button
               className="btn"
               type="button"
               onClick={() => {
                 if (!name.trim()) return
-                const supplier = newSupplier({ name: name.trim(), category, website, area: state.profile.area })
+                // Only what they typed: a default area would pick the wrong council fees.
+                const supplier = newSupplier({ name: name.trim(), category, website: website.trim(), area: place.trim() })
                 dispatch({ type: 'addSupplier', supplier })
-                setName(''); setWebsite(''); setAdding(false)
+                setName(''); setWebsite(''); setPlace(''); setAdding(false)
                 navigate(`/find/${supplier.id}`)
               }}
             >
@@ -148,7 +154,7 @@ export function Suppliers() {
                 </div>
                 <div className="supplier-body">
                   <strong>{s.name}</strong>
-                  <div className="tiny">{s.area}</div>
+                  <div className="tiny">{s.area || 'Area not set'}</div>
                 </div>
                 <span className="pill">{s.status}</span>
               </Link>

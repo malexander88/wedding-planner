@@ -25,6 +25,8 @@ export type FeeBand = {
   saturday: number
   holiday: number
   note: string
+  /** The council doesn't hold registrar ceremonies on Sundays. */
+  noSundays?: boolean
 }
 
 /** Published ANBC ceremony / registrar attendance fees, checked November 2026. */
@@ -52,6 +54,98 @@ export const ANBC_FEES = {
   },
 } satisfies Record<string, FeeBand>
 
+export type CouncilId = 'anbc' | 'belfast' | 'mea'
+
+export type Council = {
+  id: CouncilId
+  name: string
+  short: string
+  /** Fee for a registrar to attend an approved venue. */
+  approved: FeeBand
+  sourceUrl: string
+  sourceLabel: string
+  /** Lower-case place names that sit in this council area (matched against venue name + area). */
+  places: string[]
+}
+
+/** Registrar attendance fees at approved venues, from each council's own page (checked November 2026). */
+export const COUNCILS: Record<CouncilId, Council> = {
+  anbc: {
+    id: 'anbc',
+    name: 'Antrim & Newtownabbey Borough Council',
+    short: 'Antrim & Newtownabbey',
+    approved: ANBC_FEES.approved,
+    sourceUrl: LINKS.anbcVenues,
+    sourceLabel: 'ANBC ceremony fees',
+    places: [
+      'antrim', 'newtownabbey', 'ballyclare', 'templepatrick', 'doagh', 'glengormley', 'crumlin', 'randalstown',
+      'ballyrobert', 'dunadry', 'aldergrove', 'toome', 'toomebridge', 'jordanstown', 'mossley', 'carnmoney',
+      'parkgate', 'ballynure', 'whiteabbey', 'monkstown', 'muckamore', 'dunsilly', 'shane',
+    ],
+  },
+  belfast: {
+    id: 'belfast',
+    name: 'Belfast City Council',
+    short: 'Belfast',
+    approved: {
+      label: 'Belfast approved venue (registrar attendance)',
+      weekday: 383,
+      saturday: 600,
+      holiday: 632,
+      note: 'Belfast City Council fee for a registrar to attend an approved venue. With the two £22 notice fees and the £36 ceremony fee the published totals are £463 weekday, £680 Saturday and £712 bank holiday. Ceremonies run Monday to Saturday.',
+      noSundays: true,
+    },
+    sourceUrl:
+      'https://www.belfastcity.gov.uk/births-deaths-and-ceremonies/births-deaths-marriages-and-civil-partnerships/marriages/getting-married-in-a-civil-ceremony',
+    sourceLabel: 'Belfast City Council marriage fees',
+    places: ['belfast'],
+  },
+  mea: {
+    id: 'mea',
+    name: 'Mid and East Antrim Borough Council',
+    short: 'Mid & East Antrim',
+    approved: {
+      label: 'Mid & East Antrim approved venue (registrar-led)',
+      weekday: 200,
+      saturday: 240,
+      holiday: 296,
+      note: 'Mid and East Antrim fee for a registrar-led ceremony at an approved venue (prices from 1 April 2025, includes one certificate). Venue hire is paid to the venue.',
+    },
+    sourceUrl: 'https://www.midandeastantrim.gov.uk/resident/bdmcp/marriages',
+    sourceLabel: 'Mid and East Antrim marriage fees',
+    places: [
+      'ballymena', 'galgorm', 'cullybackey', 'larne', 'carrickfergus', 'whitehead', 'islandmagee', 'broughshane',
+      'glenarm', 'ballygally', 'portglenone', 'ballycarry', 'ahoghill', 'kells', 'magheramorne', 'gobbins', 'carnfunnock',
+    ],
+  },
+}
+
+/** Which council a place is in, from the words in its name and area. Null when unknown or ambiguous. */
+export function councilFromText(text: string): CouncilId | null {
+  const t = text.toLowerCase()
+  const hits = (Object.values(COUNCILS) as Council[]).filter((c) =>
+    c.places.some((p) => new RegExp(`\\b${p}`).test(t)),
+  )
+  return hits.length === 1 ? hits[0].id : null
+}
+
+export type VenueFee = { council: CouncilId | null; band: FeeBand | null; label: string }
+
+/** The registrar fee band for one shortlisted venue: its own council, never a default. */
+export function venueFeeBand(
+  v: { catalogueId?: string; council?: CouncilId; name: string; area: string },
+  catalogueArea?: string,
+): VenueFee {
+  if (v.catalogueId === 'venue-antrim-civic')
+    return { council: 'anbc', band: ANBC_FEES.civic, label: 'Antrim & Newtownabbey council room' }
+  if (v.catalogueId === 'venue-ballyclare-town-hall')
+    return { council: 'anbc', band: ANBC_FEES.townHall, label: 'Antrim & Newtownabbey council room' }
+  const id = v.council ?? councilFromText(`${v.name} ${catalogueArea ?? v.area}`)
+  if (!id) return { council: null, band: null, label: 'Council not known yet' }
+  const c = COUNCILS[id]
+  return { council: id, band: c.approved, label: `${c.short} approved venue` }
+}
+
 export const NIDIRECT_SOLEMNISATION = {
   weekdayDay: 36,
   weekdayEveningOrSaturday: 162,
@@ -68,9 +162,10 @@ export function weekdayIndex(iso: string): number {
   return new Date(iso + 'T12:00:00').getDay()
 }
 
-export function feeForDate(iso: string, band: FeeBand): { amount: number; reason: string } {
-  if (isNiHoliday(iso)) return { amount: band.holiday, reason: 'public holiday' }
+export function feeForDate(iso: string, band: FeeBand): { amount: number | null; reason: string } {
   const day = weekdayIndex(iso)
+  if (day === 0 && band.noSundays) return { amount: null, reason: 'no Sunday ceremonies' }
+  if (isNiHoliday(iso)) return { amount: band.holiday, reason: 'public holiday' }
   if (day === 0) return { amount: band.holiday, reason: 'Sunday' }
   if (day === 6) return { amount: band.saturday, reason: 'Saturday' }
   return { amount: band.weekday, reason: 'weekday' }
@@ -78,6 +173,36 @@ export function feeForDate(iso: string, band: FeeBand): { amount: number; reason
 
 export function noticeDueDate(weddingDate: string, previouslyMarried: boolean): string {
   return addDays(weddingDate, previouslyMarried ? -70 : -56)
+}
+
+/** Same day of the month, n months earlier/later (clamped to the month's last day). */
+export function addMonths(iso: string, months: number): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  const first = new Date(Date.UTC(y, m - 1 + months, 1))
+  const last = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate()
+  first.setUTCDate(Math.min(d, last))
+  return first.toISOString().slice(0, 10)
+}
+
+export function todayIso(now = new Date()): string {
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+}
+
+export type DateCheck = { level: 'past' | 'blocked' | 'tight' | 'ok'; text: string }
+
+/** Is a wedding date still workable for Northern Ireland notice (28 days minimum, 8/10 weeks recommended)? */
+export function checkWeddingDate(iso: string, today = todayIso(), previouslyMarried = false): DateCheck {
+  const days = daysBetween(today, iso)
+  if (days < 0) return { level: 'past', text: 'This date has passed.' }
+  if (days < 28) return { level: 'blocked', text: `Only ${days} day${days === 1 ? '' : 's'} away — notice must be given at least 28 days before, so this date is too soon.` }
+  const rec = previouslyMarried ? 70 : 56
+  if (days < rec)
+    return { level: 'tight', text: `Under ${rec / 7} weeks away — notice must reach the registrar by ${formatShort(noticeMinimumDate(iso))} at the latest. Tight but possible.` }
+  return { level: 'ok', text: '' }
+}
+
+export function daysBetween(fromIso: string, toIso: string): number {
+  return Math.round((Date.parse(toIso + 'T12:00:00Z') - Date.parse(fromIso + 'T12:00:00Z')) / 86400000)
 }
 
 export function noticeMinimumDate(weddingDate: string): string {
