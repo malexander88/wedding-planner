@@ -87,15 +87,19 @@ export function Onboarding() {
 
       {step === 2 && (
         <div className="card">
-          <h2>A working budget</h2>
-          <p>The average wedding in Northern Ireland is a little under £19,000, but plenty of lovely days cost less. This is just a starting figure, with a 12% buffer for extras.</p>
+          <h2>Your budget</h2>
+          <p>One overall figure for the whole day. As you book things, the Budget tab shows how much is committed against it. Not sure yet? Leave it blank and add it later.</p>
           <label className="field">
-            <span>About how much would you like to spend?</span>
-            <input type="number" min={1000} step={500} value={p.totalBudget} onChange={(e) => patch({ totalBudget: Number(e.target.value) })} />
-          </label>
-          <label className="field">
-            <span>Buffer for surprises — {p.bufferPercent}%</span>
-            <input type="range" min={5} max={20} value={p.bufferPercent} onChange={(e) => patch({ bufferPercent: Number(e.target.value) })} />
+            <span>Total budget (£) — optional</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              step={500}
+              placeholder="e.g. 18000"
+              value={p.totalBudget || ''}
+              onChange={(e) => patch({ totalBudget: Math.max(0, Number(e.target.value) || 0) })}
+            />
           </label>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { currentStage, STAGES } from '../data/checklist'
 import { daysUntil, formatLong } from '../data/legal'
-import { totals } from '../data/budgetSeeds'
+import { budgetSummary } from '../data/budget'
 import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
 import { reminders } from '../data/taskDetails'
@@ -66,9 +66,8 @@ export function Home() {
   const { openSheet, sheet } = useTaskSheet()
   const todayIso = new Date().toISOString().slice(0, 10)
   const coming = reminders(state, tasks, todayIso, 90).slice(0, 4)
-  const money = totals(state)
-  const spend = money.quoted || p.totalBudget
-  const barPct = Math.min(100, ((money.quoted || 0) / Math.max(p.totalBudget, 1)) * 100)
+  const money = budgetSummary(state)
+  const barPct = Math.min(100, money.ratio * 100)
   const hero = `${import.meta.env.BASE_URL}images/hero.webp`
   const place = (p.area || 'Northern Ireland').split(/[,&]/)[0].trim()
 
@@ -180,26 +179,32 @@ export function Home() {
         </section>
       )}
 
-      <section className="card">
+      <Link to="/budget" className="card budget-card">
         <div className="budget-glance">
           <div>
             <h2 style={{ margin: 0 }}>Budget</h2>
             <div className="tiny" style={{ marginTop: 4 }}>
-              {money.quoted ? 'Quoted so far' : money.estimate ? 'Nothing booked yet' : 'A working figure'}
+              {money.committed ? 'Committed so far' : 'Fills up as you book things'}
             </div>
           </div>
           <div className="amount">
-            {gbp(spend)}
-            <small>{money.quoted ? `of ${gbp(p.totalBudget)} working budget` : `${gbp(money.estimate)} estimated`}</small>
+            {gbp(money.committed)}
+            <small>
+              {money.total
+                ? money.left < 0
+                  ? `${gbp(-money.left)} over your ${gbp(money.total)} budget`
+                  : `of ${gbp(money.total)} · ${gbp(money.left)} left`
+                : 'No total budget set yet'}
+            </small>
           </div>
         </div>
         <div className="bar-row">
-          <div className="progress" role="img" aria-label={`${Math.round(barPct)} percent of working budget`}>
+          <div className={`progress level-${money.level}`} role="img" aria-label={money.total ? `${Math.round(money.ratio * 100)} percent of your budget committed` : 'No total budget set'}>
             <div style={{ width: `${barPct}%` }} />
           </div>
-          <span className="bar-pct">{Math.round(barPct)}%</span>
+          <span className="bar-pct">{money.total ? `${Math.round(money.ratio * 100)}%` : '—'}</span>
         </div>
-      </section>
+      </Link>
 
       <section>
         <div className="sec-head">

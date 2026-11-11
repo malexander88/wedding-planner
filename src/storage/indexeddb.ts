@@ -4,15 +4,64 @@ const DB = 'wedding-planner'
 const STORE = 'kv'
 const KEY = 'state'
 
+// One shared connection, kept open so a save can start synchronously while the
+// page is being hidden or closed (an async open would never finish then).
+let opened: IDBDatabase | null = null
+let opening: Promise<IDBDatabase> | null = null
+
 function openDb(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
+  if (opened) return Promise.resolve(opened)
+  opening ??= new Promise<IDBDatabase>((resolve, reject) => {
     const req = indexedDB.open(DB, 1)
     req.onupgradeneeded = () => {
       req.result.createObjectStore(STORE)
     }
-    req.onsuccess = () => resolve(req.result)
-    req.onerror = () => reject(req.error)
+    req.onsuccess = () => {
+      const db = req.result
+      db.onversionchange = () => {
+        db.close()
+        opened = null
+        opening = null
+      }
+      db.onclose = () => {
+        opened = null
+        opening = null
+      }
+      opened = db
+      resolve(db)
+    }
+    req.onerror = () => {
+      opening = null
+      reject(req.error)
+    }
   })
+  return opening
+}
+
+/** Start writing the plan right now (used on pagehide). Returns false if the DB isn't open yet. */
+export function saveStateNow(state: AppState): boolean {
+  if (!opened) return false
+  try {
+    const tx = opened.transaction(STORE, 'readwrite', { durability: 'strict' })
+    tx.objectStore(STORE).put(state, KEY)
+    tx.commit?.() // ask the browser to commit now, before the page goes away
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** Same for the extra keys. */
+export function setItemNow<T>(key: string, value: T): boolean {
+  if (!opened) return false
+  try {
+    const tx = opened.transaction(STORE, 'readwrite', { durability: 'strict' })
+    tx.objectStore(STORE).put(value, key)
+    tx.commit?.()
+    return true
+  } catch {
+    return false
+  }
 }
 
 export const indexedDbStorage: StorageAdapter = {

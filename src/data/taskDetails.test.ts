@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { seedBudget, totals } from './budgetSeeds'
+import { budgetSummary } from './budget'
 import { emptyState, newSupplier } from '../state/store'
 import type { AppState, TaskDetail } from '../types'
 import { applyTaskDetail, legalWarnings, reminders } from './taskDetails'
@@ -8,7 +8,7 @@ import { summaryLine, TEMPLATES, templateFor } from './taskTemplates'
 function plan(): AppState {
   const s = emptyState()
   s.profile = { ...s.profile, date: '2027-08-14', onboardingComplete: true }
-  s.budgetLines = seedBudget(18000, 12)
+  s.profile.totalBudget = 18000
   return s
 }
 const detail = (taskKey: string, template: TaskDetail['template'], values: Record<string, string>, extra: Partial<TaskDetail> = {}): TaskDetail => ({
@@ -43,18 +43,15 @@ describe('templates', () => {
 })
 
 describe('applyTaskDetail', () => {
-  it('a venue booking creates the supplier, adopts the seeded venue line and adds deposit + balance', () => {
+  it('a venue booking creates the supplier, one budget line and deposit + balance', () => {
     const s0 = plan()
-    const before = totals(s0)
     const s = applyTaskDetail(
       s0,
       detail('book-venue', 'booking', { category: 'venue', supplierName: 'Belfast City Hall', total: '2400', deposit: '500', depositPaidDate: '2026-11-01', balanceDue: '2027-07-01' }),
       '2026-11-11',
     )
-    const venueLines = s.budgetLines.filter((l) => l.category === 'venue')
-    expect(venueLines).toHaveLength(1)
-    expect(venueLines[0]).toMatchObject({ quoted: 2400, taskKey: 'book-venue' })
-    expect(s.budgetLines).toHaveLength(s0.budgetLines.length)
+    expect(s.budgetLines).toHaveLength(1)
+    expect(s.budgetLines[0]).toMatchObject({ id: 'bl_task_book-venue', category: 'venue', quoted: 2400, taskKey: 'book-venue' })
     expect(s.suppliers[0]).toMatchObject({ name: 'Belfast City Hall', status: 'booked' })
     expect(s.profile.venueSupplierId).toBe(s.suppliers[0].id)
     const pays = s.payments.filter((p) => p.taskKey === 'book-venue')
@@ -62,7 +59,7 @@ describe('applyTaskDetail', () => {
       ['deposit', 500, '2026-11-01', '2026-11-01'],
       ['balance', 1900, '', '2027-07-01'],
     ])
-    expect(totals(s).estimate).toBe(before.estimate)
+    expect(budgetSummary(s)).toMatchObject({ total: 18000, committed: 2400, paid: 500, toPay: 1900, left: 15600, level: 'ok' })
 
     // Re-saving updates in place, ticking balance paid marks it paid.
     const s2 = applyTaskDetail(s, { ...s.taskDetails[0], values: { ...s.taskDetails[0].values, balancePaid: 'true' } }, '2026-12-01')

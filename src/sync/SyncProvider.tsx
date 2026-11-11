@@ -10,7 +10,8 @@ import {
 } from 'react'
 import { isSyncConfigured } from '../config/supabase'
 import { useStore } from '../state/store'
-import { getItem, removeItem, setItem } from '../storage/indexeddb'
+import { needsBudgetCleanup } from '../data/budget'
+import { getItem, removeItem, setItem, setItemNow } from '../storage/indexeddb'
 import type { AppState } from '../types'
 import { syncApi } from './api'
 import {
@@ -111,6 +112,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
   const persistMeta = useCallback(() => {
     if (metaTimer.current) clearTimeout(metaTimer.current)
     metaTimer.current = setTimeout(() => {
+      metaTimer.current = null
       setItem(META_KEY, metaRef.current).catch(() => undefined)
     }, 300)
   }, [])
@@ -223,6 +225,30 @@ export function SyncProvider({ children }: { children: ReactNode }) {
 
   const syncRef = useRef(syncNow)
   syncRef.current = syncNow
+
+  // ---- one-off cleanup of old pre-filled budget estimates ----------------
+  // Runs as a normal edit once sync bookkeeping is loaded, so the removal is
+  // stamped (tombstones) and the other phone won't bring the lines back.
+  useEffect(() => {
+    if (loaded && needsBudgetCleanup(state)) dispatch({ type: 'pruneStarterLines' })
+  }, [loaded, state, dispatch])
+
+  // ---- flush bookkeeping when the app is hidden or closed ------------------
+  useEffect(() => {
+    const flush = () => {
+      if (!metaTimer.current) return
+      clearTimeout(metaTimer.current)
+      metaTimer.current = null
+      if (!setItemNow(META_KEY, metaRef.current)) setItem(META_KEY, metaRef.current).catch(() => undefined)
+    }
+    const onVis = () => document.visibilityState === 'hidden' && flush()
+    window.addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      window.removeEventListener('pagehide', flush)
+      document.removeEventListener('visibilitychange', onVis)
+    }
+  }, [])
 
   // ---- stamp local edits, then push (debounced) --------------------------
   useEffect(() => {

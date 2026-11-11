@@ -42,7 +42,6 @@ export function initialValues(task: Task, state: AppState): { values: Record<str
   }
   if (template.id === 'vision') {
     values.workingBudget = String(p.totalBudget || '')
-    values.bufferPercent = String(p.bufferPercent ?? '')
     values.dayGuests = String(p.estimatedDayGuests || '')
     values.eveningGuests = String(p.estimatedEveningGuests || '')
   }
@@ -127,7 +126,6 @@ export function applyTaskDetail(state: AppState, input: TaskDetail, now = today(
   if (template.id === 'vision') {
     const patch: Partial<typeof profile> = {}
     if (money(values.workingBudget)) patch.totalBudget = money(values.workingBudget)
-    if (values.bufferPercent && Number(values.bufferPercent) >= 0) patch.bufferPercent = Number(values.bufferPercent)
     if (Number(values.dayGuests) > 0) patch.estimatedDayGuests = Number(values.dayGuests)
     if (values.eveningGuests !== undefined && values.eveningGuests !== '' && Number(values.eveningGuests) >= 0) {
       patch.estimatedEveningGuests = Number(values.eveningGuests)
@@ -160,9 +158,7 @@ export function applyTaskDetail(state: AppState, input: TaskDetail, now = today(
     let line =
       (detail.budgetLineId && budgetLines.find((l) => l.id === detail.budgetLineId)) ||
       budgetLines.find((l) => l.taskKey === input.taskKey) ||
-      (supplierId ? budgetLines.find((l) => l.supplierId === supplierId) : undefined) ||
-      // Adopt the matching seeded estimate line so it isn't counted twice.
-      budgetLines.find((l) => l.category === category && !l.supplierId && !l.taskKey && !l.quoted && !l.actual)
+      (supplierId ? budgetLines.find((l) => l.supplierId === supplierId) : undefined)
     if (line) {
       const updated: BudgetLine = {
         ...line,

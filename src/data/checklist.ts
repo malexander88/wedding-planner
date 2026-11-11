@@ -30,8 +30,8 @@ export function generatedSpecs(profile: WeddingProfile): Spec[] {
   const items: Spec[] = [
     spec({
       key: 'vision-budget',
-      title: 'Agree a working budget',
-      body: 'Include a buffer of about 10–15% for extras such as VAT, corkage and overtime.',
+      title: 'Agree your total budget',
+      body: 'One overall figure for the day. The Budget tab fills up against it as you book things and note prices.',
       stage: 'vision',
     }),
     spec({

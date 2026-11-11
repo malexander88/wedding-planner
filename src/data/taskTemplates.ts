@@ -316,8 +316,7 @@ export const TEMPLATES: Record<TemplateId, TemplateDef> = {
       {
         title: 'What you agreed',
         fields: [
-          { k: 'workingBudget', label: 'Working budget (£)', type: 'money', half: true },
-          { k: 'bufferPercent', label: 'Contingency (%)', type: 'number', half: true },
+          { k: 'workingBudget', label: 'Total budget (£)', type: 'money' },
           { k: 'dayGuests', label: 'Day guests', type: 'number', half: true },
           { k: 'eveningGuests', label: 'Extra evening guests', type: 'number', half: true },
           { k: 'priorities', label: 'Top priorities', type: 'textarea', placeholder: 'e.g. great food, a band, photos' },

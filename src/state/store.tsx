@@ -8,11 +8,11 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { seedBudget } from '../data/budgetSeeds'
+import { pruneStarterLines } from '../data/budget'
 import { mergeTasks } from '../data/checklist'
 import { applyTaskDetail } from '../data/taskDetails'
 import { uid } from '../lib/ids'
-import { indexedDbStorage } from '../storage/indexeddb'
+import { indexedDbStorage, saveStateNow } from '../storage/indexeddb'
 import type {
   AppState,
   BudgetLine,
@@ -36,7 +36,7 @@ const DEFAULT_PROFILE: WeddingProfile = {
   season: 'any',
   estimatedDayGuests: 80,
   estimatedEveningGuests: 40,
-  totalBudget: 18000,
+  totalBudget: 0,
   bufferPercent: 12,
   ceremonyType: 'undecided',
   previouslyMarried: false,
@@ -114,6 +114,7 @@ export type Action =
   | { type: 'removeGuest'; id: string }
   | { type: 'importState'; state: AppState }
   | { type: 'reset' }
+  | { type: 'pruneStarterLines' }
 
 function touch(state: AppState): AppState {
   return { ...state, updatedAt: new Date().toISOString() }
@@ -126,6 +127,12 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...emptyState(), ...action.state, version: 1 }
     case 'reset':
       return emptyState()
+    case 'pruneStarterLines': {
+      // Old versions pre-filled estimate lines; drop the untouched ones as a
+      // normal edit so sync records tombstones and the other phone agrees.
+      const next = pruneStarterLines(state)
+      return next === state ? state : touch(next)
+    }
     case 'patchProfile':
       return touch({ ...state, profile: { ...state.profile, ...action.patch } })
     case 'completeOnboarding': {
@@ -133,9 +140,6 @@ function reducer(state: AppState, action: Action): AppState {
       return touch({
         ...state,
         profile,
-        budgetLines: state.budgetLines.length
-          ? state.budgetLines
-          : seedBudget(profile.totalBudget, profile.bufferPercent),
       })
     }
     case 'setDate':
@@ -397,13 +401,34 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .catch(() => setReady(true))
   }, [])
 
+  // Save shortly after each change; flush straight away if the app is hidden
+  // or closed so the last edit is never lost.
+  const pending = useRef<AppState | null>(null)
   useEffect(() => {
     if (!ready || skipSave.current) return
+    pending.current = state
     const t = setTimeout(() => {
+      pending.current = null
       indexedDbStorage.setState(state).catch(() => undefined)
     }, 250)
     return () => clearTimeout(t)
   }, [state, ready])
+
+  useEffect(() => {
+    const flush = () => {
+      const s = pending.current
+      if (!s) return
+      pending.current = null
+      if (!saveStateNow(s)) indexedDbStorage.setState(s).catch(() => undefined)
+    }
+    const onVis = () => document.visibilityState === 'hidden' && flush()
+    window.addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      window.removeEventListener('pagehide', flush)
+      document.removeEventListener('visibilitychange', onVis)
+    }
+  }, [])
 
   const tasks = useMemo(() => mergeTasks(state), [state])
   const value = useMemo(() => ({ state, ready, dispatch, tasks }), [state, ready, tasks])

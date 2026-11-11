@@ -56,8 +56,8 @@ export function Settings() {
             <input value={p.area} onChange={(e) => dispatch({ type: 'patchProfile', patch: { area: e.target.value } })} />
           </label>
           <label className="field">
-            <span>Working budget (£)</span>
-            <input type="number" value={p.totalBudget} onChange={(e) => dispatch({ type: 'patchProfile', patch: { totalBudget: Number(e.target.value) } })} />
+            <span>Total budget (£)</span>
+            <input type="number" min={0} placeholder="Not set" value={p.totalBudget || ''} onChange={(e) => dispatch({ type: 'patchProfile', patch: { totalBudget: Math.max(0, Number(e.target.value) || 0) } })} />
           </label>
           <label className="field">
             <span>Season</span>
