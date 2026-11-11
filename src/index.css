@@ -386,7 +386,7 @@ th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-
 
 /* Home */
 .hero-photo {
-  position: relative; height: 164px; border-radius: 22px; overflow: hidden; isolation: isolate;
+  position: relative; height: 176px; border-radius: 22px; overflow: hidden; isolation: isolate;
 }
 .hero-photo img {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -400,7 +400,7 @@ th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-
 }
 .hero-copy {
   position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 20px 20px 18px; color: #F8F4EC; text-align: center;
+  padding: 16px 20px 50px; color: #F8F4EC; text-align: center;
 }
 .hero-copy h1 {
   font-size: 2rem; color: #FBF6EC; margin: 0;
@@ -481,10 +481,13 @@ th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-
 
 /* Supplier cards */
 .supplier-card {
-  display: grid; grid-template-columns: 76px 1fr auto; gap: 12px; align-items: start;
+  display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 8px 12px; align-items: start;
   padding: 10px; border: 1px solid var(--line); border-radius: 16px; background: #fff;
   text-decoration: none; color: inherit;
 }
+.supplier-card > .btn,
+.supplier-card > .pill { grid-column: 2; justify-self: start; }
+
 .supplier-cover {
   width: 76px; height: 76px; border-radius: 12px;
   background: linear-gradient(145deg, #1F3B2D, #2F5642);
@@ -569,4 +572,4 @@ details.fold .fold-body { padding-top: 12px; }
 }
 
 .supplier-body { min-width: 0; }
-.supplier-body strong { overflow-wrap: anywhere; }
+.supplier-body strong { overflow-wrap: anywhere; line-height: 1.25; }
