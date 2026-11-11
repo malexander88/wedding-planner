@@ -23,10 +23,23 @@
     <link rel="apple-touch-startup-image" href="/wedding-planner/splash/iphone-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
     <link rel="apple-touch-startup-image" href="/wedding-planner/splash/iphone-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
     <title>Wedding Planner</title>
-    <script type="module" crossorigin src="/wedding-planner/assets/index-CwwyUwXK.js"></script>
-    <link rel="stylesheet" crossorigin href="/wedding-planner/assets/index-CWuixYib.css">
+    <script type="module" crossorigin src="/wedding-planner/assets/index-XqXHmKiP.js"></script>
+    <link rel="stylesheet" crossorigin href="/wedding-planner/assets/index-CLrG6CzS.css">
   <link rel="manifest" href="/wedding-planner/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/wedding-planner/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
+    <script>
+      // Restore a deep link bounced through 404.html (/base/?/budget -> /base/budget),
+      // and add the trailing slash to a bare /base so the app and its service worker agree.
+      (function (l) {
+        var base = '/wedding-planner/'
+        if (l.search[1] === '/') {
+          var path = l.search.slice(1).split('&').map(function (s) { return s.replace(/~and~/g, '&') }).join('?')
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + path + l.hash)
+        } else if (base.length > 1 && l.pathname === base.slice(0, -1)) {
+          window.history.replaceState(null, '', base + l.search + l.hash)
+        }
+      })(window.location)
+    </script>
   </body>
 </html>
