@@ -1,3 +1,4 @@
+import type { CouncilId } from '../types'
 import { isNiHoliday } from './holidays'
 
 export const LINKS = {
@@ -23,10 +24,13 @@ export type FeeBand = {
   label: string
   weekday: number
   saturday: number
-  holiday: number
+  /** Bank holiday (and Sunday) rate; null when the council doesn't publish one. */
+  holiday: number | null
   note: string
   /** The council doesn't hold registrar ceremonies on Sundays. */
   noSundays?: boolean
+  /** ...or on bank holidays. */
+  noHolidays?: boolean
 }
 
 /** Published ANBC ceremony / registrar attendance fees, checked November 2026. */
@@ -54,27 +58,31 @@ export const ANBC_FEES = {
   },
 } satisfies Record<string, FeeBand>
 
-export type CouncilId = 'anbc' | 'belfast' | 'mea'
+export type { CouncilId }
 
 export type Council = {
   id: CouncilId
   name: string
   short: string
-  /** Fee for a registrar to attend an approved venue. */
-  approved: FeeBand
+  /** Fee for a registrar to attend an approved venue, when the council publishes one. */
+  approved: FeeBand | null
+  registrarPhone: string
   sourceUrl: string
   sourceLabel: string
   /** Lower-case place names that sit in this council area (matched against venue name + area). */
   places: string[]
 }
 
-/** Registrar attendance fees at approved venues, from each council's own page (checked November 2026). */
+const ASK = 'ask the registrar'
+
+/** All 11 Northern Ireland councils. Fees only where the council itself publishes them (checked November 2026). */
 export const COUNCILS: Record<CouncilId, Council> = {
   anbc: {
     id: 'anbc',
     name: 'Antrim & Newtownabbey Borough Council',
     short: 'Antrim & Newtownabbey',
     approved: ANBC_FEES.approved,
+    registrarPhone: '028 9034 0180',
     sourceUrl: LINKS.anbcVenues,
     sourceLabel: 'ANBC ceremony fees',
     places: [
@@ -82,6 +90,26 @@ export const COUNCILS: Record<CouncilId, Council> = {
       'ballyrobert', 'dunadry', 'aldergrove', 'toome', 'toomebridge', 'jordanstown', 'mossley', 'carnmoney',
       'parkgate', 'ballynure', 'whiteabbey', 'monkstown', 'muckamore', 'dunsilly', 'shane',
     ],
+  },
+  andbc: {
+    id: 'andbc',
+    name: 'Ards and North Down Borough Council',
+    short: 'Ards & North Down',
+    approved: null,
+    registrarPhone: '028 9127 8001',
+    sourceUrl: 'https://www.ardsandnorthdown.gov.uk/article/1899/Marriages',
+    sourceLabel: 'Ards and North Down marriages',
+    places: ['bangor', 'newtownards', 'holywood', 'cultra', 'crawfordsburn', 'donaghadee', 'comber', 'greyabbey', 'portaferry', 'kircubbin', 'ballywalter', 'millisle', 'helens bay', 'groomsport', 'carnalea', 'clandeboye'],
+  },
+  abc: {
+    id: 'abc',
+    name: 'Armagh City, Banbridge and Craigavon Borough Council',
+    short: 'Armagh, Banbridge & Craigavon',
+    approved: null,
+    registrarPhone: '028 3752 9615',
+    sourceUrl: 'https://www.armaghbanbridgecraigavon.gov.uk/resident/register-a-marriage/',
+    sourceLabel: 'ABC register a marriage',
+    places: ['armagh', 'banbridge', 'craigavon', 'lurgan', 'portadown', 'gilford', 'scarva', 'dollingstown', 'tandragee', 'richhill', 'markethill', 'waringstown', 'dromore', 'tassagh', 'keady'],
   },
   belfast: {
     id: 'belfast',
@@ -95,10 +123,71 @@ export const COUNCILS: Record<CouncilId, Council> = {
       note: 'Belfast City Council fee for a registrar to attend an approved venue. With the two £22 notice fees and the £36 ceremony fee the published totals are £463 weekday, £680 Saturday and £712 bank holiday. Ceremonies run Monday to Saturday.',
       noSundays: true,
     },
+    registrarPhone: '028 9027 0455',
     sourceUrl:
       'https://www.belfastcity.gov.uk/births-deaths-and-ceremonies/births-deaths-marriages-and-civil-partnerships/marriages/getting-married-in-a-civil-ceremony',
     sourceLabel: 'Belfast City Council marriage fees',
     places: ['belfast'],
+  },
+  ccg: {
+    id: 'ccg',
+    name: 'Causeway Coast and Glens Borough Council',
+    short: 'Causeway Coast & Glens',
+    approved: {
+      label: 'Causeway Coast & Glens approved place',
+      weekday: 213,
+      saturday: 263,
+      holiday: null,
+      noHolidays: true,
+      noSundays: true,
+      note: 'Causeway Coast and Glens fee for a registrar at an approved place: £213 Monday to Friday, £263 Saturday. Public and bank holidays excepted.',
+    },
+    registrarPhone: '028 7034 7020',
+    sourceUrl: 'https://old.causewaycoastandglens.gov.uk/live/births-deaths-and-marriages/marriage-and-civil-partnership-registration',
+    sourceLabel: 'Causeway Coast and Glens marriage fees',
+    places: ['coleraine', 'portrush', 'portstewart', 'ballycastle', 'ballymoney', 'limavady', 'bushmills', 'dungiven', 'aghadowey', 'armoy', 'cushendun', 'cushendall', 'glenariffe', 'kilrea', 'rathlin', 'downhill', 'castlerock', 'loughguile', 'ballykelly'],
+  },
+  dcsd: {
+    id: 'dcsd',
+    name: 'Derry City and Strabane District Council',
+    short: 'Derry & Strabane',
+    approved: null,
+    registrarPhone: '028 7137 6520',
+    sourceUrl: LINKS.registrars,
+    sourceLabel: 'nidirect district registrars',
+    places: ['derry', 'londonderry', 'strabane', 'eglinton', 'newbuildings', 'culmore', 'sion mills', 'castlederg', 'claudy'],
+  },
+  fodc: {
+    id: 'fodc',
+    name: 'Fermanagh and Omagh District Council',
+    short: 'Fermanagh & Omagh',
+    approved: {
+      label: 'Fermanagh & Omagh approved venue',
+      weekday: 250,
+      saturday: 300,
+      holiday: 350,
+      note: 'Fermanagh and Omagh fee for an approved-venue ceremony between 12 noon and 3pm (£350 on bank holidays and at other times). The venue may charge for room hire.',
+    },
+    registrarPhone: '028 8225 6212',
+    sourceUrl: 'https://www.fermanaghomagh.com/app/uploads/2026/02/Marriage-and-Civil-Partnership-Fees.pdf',
+    sourceLabel: 'Fermanagh and Omagh fees (PDF)',
+    places: ['enniskillen', 'omagh', 'lisbellaw', 'newtownbutler', 'kesh', 'irvinestown', 'lisnaskea', 'belleek', 'florencecourt', 'castletown', 'fintona', 'dromore co tyrone', 'crom'],
+  },
+  lcc: {
+    id: 'lcc',
+    name: 'Lisburn & Castlereagh City Council',
+    short: 'Lisburn & Castlereagh',
+    approved: {
+      label: 'Lisburn & Castlereagh approved venue',
+      weekday: 150,
+      saturday: 260,
+      holiday: null,
+      note: 'Lisburn & Castlereagh registrar attendance at an approved venue: £150 weekday, £260 Saturday (plus £44 notice and £36 ceremony fees). No bank-holiday rate published.',
+    },
+    registrarPhone: '028 9244 7263',
+    sourceUrl: 'https://www.lisburncastlereagh.gov.uk/w/registration-fees',
+    sourceLabel: 'Lisburn & Castlereagh registration fees',
+    places: ['lisburn', 'castlereagh', 'hillsborough', 'moira', 'carryduff', 'dundonald', 'dromara', 'glenavy', 'maghaberry', 'hilden'],
   },
   mea: {
     id: 'mea',
@@ -111,14 +200,37 @@ export const COUNCILS: Record<CouncilId, Council> = {
       holiday: 296,
       note: 'Mid and East Antrim fee for a registrar-led ceremony at an approved venue (prices from 1 April 2025, includes one certificate). Venue hire is paid to the venue.',
     },
+    registrarPhone: '028 2826 2463',
     sourceUrl: 'https://www.midandeastantrim.gov.uk/resident/bdmcp/marriages',
     sourceLabel: 'Mid and East Antrim marriage fees',
     places: [
       'ballymena', 'galgorm', 'cullybackey', 'larne', 'carrickfergus', 'whitehead', 'islandmagee', 'broughshane',
-      'glenarm', 'ballygally', 'portglenone', 'ballycarry', 'ahoghill', 'kells', 'magheramorne', 'gobbins', 'carnfunnock',
+      'glenarm', 'ballygally', 'portglenone', 'ballycarry', 'ahoghill', 'kells', 'magheramorne', 'gobbins', 'carnfunnock', 'carnlough',
     ],
   },
+  mu: {
+    id: 'mu',
+    name: 'Mid Ulster District Council',
+    short: 'Mid Ulster',
+    approved: null,
+    registrarPhone: '028 8676 2205',
+    sourceUrl: 'https://www.midulstercouncil.org/gettingmarried',
+    sourceLabel: 'Mid Ulster marriages',
+    places: ['cookstown', 'dungannon', 'magherafelt', 'maghera', 'fivemiletown', 'clogher', 'coalisland', 'moneymore', 'killyman', 'castledawson', 'bellaghy', 'draperstown'],
+  },
+  nmd: {
+    id: 'nmd',
+    name: 'Newry, Mourne and Down District Council',
+    short: 'Newry, Mourne & Down',
+    approved: null,
+    registrarPhone: '0330 137 4041',
+    sourceUrl: 'https://www.newrymournedown.org/civil-marriages',
+    sourceLabel: 'Newry, Mourne and Down civil marriages',
+    places: ['newry', 'downpatrick', 'newcastle', 'warrenpoint', 'ballynahinch', 'killyleagh', 'strangford', 'hilltown', 'annalong', 'kilkeel', 'rostrevor', 'crossgar', 'ardglass', 'castlewellan', 'saintfield', 'killeavy', 'dundrum'],
+  },
 }
+
+export const COUNCIL_IDS = Object.keys(COUNCILS) as CouncilId[]
 
 /** Which council a place is in, from the words in its name and area. Null when unknown or ambiguous. */
 export function councilFromText(text: string): CouncilId | null {
@@ -131,25 +243,32 @@ export function councilFromText(text: string): CouncilId | null {
 
 export type VenueFee = { council: CouncilId | null; band: FeeBand | null; label: string }
 
-/** The registrar fee band for one shortlisted venue: its own council, never a default. */
+/** The registrar fee band for one venue: its own council, never a default. */
 export function venueFeeBand(
   v: { catalogueId?: string; council?: CouncilId; name: string; area: string },
-  catalogueArea?: string,
+  known?: { area?: string; council?: CouncilId },
 ): VenueFee {
   if (v.catalogueId === 'venue-antrim-civic')
     return { council: 'anbc', band: ANBC_FEES.civic, label: 'Antrim & Newtownabbey council room' }
   if (v.catalogueId === 'venue-ballyclare-town-hall')
     return { council: 'anbc', band: ANBC_FEES.townHall, label: 'Antrim & Newtownabbey council room' }
-  const id = v.council ?? councilFromText(`${v.name} ${catalogueArea ?? v.area}`)
+  const id = v.council ?? known?.council ?? councilFromText(`${v.name} ${known?.area ?? v.area}`)
   if (!id) return { council: null, band: null, label: 'Council not known yet' }
   const c = COUNCILS[id]
-  return { council: id, band: c.approved, label: `${c.short} approved venue` }
+  return c.approved
+    ? { council: id, band: c.approved, label: `${c.short} approved venue` }
+    : { council: id, band: null, label: `${c.short} · fee not published` }
 }
 
 export const NIDIRECT_SOLEMNISATION = {
   weekdayDay: 36,
   weekdayEveningOrSaturday: 162,
   sundayOrHoliday: 216,
+}
+
+/** Short label for a fee that couldn't be priced. */
+export function feeGapLabel(reason: string): string {
+  return reason.startsWith('no ') ? 'No ceremonies' : 'Ask registrar'
 }
 
 export function addDays(iso: string, days: number): string {
@@ -165,8 +284,11 @@ export function weekdayIndex(iso: string): number {
 export function feeForDate(iso: string, band: FeeBand): { amount: number | null; reason: string } {
   const day = weekdayIndex(iso)
   if (day === 0 && band.noSundays) return { amount: null, reason: 'no Sunday ceremonies' }
-  if (isNiHoliday(iso)) return { amount: band.holiday, reason: 'public holiday' }
-  if (day === 0) return { amount: band.holiday, reason: 'Sunday' }
+  if (isNiHoliday(iso)) {
+    if (band.noHolidays) return { amount: null, reason: 'no bank holiday ceremonies' }
+    return band.holiday === null ? { amount: null, reason: ASK } : { amount: band.holiday, reason: 'public holiday' }
+  }
+  if (day === 0) return band.holiday === null ? { amount: null, reason: ASK } : { amount: band.holiday, reason: 'Sunday' }
   if (day === 6) return { amount: band.saturday, reason: 'Saturday' }
   return { amount: band.weekday, reason: 'weekday' }
 }

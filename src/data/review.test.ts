@@ -56,7 +56,9 @@ describe('registrar fees follow the venue’s own council', () => {
     expect(councilFromText('Belfast')).toBe('belfast')
     expect(councilFromText('Ballyclare')).toBe('anbc')
     expect(councilFromText('Belfast, Antrim & Newtownabbey')).toBeNull()
-    expect(councilFromText('Lisburn')).toBeNull()
+    expect(councilFromText('Lisburn')).toBe('lcc')
+    expect(councilFromText('Enniskillen')).toBe('fodc')
+    expect(councilFromText('Somewhere in Donegal')).toBeNull()
   })
   it('uses each band', () => {
     const galgorm = venueFee(newSupplier({ name: 'Galgorm', category: 'venue', area: '' }))
@@ -65,7 +67,7 @@ describe('registrar fees follow the venue’s own council', () => {
     const malone = venueFee(newSupplier({ name: 'Malone House', category: 'venue', area: 'Belfast', catalogueId: 'venue-malone-house' }))
     expect(malone.council).toBe('belfast')
     expect(feeForDate('2027-10-26', malone.band!).amount).toBe(383) // Tuesday
-    expect(feeForDate('2027-10-31', COUNCILS.belfast.approved).amount).toBeNull() // no Sunday ceremonies
+    expect(feeForDate('2027-10-31', COUNCILS.belfast.approved!).amount).toBeNull() // no Sunday ceremonies
     const ballyclare = venueFee(newSupplier({ name: 'Ballyclare Town Hall', category: 'venue', area: 'Ballyclare', catalogueId: 'venue-ballyclare-town-hall' }))
     expect(ballyclare.label).not.toContain('Ballyclare Town Hall')
     const unknown = venueFee(newSupplier({ name: 'The Barn', category: 'venue', area: '' }))

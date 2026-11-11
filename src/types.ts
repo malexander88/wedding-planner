@@ -90,14 +90,19 @@ export interface WeddingEvent {
   start?: string
 }
 
+/** Northern Ireland's 11 councils (registrar districts). */
+export type CouncilId = 'anbc' | 'andbc' | 'abc' | 'belfast' | 'ccg' | 'dcsd' | 'fodc' | 'lcc' | 'mea' | 'mu' | 'nmd'
+
 export interface Supplier {
   id: string
   catalogueId?: string
+  /** Google Places id — the only Places field we keep (Google allows caching it); everything else is fetched fresh. */
+  placeId?: string
   name: string
   category: SupplierCategory
   area: string
   /** Registrar council for a venue, when the couple picked it (otherwise worked out from the area). */
-  council?: 'anbc' | 'belfast' | 'mea'
+  council?: CouncilId
   website: string
   phone: string
   email: string

@@ -1,4 +1,4 @@
-import { copyFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -38,10 +38,36 @@ export default defineConfig({
       },
     }),
     {
+      // GitHub Pages has no SPA rewrites: an unknown path like /wedding-planner/budget gets 404.html.
+      // That page bounces straight to /wedding-planner/?/budget (served 200 as index.html), and the
+      // restore script in index.html turns the URL back into /wedding-planner/budget before React starts.
+      // (The spa-github-pages pattern by Rafael Pedicini, MIT.)
       name: 'spa-fallback',
       closeBundle() {
+        const keep = base.split('/').filter(Boolean).length
+        const html = `<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Wedding Planner</title>
+<meta name="robots" content="noindex">
+<script>
+  var keep = ${keep};
+  var l = window.location;
+  l.replace(
+    l.protocol + '//' + l.host +
+    l.pathname.split('/').slice(0, 1 + keep).join('/') + '/?/' +
+    l.pathname.slice(1).split('/').slice(keep).join('/').replace(/&/g, '~and~') +
+    (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+    l.hash
+  );
+</script>
+</head>
+<body style="background:#F4EFE4"></body>
+</html>
+`
         try {
-          copyFileSync(resolve('dist/index.html'), resolve('dist/404.html'))
+          writeFileSync(resolve('dist/404.html'), html)
         } catch {
           // preview builds without dist yet
         }

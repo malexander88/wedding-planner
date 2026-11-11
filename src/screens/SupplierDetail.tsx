@@ -1,5 +1,10 @@
-import { useLayoutEffect, useRef, useState, type TextareaHTMLAttributes } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useLayoutEffect, useRef, useState, type TextareaHTMLAttributes } from 'react'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { CATALOGUE } from '../data/catalogue'
+import { directoryVenue } from '../data/venues'
+import { placesEnabled } from '../lib/places'
+import { CouncilFeesCard, VenueFactsCard, VenueMapCard } from '../components/VenueFacts'
+import { GoogleCard } from './VenueDetail'
 import { HIDDEN_EXTRAS } from '../data/hiddenExtras'
 import { draftEnquiry } from '../lib/enquiry'
 import { uid } from '../lib/ids'
@@ -43,7 +48,12 @@ export function SupplierDetail() {
     const owner = state.suppliers.find((s) => s.id === q.supplierId)
     return owner?.category === supplier?.category
   })
-  const [showDraft, setShowDraft] = useState(false)
+  const [params, setParams] = useSearchParams()
+  // "Draft an enquiry" from a venue page lands here with ?enquire=1.
+  const [showDraft, setShowDraft] = useState(() => params.get('enquire') === '1')
+  useEffect(() => {
+    if (params.has('enquire')) setParams({}, { replace: true })
+  }, [params, setParams])
   const [copied, setCopied] = useState(false)
   const [booking, setBooking] = useState(false)
   const [deposit, setDeposit] = useState(0)
@@ -69,6 +79,11 @@ export function SupplierDetail() {
   }
 
   const draft = draftEnquiry(state, supplier)
+  const dir = supplier.catalogueId ? directoryVenue(supplier.catalogueId) : undefined
+  const starter = supplier.catalogueId ? CATALOGUE.find((c) => c.id === supplier.catalogueId) : undefined
+  // Older saves copied the starter facts into Notes. Those facts now show in the read-only Facts card,
+  // so an untouched copy reads as empty notes here (the stored record isn't rewritten).
+  const notesShown = starter?.note && supplier.notes.trim() === starter.note.trim() ? '' : supplier.notes
   const fee = venueFee(supplier)
   const latest = quotes[quotes.length - 1]
   const flowIndex = FLOW.indexOf(supplier.status)
@@ -99,8 +114,8 @@ export function SupplierDetail() {
   return (
     <div className="grid">
       <header className="page-head">
-        <Link to="/find" className="text-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-          <IconBack style={{ width: 16, height: 16 }} /> All suppliers
+        <Link to={`/find?cat=${supplier.category}`} className="text-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+          <IconBack style={{ width: 16, height: 16 }} /> {supplier.category === 'venue' ? 'Venues' : 'All suppliers'}
         </Link>
         <h1>{supplier.name}</h1>
         <p>{supplier.area || 'Area not set'}{supplier.phone ? ` · ${supplier.phone}` : ''}</p>
@@ -142,8 +157,10 @@ export function SupplierDetail() {
           {supplier.category === 'venue' && (
             <p className="tiny" style={{ margin: 0 }}>
               {fee.band
-                ? `Registrar fees use ${fee.label.toLowerCase()} rates: ${gbp(fee.band.weekday)} weekday, ${gbp(fee.band.saturday)} Saturday, ${gbp(fee.band.holiday)} bank holiday.`
-                : 'Add the town, or pick the council, so the date comparer can show the right registrar fees. Councils other than these three: ask the local registrar.'}
+                ? `Registrar fees use ${fee.label.toLowerCase()} rates: ${gbp(fee.band.weekday)} weekday, ${gbp(fee.band.saturday)} Saturday${fee.band.holiday !== null ? `, ${gbp(fee.band.holiday)} bank holiday` : ''}.`
+                : fee.council
+                  ? `${COUNCILS[fee.council].name} doesn’t publish a registrar fee for approved venues — ask the registrar on ${COUNCILS[fee.council].registrarPhone}.`
+                  : 'Add the town, or pick the council, so the date comparer can show the right registrar fees.'}
             </p>
           )}
         </section>
@@ -186,14 +203,39 @@ export function SupplierDetail() {
         </div>
       </section>
 
+      {dir && (
+        <>
+          <VenueFactsCard v={dir} />
+          <CouncilFeesCard v={{ ...dir, area: dir.town }} />
+        </>
+      )}
+      {!dir && starter && (
+        <section className="card facts-card">
+          <div className="sec-head">
+            <h2>Facts</h2>
+            <span className="pill neutral">Read-only</span>
+          </div>
+          {starter.note && <p>{starter.note}</p>}
+          <p className="tiny">
+            {starter.phone ? `${starter.phone} · ` : ''}Checked against{' '}
+            <a href={starter.sourceUrl} target="_blank" rel="noreferrer">{starter.source}</a>
+          </p>
+        </section>
+      )}
+      {dir && placesEnabled() && (
+        <GoogleCard v={dir} placeId={supplier.placeId} onId={(placeId) => dispatch({ type: 'updateSupplier', id: supplier.id, patch: { placeId } })} />
+      )}
+
       <section className="card">
-        <h2>Notes</h2>
+        <h2>Your notes</h2>
         <AutoGrowTextarea
-          value={supplier.notes}
+          value={notesShown}
           onChange={(e) => dispatch({ type: 'updateSupplier', id: supplier.id, patch: { notes: e.target.value } })}
           placeholder="What you liked, questions to ask, who you spoke to…"
         />
       </section>
+
+      {dir && <VenueMapCard v={dir} />}
 
       <section className="card">
         <h2>Add a quote</h2>

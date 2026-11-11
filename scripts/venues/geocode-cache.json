@@ -1,0 +1,3861 @@
+{
+ "nominatim:14 Magazine Street, Derry": [
+  {
+   "lat": 54.9966719,
+   "lng": -7.3220617,
+   "type": "highway/residential",
+   "name": "Magazine Street",
+   "road": "Magazine Street",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 6HH"
+  },
+  {
+   "lat": 54.9975176,
+   "lng": -7.3207243,
+   "type": "highway/pedestrian",
+   "name": "Magazine Street",
+   "road": "Magazine Street",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 6LU"
+  }
+ ],
+ "nominatim:47 Derry Road, Strabane": [
+  {
+   "lat": 54.8320228,
+   "lng": -7.4617619,
+   "type": "highway/secondary",
+   "name": "Derry Road",
+   "road": "Derry Road",
+   "place": "Strabane",
+   "postcode": "BT82 8DX"
+  },
+  {
+   "lat": 54.8365573,
+   "lng": -7.4575403,
+   "type": "highway/secondary",
+   "name": "Derry Road",
+   "road": "Derry Road",
+   "place": "Strabane",
+   "postcode": "BT82 8LD"
+  }
+ ],
+ "nominatim:AC Marriott Hotel": [],
+ "nominatim:AC Marriott Hotel, Belfast": [],
+ "nominatim:AC Marriott Hotel, Belfast, Northern Ireland": [],
+ "nominatim:AC Marriott, Belfast": [],
+ "nominatim:Adair Arms Hotel, Ballymena": [
+  {
+   "lat": 54.8659892,
+   "lng": -6.2789702,
+   "type": "tourism/hotel",
+   "name": "Adair Arms",
+   "road": "Ballymoney Road",
+   "place": "Ballymena",
+   "postcode": "BT43 5BS"
+  }
+ ],
+ "nominatim:Aghadowey, Northern Ireland": [
+  {
+   "lat": 55.0282914,
+   "lng": -6.6670258,
+   "type": "boundary/administrative",
+   "name": "Aghadowey",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  },
+  {
+   "lat": 55.0267618,
+   "lng": -6.6570939,
+   "type": "boundary/civil_parish",
+   "name": "Aghadowey",
+   "road": "",
+   "place": "Garvagh",
+   "postcode": ""
+  },
+  {
+   "lat": 55.028499,
+   "lng": -6.645159,
+   "type": "place/locality",
+   "name": "Aghadowey",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Altahammond Wedding Barn, Whitehead": [
+  {
+   "lat": 54.7469351,
+   "lng": -5.7237635,
+   "type": "building/barn",
+   "name": "Altahammond Wedding Barn",
+   "road": "Belfast Road",
+   "place": "Whitehead",
+   "postcode": "BT38 9QP"
+  }
+ ],
+ "nominatim:An Creagan": [
+  {
+   "lat": 54.996531,
+   "lng": -6.0671082,
+   "type": "boundary/administrative",
+   "name": "Creggan",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  },
+  {
+   "lat": 55.0020018,
+   "lng": -7.3540722,
+   "type": "boundary/administrative",
+   "name": "Creggan",
+   "road": "",
+   "place": "Derry/Londonderry",
+   "postcode": ""
+  },
+  {
+   "lat": 54.2296791,
+   "lng": -6.4793842,
+   "type": "boundary/administrative",
+   "name": "Creggan Upper",
+   "road": "",
+   "place": "Armagh",
+   "postcode": ""
+  }
+ ],
+ "nominatim:An Creagan, Omagh": [
+  {
+   "lat": 54.6488191,
+   "lng": -7.0322143,
+   "type": "boundary/administrative",
+   "name": "Creggan",
+   "road": "",
+   "place": "",
+   "postcode": "BT79 9AB"
+  },
+  {
+   "lat": 54.6558587,
+   "lng": -7.0368348,
+   "type": "tourism/attraction",
+   "name": "An Creagán",
+   "road": "Boardwalk",
+   "place": "",
+   "postcode": "BT79 9AB"
+  }
+ ],
+ "nominatim:An Creagan, Omagh, Northern Ireland": [
+  {
+   "lat": 54.6488191,
+   "lng": -7.0322143,
+   "type": "boundary/administrative",
+   "name": "Creggan",
+   "road": "",
+   "place": "",
+   "postcode": "BT79 9AB"
+  },
+  {
+   "lat": 54.6558587,
+   "lng": -7.0368348,
+   "type": "tourism/attraction",
+   "name": "An Creagán",
+   "road": "Boardwalk",
+   "place": "",
+   "postcode": "BT79 9AB"
+  }
+ ],
+ "nominatim:Andersonstown Social Club, Belfast": [
+  {
+   "lat": 54.5749767,
+   "lng": -5.9879183,
+   "type": "amenity/bar",
+   "name": "Andersonstown Social Club",
+   "road": "South Link",
+   "place": "Belfast City District",
+   "postcode": "BT11 8GX"
+  }
+ ],
+ "nominatim:Andrew Jackson’s Cottage": [],
+ "nominatim:Andrew Jackson’s Cottage, Carrickfergus": [],
+ "nominatim:Andrew Jackson’s Cottage, Carrickfergus, Northern Ireland": [],
+ "nominatim:Annalong, Northern Ireland": [
+  {
+   "lat": 54.1075749,
+   "lng": -5.8972213,
+   "type": "place/village",
+   "name": "Annalong",
+   "road": "",
+   "place": "Annalong",
+   "postcode": "BT34 4TT"
+  }
+ ],
+ "nominatim:Antrim Castle Gardens (Clotworthy House), Antrim": [
+  {
+   "lat": 54.7180722,
+   "lng": -6.22474,
+   "type": "leisure/park",
+   "name": "Antrim Castle Gardens & Clotworthy House",
+   "road": "",
+   "place": "Antrim",
+   "postcode": "BT41 4LH"
+  }
+ ],
+ "nominatim:Antrim, Northern Ireland": [
+  {
+   "lat": 54.715139,
+   "lng": -6.2192038,
+   "type": "place/town",
+   "name": "Antrim",
+   "road": "",
+   "place": "Antrim",
+   "postcode": "BT41 4BX"
+  }
+ ],
+ "nominatim:Arcadia, East Strand": [],
+ "nominatim:Arcadia, East Strand, Portrush": [],
+ "nominatim:Arcadia, East Strand, Portrush, Northern Ireland": [],
+ "nominatim:Ardtara Country House": [],
+ "nominatim:Ardtara Country House, Maghera": [],
+ "nominatim:Ardtara Country House, Maghera, Northern Ireland": [],
+ "nominatim:Armagh City Hotel, Craigavon": [
+  {
+   "lat": 54.3447872,
+   "lng": -6.6523849,
+   "type": "highway/bus_stop",
+   "name": "Armagh City Hotel",
+   "road": "Friary Road",
+   "place": "Armagh",
+   "postcode": "BT60 4FR"
+  }
+ ],
+ "nominatim:Armagh City Hotel, Northern Ireland": [
+  {
+   "lat": 54.3447872,
+   "lng": -6.6523849,
+   "type": "highway/bus_stop",
+   "name": "Armagh City Hotel",
+   "road": "Friary Road",
+   "place": "Armagh",
+   "postcode": "BT60 4FR"
+  }
+ ],
+ "nominatim:Armagh City, Craigavon": [
+  {
+   "lat": 54.4507201,
+   "lng": -6.3921622,
+   "type": "place/town",
+   "name": "Craigavon",
+   "road": "",
+   "place": "Craigavon",
+   "postcode": "BT64 1AA"
+  },
+  {
+   "lat": 54.3481977,
+   "lng": -6.6540432,
+   "type": "place/city",
+   "name": "Armagh",
+   "road": "",
+   "place": "Armagh",
+   "postcode": "BT61 7BU"
+  }
+ ],
+ "nominatim:Armagh, Northern Ireland": [
+  {
+   "lat": 54.3161086,
+   "lng": -6.7189182,
+   "type": "boundary/barony",
+   "name": "Armagh",
+   "road": "",
+   "place": "Killylea",
+   "postcode": ""
+  },
+  {
+   "lat": 54.3481977,
+   "lng": -6.6540432,
+   "type": "place/city",
+   "name": "Armagh",
+   "road": "",
+   "place": "Armagh",
+   "postcode": "BT61 7BU"
+  },
+  {
+   "lat": 54.2994832,
+   "lng": -6.5474328,
+   "type": "boundary/historic",
+   "name": "County Armagh",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Armoy, Northern Ireland": [
+  {
+   "lat": 55.1313382,
+   "lng": -6.326702,
+   "type": "place/village",
+   "name": "Armoy",
+   "road": "",
+   "place": "Armoy",
+   "postcode": "BT53 8RQ"
+  },
+  {
+   "lat": 55.1351916,
+   "lng": -6.2900578,
+   "type": "boundary/civil_parish",
+   "name": "Armoy",
+   "road": "",
+   "place": "Armoy",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Arthur Cottage": [],
+ "nominatim:Arthur Cottage, Ballymena": [],
+ "nominatim:Arthur Cottage, Ballymena, Northern Ireland": [],
+ "nominatim:Ashburn Hotel, Lurgan": [
+  {
+   "lat": 54.4659775,
+   "lng": -6.3371315,
+   "type": "tourism/hotel",
+   "name": "The Ashburn",
+   "road": "Lough Road",
+   "place": "Lurgan",
+   "postcode": "BT66 6JB"
+  }
+ ],
+ "nominatim:Ballycastle, Northern Ireland": [
+  {
+   "lat": 55.2006882,
+   "lng": -6.250282,
+   "type": "place/town",
+   "name": "Ballycastle",
+   "road": "",
+   "place": "Ballycastle",
+   "postcode": "BT54 6AW"
+  },
+  {
+   "lat": 54.5679535,
+   "lng": -5.5991537,
+   "type": "boundary/administrative",
+   "name": "Ballycastle",
+   "road": "",
+   "place": "Bangor",
+   "postcode": ""
+  },
+  {
+   "lat": 55.0877173,
+   "lng": -6.9475884,
+   "type": "boundary/administrative",
+   "name": "Ballycastle",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Ballyclare Town Hall, Ballyclare": [
+  {
+   "lat": 54.7522352,
+   "lng": -6.0012784,
+   "type": "amenity/townhall",
+   "name": "Ballyclare Town Hall",
+   "road": "The Square",
+   "place": "Ballyclare",
+   "postcode": "BT39 9BB"
+  }
+ ],
+ "nominatim:Ballyclare, Northern Ireland": [
+  {
+   "lat": 54.7525296,
+   "lng": -6.0010911,
+   "type": "place/town",
+   "name": "Ballyclare",
+   "road": "",
+   "place": "Ballyclare",
+   "postcode": "BT39 9BB"
+  },
+  {
+   "lat": 54.7504699,
+   "lng": -6.0150013,
+   "type": "boundary/administrative",
+   "name": "Ballyclare",
+   "road": "",
+   "place": "Ballyclare",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Ballygally Castle Hotel, Ballymena": [],
+ "nominatim:Ballygally Castle Hotel, Northern Ireland": [
+  {
+   "lat": 54.8993222,
+   "lng": -5.8618113,
+   "type": "tourism/hotel",
+   "name": "Ballygally Castle Hotel",
+   "road": "Coast Road",
+   "place": "Ballygally",
+   "postcode": "BT40 2QZ"
+  }
+ ],
+ "nominatim:Ballymac, Lisburn": [
+  {
+   "lat": 54.5813677,
+   "lng": -6.1095199,
+   "type": "amenity/bar",
+   "name": "Ballymac Hotel",
+   "road": "Rock Road",
+   "place": "Lisburn",
+   "postcode": "BT28 3SU"
+  }
+ ],
+ "nominatim:Ballymena, Northern Ireland": [
+  {
+   "lat": 54.8662966,
+   "lng": -6.2760159,
+   "type": "place/town",
+   "name": "Ballymena",
+   "road": "",
+   "place": "Ballymena",
+   "postcode": "BT43 6DT"
+  },
+  {
+   "lat": 54.9274235,
+   "lng": -6.1668988,
+   "type": "boundary/administrative",
+   "name": "Ballymena",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Ballymoney, Northern Ireland": [
+  {
+   "lat": 55.0702727,
+   "lng": -6.5172758,
+   "type": "place/town",
+   "name": "Ballymoney",
+   "road": "",
+   "place": "Ballymoney",
+   "postcode": "BT53 6AY"
+  },
+  {
+   "lat": 54.575594,
+   "lng": -6.0059233,
+   "type": "boundary/administrative",
+   "name": "Ballymoney",
+   "road": "",
+   "place": "Belfast City District",
+   "postcode": ""
+  },
+  {
+   "lat": 54.1108207,
+   "lng": -6.2051467,
+   "type": "boundary/administrative",
+   "name": "Ballymoney",
+   "road": "",
+   "place": "Rostrevor",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Ballynahinch, Northern Ireland": [
+  {
+   "lat": 54.4026038,
+   "lng": -5.8960151,
+   "type": "place/town",
+   "name": "Ballynahinch",
+   "road": "",
+   "place": "Ballynahinch",
+   "postcode": "BT24 8DN"
+  },
+  {
+   "lat": 54.3632905,
+   "lng": -6.5314156,
+   "type": "boundary/administrative",
+   "name": "Ballynahinch",
+   "road": "",
+   "place": "Richhill",
+   "postcode": ""
+  },
+  {
+   "lat": 54.4055867,
+   "lng": -5.8887967,
+   "type": "boundary/administrative",
+   "name": "Ballynahinch",
+   "road": "",
+   "place": "Ballynahinch",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Ballyness Resort": [],
+ "nominatim:Ballyness Resort, Dungiven": [],
+ "nominatim:Ballyness Resort, Dungiven, Northern Ireland": [],
+ "nominatim:Ballyrobert, Northern Ireland": [
+  {
+   "lat": 54.7170296,
+   "lng": -6.0033328,
+   "type": "place/village",
+   "name": "Ballyrobert",
+   "road": "",
+   "place": "Ballyrobert",
+   "postcode": "BT39 9RX"
+  },
+  {
+   "lat": 54.709332,
+   "lng": -6.0144814,
+   "type": "boundary/administrative",
+   "name": "Ballyrobert",
+   "road": "",
+   "place": "Ballyrobert",
+   "postcode": "BT39 9RX"
+  },
+  {
+   "lat": 54.6626793,
+   "lng": -5.765491,
+   "type": "boundary/administrative",
+   "name": "Ballyrobert",
+   "road": "",
+   "place": "Helen's Bay",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Ballyscullion House": [
+  {
+   "lat": 54.8080965,
+   "lng": -6.4928059,
+   "type": "historic/manor",
+   "name": "Ballyscullion House",
+   "road": "Ballyscullion Road",
+   "place": "Bellaghy",
+   "postcode": ""
+  },
+  {
+   "lat": 54.8084817,
+   "lng": -6.4964548,
+   "type": "historic/archaeological_site",
+   "name": "Ballyscullion House",
+   "road": "Ballyscullion Road",
+   "place": "Bellaghy",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Ballyscullion House, Magherafelt": [],
+ "nominatim:Ballyscullion House, Magherafelt, Northern Ireland": [],
+ "nominatim:Banbridge, Northern Ireland": [
+  {
+   "lat": 54.3514168,
+   "lng": -6.2714623,
+   "type": "place/town",
+   "name": "Banbridge",
+   "road": "",
+   "place": "Banbridge",
+   "postcode": "BT32 3DH"
+  }
+ ],
+ "nominatim:Bangor, Northern Ireland": [
+  {
+   "lat": 54.662595,
+   "lng": -5.6679127,
+   "type": "place/city",
+   "name": "Bangor",
+   "road": "",
+   "place": "Bangor",
+   "postcode": "BT20 3BJ"
+  }
+ ],
+ "nominatim:Bannville House Hotel": [],
+ "nominatim:Bannville House Hotel, Banbridge": [],
+ "nominatim:Bannville House Hotel, Banbridge, Northern Ireland": [],
+ "nominatim:Bannville House, Banbridge": [],
+ "nominatim:Barnaby's": [
+  {
+   "lat": 54.6538141,
+   "lng": -5.9445136,
+   "type": "tourism/attraction",
+   "name": "Barbary Lion",
+   "road": "Antrim Road",
+   "place": "Belfast City District",
+   "postcode": "BT36 7PN"
+  }
+ ],
+ "nominatim:Barnaby's, Ballyrobert": [],
+ "nominatim:Barnaby's, Ballyrobert, Northern Ireland": [],
+ "nominatim:Basil Sheils, Tassagh": [],
+ "nominatim:Basil Sheils, Tassagh, Armagh": [],
+ "nominatim:Basil Sheils, Tassagh, Armagh, Northern Ireland": [],
+ "nominatim:Beech Hill Country House Hotel": [],
+ "nominatim:Beech Hill Country House Hotel, Derry": [],
+ "nominatim:Beech Hill Country House Hotel, Northern Ireland": [],
+ "nominatim:Beech Hill Country House, Derry": [],
+ "nominatim:Beechlawn House, Belfast": [
+  {
+   "lat": 54.5518551,
+   "lng": -5.9986836,
+   "type": "tourism/hotel",
+   "name": "Beechlawn House Hotel",
+   "road": "Dunmurry Lane",
+   "place": "Belfast City District",
+   "postcode": "BT17 9RR"
+  }
+ ],
+ "nominatim:Belfast Castle, Belfast": [
+  {
+   "lat": 54.6427769,
+   "lng": -5.9421566,
+   "type": "tourism/attraction",
+   "name": "Belfast Castle",
+   "road": "The Middle",
+   "place": "Belfast City District",
+   "postcode": "BT15 5GL"
+  },
+  {
+   "lat": 54.6427843,
+   "lng": -5.9422748,
+   "type": "tourism/viewpoint",
+   "name": "Belfast Castle",
+   "road": "The Middle",
+   "place": "Belfast City District",
+   "postcode": "BT15 5GL"
+  },
+  {
+   "lat": 54.6355058,
+   "lng": -5.9368731,
+   "type": "highway/bus_stop",
+   "name": "Belfast Castle",
+   "road": "Antrim Road",
+   "place": "Belfast City District",
+   "postcode": "BT15 4EF"
+  }
+ ],
+ "nominatim:Belfast Waterfront Hall": [
+  {
+   "lat": 54.5967498,
+   "lng": -5.9196473,
+   "type": "amenity/parking",
+   "name": "Waterfront Hall",
+   "road": "Lanyon Place",
+   "place": "Belfast City District",
+   "postcode": "BT1 3BT"
+  }
+ ],
+ "nominatim:Belfast Waterfront Hall, Belfast": [],
+ "nominatim:Belfast Waterfront Hall, Northern Ireland": [],
+ "nominatim:Belfast, Northern Ireland": [
+  {
+   "lat": 54.596391,
+   "lng": -5.9301829,
+   "type": "boundary/administrative",
+   "name": "Belfast City District",
+   "road": "",
+   "place": "Belfast City District",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Belfray Country Inn": [],
+ "nominatim:Belfray Country Inn, Derry": [],
+ "nominatim:Belfray Country Inn, Northern Ireland": [],
+ "nominatim:Belle Isle Castle": [
+  {
+   "lat": 54.2677538,
+   "lng": -7.5562917,
+   "type": "building/yes",
+   "name": "Belle Isle Castle",
+   "road": "Belle Isle Demesne",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Belle Isle Castle, Lisbellaw": [],
+ "nominatim:Belle Isle Castle, Lisbellaw, Northern Ireland": [],
+ "nominatim:Belmont House Hotel": [],
+ "nominatim:Belmont House Hotel, Banbridge": [],
+ "nominatim:Belmont House Hotel, Banbridge, Northern Ireland": [],
+ "nominatim:Belmont House, Banbridge": [],
+ "nominatim:Bishop's Gate Hotel, Derry": [],
+ "nominatim:Bishop's Gate Hotel, Northern Ireland": [],
+ "nominatim:Bishop's Gate, Derry": [
+  {
+   "lat": 55.1603461,
+   "lng": -6.8102087,
+   "type": "tourism/picnic_site",
+   "name": "Bishop's Gate Picnic Site",
+   "road": "Mussenden Road",
+   "place": "Castlerock",
+   "postcode": "BT51 4SA"
+  }
+ ],
+ "nominatim:Blessingbourne Country Estate": [],
+ "nominatim:Blessingbourne Country Estate, Fivemiletown": [],
+ "nominatim:Blessingbourne Country Estate, Fivemiletown, Northern Ireland": [],
+ "nominatim:Brambles, Annalong": [],
+ "nominatim:Breckenhill": [
+  {
+   "lat": 54.7773147,
+   "lng": -6.0561161,
+   "type": "highway/tertiary",
+   "name": "Breckenhill Road",
+   "road": "Breckenhill Road",
+   "place": "Burnside",
+   "postcode": ""
+  },
+  {
+   "lat": 54.7816707,
+   "lng": -6.0602709,
+   "type": "highway/unclassified",
+   "name": "Breckenhill Road",
+   "road": "Breckenhill Road",
+   "place": "Ballyclare",
+   "postcode": ""
+  },
+  {
+   "lat": 54.7946244,
+   "lng": -6.075764,
+   "type": "highway/unclassified",
+   "name": "Breckenhill Road",
+   "road": "Breckenhill Road",
+   "place": "Tildarg",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Breckenhill, Ballyclare": [
+  {
+   "lat": 54.7816707,
+   "lng": -6.0602709,
+   "type": "highway/unclassified",
+   "name": "Breckenhill Road",
+   "road": "Breckenhill Road",
+   "place": "Ballyclare",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Breckenhill, Ballyclare, Northern Ireland": [
+  {
+   "lat": 54.7816707,
+   "lng": -6.0602709,
+   "type": "highway/unclassified",
+   "name": "Breckenhill Road",
+   "road": "Breckenhill Road",
+   "place": "Ballyclare",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Brook Hall": [
+  {
+   "lat": 55.0290435,
+   "lng": -7.2912892,
+   "type": "building/house",
+   "name": "Brook Hall Estate",
+   "road": "Culmore Road",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 8JE"
+  }
+ ],
+ "nominatim:Brook Hall, Lisburn": [],
+ "nominatim:Brook Hall, Lisburn, Northern Ireland": [],
+ "nominatim:BrownTrout": [],
+ "nominatim:BrownTrout, Aghadowey": [],
+ "nominatim:BrownTrout, Aghadowey, Northern Ireland": [],
+ "nominatim:Burrendale Hotel, Country Club": [],
+ "nominatim:Burrendale Hotel, Country Club, Newcastle": [],
+ "nominatim:Burrendale Hotel, Country Club, Newcastle, Northern Ireland": [],
+ "nominatim:Burrendale Hotel,, Newcastle": [
+  {
+   "lat": 54.2274002,
+   "lng": -5.8965913,
+   "type": "highway/bus_stop",
+   "name": "Burrendale Hotel",
+   "road": "Castlewellan Road",
+   "place": "Newcastle",
+   "postcode": "BT33 0JY"
+  }
+ ],
+ "nominatim:Bushmills, Northern Ireland": [
+  {
+   "lat": 55.2059909,
+   "lng": -6.5234165,
+   "type": "place/village",
+   "name": "Bushmills",
+   "road": "",
+   "place": "Bushmills",
+   "postcode": "BT57 8QD"
+  },
+  {
+   "lat": 55.2058682,
+   "lng": -6.5294759,
+   "type": "boundary/administrative",
+   "name": "Ballaghmore",
+   "road": "",
+   "place": "Bushmills",
+   "postcode": ""
+  },
+  {
+   "lat": 55.2035533,
+   "lng": -6.5217205,
+   "type": "boundary/administrative",
+   "name": "Magheraboy",
+   "road": "",
+   "place": "Bushmills",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Bushtown House Hotel": [],
+ "nominatim:Bushtown House Hotel, Coleraine": [],
+ "nominatim:Bushtown House Hotel, Coleraine, Northern Ireland": [],
+ "nominatim:Bushtown House, Coleraine": [],
+ "nominatim:Cairndhu Golf Club, Larne": [],
+ "nominatim:Cairndhu Golf Club, Larne, Northern Ireland": [],
+ "nominatim:Cairndhu, Larne": [
+  {
+   "lat": 54.8308531,
+   "lng": -5.8260378,
+   "type": "landuse/farmyard",
+   "name": "Cairndhu",
+   "road": "",
+   "place": "Larne",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Canal Court Hotel, Newry": [
+  {
+   "lat": 54.1761574,
+   "lng": -6.3402719,
+   "type": "tourism/hotel",
+   "name": "Canal Court Hotel",
+   "road": "Merchants Quay",
+   "place": "Newry",
+   "postcode": "BT35 8HF"
+  }
+ ],
+ "nominatim:Carlisle Memorial, Belfast": [
+  {
+   "lat": 54.6069867,
+   "lng": -5.9362743,
+   "type": "landuse/religious",
+   "name": "Carlisle Memorial Methodist Church",
+   "road": "",
+   "place": "Belfast City District",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Carnalea Golf Club, Bangor": [
+  {
+   "lat": 54.6639823,
+   "lng": -5.699615,
+   "type": "leisure/golf_course",
+   "name": "Carnalea Golf Club",
+   "road": "Designated Footpath 36",
+   "place": "Bangor",
+   "postcode": "BT20 3RQ"
+  }
+ ],
+ "nominatim:Carnfunnock Country Park": [
+  {
+   "lat": 54.8891115,
+   "lng": -5.8470129,
+   "type": "leisure/park",
+   "name": "Carnfunnock Country Park",
+   "road": "",
+   "place": "Ballygally",
+   "postcode": "BT40 2QG"
+  },
+  {
+   "lat": 54.8889179,
+   "lng": -5.8436285,
+   "type": "railway/station",
+   "name": "Carnfunnock Family Fun Zone Miniature Railway",
+   "road": "Coast Road",
+   "place": "Ballygally",
+   "postcode": "BT40 2QG"
+  }
+ ],
+ "nominatim:Carnfunnock Country Park, Larne": [],
+ "nominatim:Carnfunnock Country Park, Larne, Northern Ireland": [],
+ "nominatim:Carnlough, Northern Ireland": [
+  {
+   "lat": 54.9929248,
+   "lng": -5.9899592,
+   "type": "place/village",
+   "name": "Carnlough",
+   "road": "",
+   "place": "Carnlough",
+   "postcode": "BT44 0EU"
+  }
+ ],
+ "nominatim:Carriage Rooms Montalo House, Ballynahinch": [],
+ "nominatim:Carrickfergus, Northern Ireland": [
+  {
+   "lat": 54.7136165,
+   "lng": -5.8073112,
+   "type": "place/town",
+   "name": "Carrickfergus",
+   "road": "",
+   "place": "Carrickfergus",
+   "postcode": "BT38 7BE"
+  },
+  {
+   "lat": 54.7134139,
+   "lng": -5.8065062,
+   "type": "building/yes",
+   "name": "Carrickfergus Castle",
+   "road": "Marine Highway",
+   "place": "Carrickfergus",
+   "postcode": "BT38 7DN"
+  },
+  {
+   "lat": 54.7152785,
+   "lng": -5.8067526,
+   "type": "boundary/administrative",
+   "name": "Carrickfergus",
+   "road": "",
+   "place": "Carrickfergus",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Carryduff, Northern Ireland": [
+  {
+   "lat": 54.5184788,
+   "lng": -5.8874586,
+   "type": "place/town",
+   "name": "Carryduff",
+   "road": "",
+   "place": "Carryduff",
+   "postcode": "BT8 8DN"
+  },
+  {
+   "lat": 54.5193834,
+   "lng": -5.8881988,
+   "type": "boundary/administrative",
+   "name": "Carryduff",
+   "road": "",
+   "place": "Carryduff",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Castle Coole House": [],
+ "nominatim:Castle Coole House, Enniskillen": [],
+ "nominatim:Castle Coole House, Enniskillen, Northern Ireland": [],
+ "nominatim:Castletown, Northern Ireland": [
+  {
+   "lat": 54.8190194,
+   "lng": -7.4829745,
+   "type": "boundary/administrative",
+   "name": "Castletown",
+   "road": "",
+   "place": "",
+   "postcode": "BT82 9SF"
+  },
+  {
+   "lat": 54.7616137,
+   "lng": -5.7045771,
+   "type": "boundary/administrative",
+   "name": "Castletown",
+   "road": "",
+   "place": "Whitehead",
+   "postcode": ""
+  },
+  {
+   "lat": 54.6636047,
+   "lng": -7.3409508,
+   "type": "boundary/administrative",
+   "name": "Castletown",
+   "road": "",
+   "place": "",
+   "postcode": "BT78 5QU"
+  }
+ ],
+ "nominatim:Castleward, Strangford": [
+  {
+   "lat": 54.3713713,
+   "lng": -5.5681231,
+   "type": "natural/bay",
+   "name": "Castleward Bay",
+   "road": "",
+   "place": "Strangford",
+   "postcode": "BT30 7LS"
+  },
+  {
+   "lat": 54.3594109,
+   "lng": -5.5729505,
+   "type": "highway/primary",
+   "name": "Castleward Road",
+   "road": "Castleward Road",
+   "place": "Strangford",
+   "postcode": "BT30 7AU"
+  },
+  {
+   "lat": 54.3639688,
+   "lng": -5.5656726,
+   "type": "highway/primary",
+   "name": "Castleward Road",
+   "road": "Castleward Road",
+   "place": "Strangford",
+   "postcode": "BT30 7LZ"
+  }
+ ],
+ "nominatim:City Hotel": [
+  {
+   "lat": 54.999347,
+   "lng": -7.3204486,
+   "type": "tourism/hotel",
+   "name": "City Hotel",
+   "road": "Queen's Quay",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 7AS"
+  }
+ ],
+ "nominatim:City Hotel, Queen's Quay": [
+  {
+   "lat": 54.999347,
+   "lng": -7.3204486,
+   "type": "tourism/hotel",
+   "name": "City Hotel",
+   "road": "Queen's Quay",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 7AS"
+  }
+ ],
+ "nominatim:City Hotel, Queen's Quay, Northern Ireland": [
+  {
+   "lat": 54.999347,
+   "lng": -7.3204486,
+   "type": "tourism/hotel",
+   "name": "City Hotel",
+   "road": "Queen's Quay",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 7AS"
+  }
+ ],
+ "nominatim:City, Queen's Quay": [
+  {
+   "lat": 54.999347,
+   "lng": -7.3204486,
+   "type": "tourism/hotel",
+   "name": "City Hotel",
+   "road": "Queen's Quay",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 7AS"
+  },
+  {
+   "lat": 54.6015919,
+   "lng": -5.9184187,
+   "type": "highway/unclassified",
+   "name": "Queen's Quay",
+   "road": "Queen's Quay",
+   "place": "Belfast City District",
+   "postcode": "BT1 3NH"
+  },
+  {
+   "lat": 54.5999319,
+   "lng": -5.9191369,
+   "type": "highway/unclassified",
+   "name": "Queen's Quay",
+   "road": "Queen's Quay",
+   "place": "Belfast City District",
+   "postcode": "BT1 3WH"
+  }
+ ],
+ "nominatim:Clandeboye Estate Courtyard": [],
+ "nominatim:Clandeboye Estate Courtyard, Bangor": [],
+ "nominatim:Clandeboye Estate Courtyard, Bangor, Northern Ireland": [],
+ "nominatim:Clandeboye Lodge, Bangor": [
+  {
+   "lat": 54.635757,
+   "lng": -5.7199188,
+   "type": "tourism/hotel",
+   "name": "Clandeboye Lodge",
+   "road": "Estate Road",
+   "place": "Bangor",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Clayton Hotel, Belfast": [
+  {
+   "lat": 54.5928336,
+   "lng": -5.9301811,
+   "type": "tourism/hotel",
+   "name": "Clayton Hotel Belfast",
+   "road": "Ormeau Avenue",
+   "place": "Belfast City District",
+   "postcode": "BT2 8HS"
+  }
+ ],
+ "nominatim:Clogher, Northern Ireland": [
+  {
+   "lat": 54.4129914,
+   "lng": -7.1689489,
+   "type": "place/village",
+   "name": "Clogher",
+   "road": "",
+   "place": "Clogher",
+   "postcode": "BT76 0AA"
+  },
+  {
+   "lat": 54.4941887,
+   "lng": -6.0008214,
+   "type": "boundary/administrative",
+   "name": "Clogher",
+   "road": "",
+   "place": "Lisburn",
+   "postcode": ""
+  },
+  {
+   "lat": 54.523794,
+   "lng": -6.0648436,
+   "type": "boundary/administrative",
+   "name": "Clogher",
+   "road": "",
+   "place": "Lisburn",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Coleraine, Northern Ireland": [
+  {
+   "lat": 55.1315912,
+   "lng": -6.671861,
+   "type": "place/town",
+   "name": "Coleraine",
+   "road": "",
+   "place": "Coleraine",
+   "postcode": "BT52 1DS"
+  },
+  {
+   "lat": 55.1291849,
+   "lng": -6.6646149,
+   "type": "boundary/administrative",
+   "name": "Coleraine",
+   "road": "",
+   "place": "Coleraine",
+   "postcode": ""
+  },
+  {
+   "lat": 54.9808185,
+   "lng": -6.884547,
+   "type": "boundary/historic",
+   "name": "County Londonderry",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Conway Mill, Belfast": [
+  {
+   "lat": 54.5996879,
+   "lng": -5.9511343,
+   "type": "building/commercial",
+   "name": "Conway Mill",
+   "road": "Conway Street",
+   "place": "Belfast City District",
+   "postcode": "BT13 2DE"
+  }
+ ],
+ "nominatim:Cookstown, Northern Ireland": [
+  {
+   "lat": 54.6436734,
+   "lng": -6.7416008,
+   "type": "place/town",
+   "name": "Cookstown",
+   "road": "",
+   "place": "Cookstown",
+   "postcode": "BT80 8PF"
+  },
+  {
+   "lat": 54.650886,
+   "lng": -6.7528895,
+   "type": "boundary/administrative",
+   "name": "Cookstown",
+   "road": "",
+   "place": "Cookstown",
+   "postcode": ""
+  },
+  {
+   "lat": 54.6488584,
+   "lng": -6.7364715,
+   "type": "boundary/administrative",
+   "name": "Cookstown",
+   "road": "",
+   "place": "Cookstown",
+   "postcode": "BT80 8NX"
+  }
+ ],
+ "nominatim:Corick House Hotel, Clogher": [
+  {
+   "lat": 54.4253561,
+   "lng": -7.1629361,
+   "type": "tourism/hotel",
+   "name": "Corick House",
+   "road": "Corrick Road",
+   "place": "Clogher",
+   "postcode": "BT76 0BZ"
+  }
+ ],
+ "nominatim:Corr's Corner Hotel, Newtownabbey": [
+  {
+   "lat": 54.6935703,
+   "lng": -5.9709987,
+   "type": "tourism/hotel",
+   "name": "Corr's Corner",
+   "road": "A8",
+   "place": "Newtownabbey",
+   "postcode": "BT36 5TB"
+  }
+ ],
+ "nominatim:Craigavon, Northern Ireland": [
+  {
+   "lat": 54.4507201,
+   "lng": -6.3921622,
+   "type": "place/town",
+   "name": "Craigavon",
+   "road": "",
+   "place": "Craigavon",
+   "postcode": "BT64 1AA"
+  }
+ ],
+ "nominatim:Crawfordsburn, Northern Ireland": [
+  {
+   "lat": 54.658431,
+   "lng": -5.727932,
+   "type": "place/village",
+   "name": "Crawfordsburn",
+   "road": "",
+   "place": "Crawfordsburn",
+   "postcode": "BT19 1JH"
+  },
+  {
+   "lat": 54.8480533,
+   "lng": -6.6760881,
+   "type": "highway/residential",
+   "name": "Crawfordsburn",
+   "road": "Crawfordsburn",
+   "place": "Maghera",
+   "postcode": "BT46 5AB"
+  },
+  {
+   "lat": 54.6585411,
+   "lng": -5.7279593,
+   "type": "highway/bus_stop",
+   "name": "Crawfordsburn (towards Bangor)",
+   "road": "Main Street",
+   "place": "Crawfordsburn",
+   "postcode": "BT19 1JH"
+  }
+ ],
+ "nominatim:Crom Estate": [
+  {
+   "lat": 54.1683805,
+   "lng": -7.44021,
+   "type": "leisure/park",
+   "name": "Crom Estate",
+   "road": "",
+   "place": "Knocknabrass",
+   "postcode": "BT92 8AJ"
+  },
+  {
+   "lat": 54.1645392,
+   "lng": -7.438889,
+   "type": "tourism/attraction",
+   "name": "Crom Estate (National Trust)",
+   "road": "Deer enclosure trail",
+   "place": "Crom",
+   "postcode": "BT92 8AJ"
+  }
+ ],
+ "nominatim:Crom Estate, Newtownbutler": [],
+ "nominatim:Crom Estate, Newtownbutler, Northern Ireland": [],
+ "nominatim:Crowne Plaza Hotel, Belfast": [
+  {
+   "lat": 54.5507162,
+   "lng": -5.9474194,
+   "type": "tourism/hotel",
+   "name": "Crowne Plaza",
+   "road": "Milltown Road",
+   "place": "Belfast City District",
+   "postcode": "BT8 7SP"
+  }
+ ],
+ "nominatim:Crumlin Road Gaol, Belfast": [
+  {
+   "lat": 54.6094665,
+   "lng": -5.9421636,
+   "type": "amenity/conference_centre",
+   "name": "Crumlin Road Gaol",
+   "road": "Crumlin Road",
+   "place": "Belfast City District",
+   "postcode": "BT14 6ST"
+  },
+  {
+   "lat": 54.6090994,
+   "lng": -5.9418837,
+   "type": "information/office",
+   "name": "Crumlin Road Gaol Visitors Centre",
+   "road": "Crumlin Road",
+   "place": "Belfast City District",
+   "postcode": "BT14 6ST"
+  },
+  {
+   "lat": 54.6087691,
+   "lng": -5.9422936,
+   "type": "information/board",
+   "name": "Crumlin Road Gaol",
+   "road": "Crumlin Road",
+   "place": "Belfast City District",
+   "postcode": "BT14 6AD"
+  }
+ ],
+ "nominatim:Culloden Hotel, Holywood": [
+  {
+   "lat": 54.652203,
+   "lng": -5.8021952,
+   "type": "tourism/hotel",
+   "name": "Culloden Hotel & Spa",
+   "road": "Holywood Road",
+   "place": "Bangor",
+   "postcode": "BT18 0EX"
+  }
+ ],
+ "nominatim:Cultra Manor, Ulster Folk and Transport Museum": [],
+ "nominatim:Cultra Manor, Ulster Folk and Transport Museum, Cultra": [],
+ "nominatim:Cultra Manor, Ulster Folk and Transport Museum, Cultra, Northern Ireland": [],
+ "nominatim:Cultra, Northern Ireland": [
+  {
+   "lat": 54.6523133,
+   "lng": -5.8049808,
+   "type": "railway/station",
+   "name": "Cultra",
+   "road": "Circular Road East",
+   "place": "Holywood",
+   "postcode": "BT18 0EX"
+  },
+  {
+   "lat": 54.6524689,
+   "lng": -5.8112821,
+   "type": "boundary/administrative",
+   "name": "Ballycultra",
+   "road": "",
+   "place": "Holywood",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Cushendun Old Church Centre": [],
+ "nominatim:Cushendun Old Church Centre, Cushendun": [],
+ "nominatim:Cushendun Old Church Centre, Cushendun, Northern Ireland": [],
+ "nominatim:Cushendun, Northern Ireland": [
+  {
+   "lat": 55.1252468,
+   "lng": -6.0423483,
+   "type": "place/village",
+   "name": "Cushendun",
+   "road": "",
+   "place": "Cushendun",
+   "postcode": "BT44 0PH"
+  },
+  {
+   "lat": 55.1328128,
+   "lng": -6.0519503,
+   "type": "boundary/administrative",
+   "name": "Cushendun",
+   "road": "",
+   "place": "Cushendun",
+   "postcode": "BT44 0PH"
+  }
+ ],
+ "nominatim:Da Vinci’s Hotel Complex": [],
+ "nominatim:Da Vinci’s Hotel Complex, Derry": [],
+ "nominatim:Da Vinci’s Hotel Complex, Northern Ireland": [],
+ "nominatim:Deane's at Queens, Belfast": [
+  {
+   "lat": 54.5835892,
+   "lng": -5.93768,
+   "type": "amenity/restaurant",
+   "name": "Deane's at Queens",
+   "road": "College Gardens",
+   "place": "Belfast City District",
+   "postcode": "BT9 6BQ"
+  }
+ ],
+ "nominatim:Deane's Restaurant, Belfast": [
+  {
+   "lat": 54.5835892,
+   "lng": -5.93768,
+   "type": "amenity/restaurant",
+   "name": "Deane's at Queens",
+   "road": "College Gardens",
+   "place": "Belfast City District",
+   "postcode": "BT9 6BQ"
+  },
+  {
+   "lat": 54.5942176,
+   "lng": -5.9310066,
+   "type": "amenity/restaurant",
+   "name": "Deane's Deli",
+   "road": "Clarence Street",
+   "place": "Belfast City",
+   "postcode": "BT2 8BG"
+  }
+ ],
+ "nominatim:Delamont Country Park, Killyleagh": [
+  {
+   "lat": 54.381397,
+   "lng": -5.6732506,
+   "type": "leisure/park",
+   "name": "Delamont Country Park",
+   "road": "",
+   "place": "Killyleagh",
+   "postcode": "BT30 9TZ"
+  },
+  {
+   "lat": 54.3847101,
+   "lng": -5.673237,
+   "type": "tourism/camp_site",
+   "name": "Delamont Country Park",
+   "road": "Downpatrick Road",
+   "place": "Killyleagh",
+   "postcode": "BT30 9TZ"
+  },
+  {
+   "lat": 54.3871357,
+   "lng": -5.6745802,
+   "type": "highway/bus_stop",
+   "name": "Delamont Country Park",
+   "road": "Downpatrick Road",
+   "place": "Killyleagh",
+   "postcode": "BT30 9TZ"
+  }
+ ],
+ "nominatim:Derry, Northern Ireland": [
+  {
+   "lat": 54.9978678,
+   "lng": -7.3213056,
+   "type": "place/city",
+   "name": "Derry/Londonderry",
+   "road": "",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 6BU"
+  }
+ ],
+ "nominatim:Dog and Duck Inn, Lisbellaw": [],
+ "nominatim:Dollingstown, Northern Ireland": [
+  {
+   "lat": 54.463375,
+   "lng": -6.2927996,
+   "type": "place/village",
+   "name": "Dollingstown",
+   "road": "",
+   "place": "Dollingstown",
+   "postcode": "BT66 7JS"
+  },
+  {
+   "lat": 54.4567689,
+   "lng": -6.2857998,
+   "type": "place/village",
+   "name": "Dollingstown",
+   "road": "",
+   "place": "Dollingstown",
+   "postcode": ""
+  },
+  {
+   "lat": 54.4597532,
+   "lng": -6.2865725,
+   "type": "place/village",
+   "name": "Dollingstown",
+   "road": "",
+   "place": "Dollingstown",
+   "postcode": "BT66 7JS"
+  }
+ ],
+ "nominatim:DoubleTree by Hilton – Ten Square Hotel": [],
+ "nominatim:DoubleTree by Hilton – Ten Square Hotel, Belfast": [],
+ "nominatim:DoubleTree by Hilton – Ten Square Hotel, Belfast, Northern Ireland": [],
+ "nominatim:DoubleTree by Hilton – Ten Square, Belfast": [],
+ "nominatim:Downhill, Northern Ireland": [
+  {
+   "lat": 55.1659259,
+   "lng": -6.8229418,
+   "type": "place/hamlet",
+   "name": "Downhill",
+   "road": "",
+   "place": "Downhill",
+   "postcode": "BT51 4RP"
+  },
+  {
+   "lat": 55.1606487,
+   "lng": -6.8110829,
+   "type": "boundary/administrative",
+   "name": "Downhill",
+   "road": "",
+   "place": "Castlerock",
+   "postcode": "BT51 4RG"
+  }
+ ],
+ "nominatim:Downpatrick, Northern Ireland": [
+  {
+   "lat": 54.3279335,
+   "lng": -5.71649,
+   "type": "place/town",
+   "name": "Downpatrick",
+   "road": "",
+   "place": "Downpatrick",
+   "postcode": "BT30 6BW"
+  }
+ ],
+ "nominatim:Downshire Arms Hotel": [
+  {
+   "lat": 54.3466105,
+   "lng": -6.2721508,
+   "type": "tourism/hotel",
+   "name": "The Downshire Arms Hotel",
+   "road": "Newry Street",
+   "place": "Banbridge",
+   "postcode": "BT32 3EF"
+  }
+ ],
+ "nominatim:Downshire Arms Hotel, Hilltown": [],
+ "nominatim:Downshire Arms Hotel, Hilltown, Northern Ireland": [],
+ "nominatim:Downshire Arms, Hilltown": [],
+ "nominatim:Drenagh House and Estate": [],
+ "nominatim:Drenagh House and Estate, Limavady": [],
+ "nominatim:Drenagh House and Estate, Limavady, Northern Ireland": [],
+ "nominatim:Drummond Hotel": [
+  {
+   "lat": 55.0439159,
+   "lng": -7.0111032,
+   "type": "tourism/hotel",
+   "name": "Drummond Hotel",
+   "road": "Main Street",
+   "place": "Ballykelly",
+   "postcode": "BT49 9HS"
+  }
+ ],
+ "nominatim:Drummond Hotel, Limavady": [],
+ "nominatim:Drummond Hotel, Limavady, Northern Ireland": [],
+ "nominatim:Drummond, Limavady": [
+  {
+   "lat": 55.0435485,
+   "lng": -6.9194073,
+   "type": "highway/residential",
+   "name": "Drummond Manor",
+   "road": "Drummond Manor",
+   "place": "Limavady",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Dufferin Coaching Inn": [],
+ "nominatim:Dufferin Coaching Inn, Killyleagh": [],
+ "nominatim:Dufferin Coaching Inn, Killyleagh, Northern Ireland": [],
+ "nominatim:Dunadry Hotel, Antrim": [
+  {
+   "lat": 54.6986253,
+   "lng": -6.140234,
+   "type": "tourism/hotel",
+   "name": "The Dunadry Hotel",
+   "road": "Islandreagh Drive",
+   "place": "Antrim",
+   "postcode": "BT41 2HA"
+  }
+ ],
+ "nominatim:Dungannon, Northern Ireland": [
+  {
+   "lat": 54.5039088,
+   "lng": -6.7703622,
+   "type": "place/town",
+   "name": "Dungannon",
+   "road": "",
+   "place": "Dungannon",
+   "postcode": "BT70 1AR"
+  }
+ ],
+ "nominatim:Dungiven, Northern Ireland": [
+  {
+   "lat": 54.9266409,
+   "lng": -6.9236545,
+   "type": "place/town",
+   "name": "Dungiven",
+   "road": "",
+   "place": "Dungiven",
+   "postcode": "BT47 4LE"
+  },
+  {
+   "lat": 54.9250697,
+   "lng": -6.9152948,
+   "type": "boundary/administrative",
+   "name": "Dungiven",
+   "road": "",
+   "place": "Dungiven",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Dunsilly Hotel, Antrim": [
+  {
+   "lat": 54.7429724,
+   "lng": -6.2332454,
+   "type": "tourism/hotel",
+   "name": "Dunsilly Hotel",
+   "road": "Dunsilly Road",
+   "place": "Antrim",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Edenmore Golf and Country Club": [],
+ "nominatim:Edenmore Golf and Country Club, Craigavon": [],
+ "nominatim:Edenmore Golf and Country Club, Craigavon, Northern Ireland": [],
+ "nominatim:Edenmore Golf and, Craigavon": [
+  {
+   "lat": 54.4526839,
+   "lng": -6.2342082,
+   "type": "leisure/golf_course",
+   "name": "Edenmore Golf Course",
+   "road": "Steps Road",
+   "place": "Moira",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Enniskillen Castle, Enniskillen": [
+  {
+   "lat": 54.3461451,
+   "lng": -7.6450545,
+   "type": "historic/castle",
+   "name": "Enniskillen Castle",
+   "road": "Wellington Road",
+   "place": "Enniskillen",
+   "postcode": "BT74 7JR"
+  }
+ ],
+ "nominatim:Enniskillen, Northern Ireland": [
+  {
+   "lat": 54.3448171,
+   "lng": -7.638907,
+   "type": "place/town",
+   "name": "Enniskillen",
+   "road": "",
+   "place": "Enniskillen",
+   "postcode": "BT74 7EH"
+  },
+  {
+   "lat": 54.3478765,
+   "lng": -7.6423887,
+   "type": "boundary/administrative",
+   "name": "Enniskillen",
+   "road": "",
+   "place": "Enniskillen",
+   "postcode": ""
+  },
+  {
+   "lat": 54.6257327,
+   "lng": -6.6434046,
+   "type": "boundary/administrative",
+   "name": "Enniskillen",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Everglades Hotel, Derry": [
+  {
+   "lat": 54.9818639,
+   "lng": -7.3371849,
+   "type": "tourism/hotel",
+   "name": "Everglades Hotel",
+   "road": "Prehen Road",
+   "place": "Derry/Londonderry",
+   "postcode": "BT47 2NH"
+  }
+ ],
+ "nominatim:Field of Dreams": [],
+ "nominatim:Field of Dreams, Bangor": [],
+ "nominatim:Field of Dreams, Bangor, Northern Ireland": [],
+ "nominatim:Finnebrogue Woods": [],
+ "nominatim:Finnebrogue Woods, Downpatrick": [],
+ "nominatim:Finnebrogue Woods, Downpatrick, Northern Ireland": [],
+ "nominatim:Fir Trees Hotel, Strabane": [
+  {
+   "lat": 54.8087519,
+   "lng": -7.474265,
+   "type": "tourism/hotel",
+   "name": "Fir Trees Hotel",
+   "road": "Melmount Road",
+   "place": "Strabane",
+   "postcode": "BT82 9EA"
+  }
+ ],
+ "nominatim:Fivemiletown, Northern Ireland": [
+  {
+   "lat": 54.3784847,
+   "lng": -7.3153578,
+   "type": "place/village",
+   "name": "Fivemiletown",
+   "road": "",
+   "place": "Fivemiletown",
+   "postcode": "BT75 0PG"
+  },
+  {
+   "lat": 54.3775202,
+   "lng": -7.3173702,
+   "type": "boundary/administrative",
+   "name": "Fivemiletown",
+   "road": "",
+   "place": "Fivemiletown",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Flagstaff Lodge Hotel, Newry": [],
+ "nominatim:Flagstaff Lodge Hotel, Newry, Northern Ireland": [],
+ "nominatim:Flagstaff Lodge, Newry": [
+  {
+   "lat": 54.1511148,
+   "lng": -6.3500308,
+   "type": "amenity/restaurant",
+   "name": "Flagstaff Lodge",
+   "road": "Forkhill Road",
+   "place": "Newry",
+   "postcode": "BT35 8LZ"
+  }
+ ],
+ "nominatim:Florencecourt House": [],
+ "nominatim:Florencecourt House, Enniskillen": [],
+ "nominatim:Florencecourt House, Northern Ireland": [],
+ "nominatim:Four Trees, Moira": [],
+ "nominatim:Galgorm Resort and Spa": [
+  {
+   "lat": 54.8770842,
+   "lng": -6.3473975,
+   "type": "tourism/hotel",
+   "name": "Galgorm Resort and Spa",
+   "road": "Fenaghy Road",
+   "place": "Cullybackey",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Galgorm Resort and Spa, Ballymena": [],
+ "nominatim:Galgorm Resort and Spa, Ballymena, Northern Ireland": [],
+ "nominatim:Galgorm Resort, Ballymena": [],
+ "nominatim:Gilford, Northern Ireland": [
+  {
+   "lat": 54.3733602,
+   "lng": -6.359485,
+   "type": "place/village",
+   "name": "Gilford",
+   "road": "",
+   "place": "Gilford",
+   "postcode": "BT63 6HQ"
+  }
+ ],
+ "nominatim:Glenariffe, Northern Ireland": [
+  {
+   "lat": 55.0528559,
+   "lng": -6.0417103,
+   "type": "amenity/place_of_worship",
+   "name": "St Patrick's and St Brigid's, Glenariffe",
+   "road": "Garron Road",
+   "place": "Waterfoot",
+   "postcode": "BT44 0RF"
+  },
+  {
+   "lat": 55.0607875,
+   "lng": -6.0598737,
+   "type": "amenity/post_office",
+   "name": "Glenariffe Post Office",
+   "road": "Main Street",
+   "place": "Waterfoot",
+   "postcode": "BT44 0QR"
+  }
+ ],
+ "nominatim:Glenarm Castle": [
+  {
+   "lat": 54.9661815,
+   "lng": -5.9561326,
+   "type": "building/yes",
+   "name": "Glenarm Castle",
+   "road": "Castle Street",
+   "place": "Glenarm",
+   "postcode": "BT44 0AP"
+  }
+ ],
+ "nominatim:Glenarm Castle, Ballymena": [],
+ "nominatim:Glenarm Castle, Ballymena, Northern Ireland": [],
+ "nominatim:Glenavon House Hotel, Cookstown": [
+  {
+   "lat": 54.6339531,
+   "lng": -6.751475,
+   "type": "tourism/hotel",
+   "name": "Glenavon House Hotel",
+   "road": "Drum Road",
+   "place": "Cookstown",
+   "postcode": "BT80 8QB"
+  }
+ ],
+ "nominatim:Glenpark Estate, Omagh": [
+  {
+   "lat": 54.6837348,
+   "lng": -7.2580886,
+   "type": "tourism/hotel",
+   "name": "Glenpark Estate",
+   "road": "Glenpark Road",
+   "place": "",
+   "postcode": "BT79 7SU"
+  }
+ ],
+ "nominatim:Golf Links House, Newcastle": [
+  {
+   "lat": 54.2225353,
+   "lng": -5.8840058,
+   "type": "tourism/guest_house",
+   "name": "Golf Links House",
+   "road": "Golf Links View",
+   "place": "Newcastle",
+   "postcode": "BT33 0LN"
+  }
+ ],
+ "nominatim:Grace Hall": [],
+ "nominatim:Grace Hall, Dollingstown": [],
+ "nominatim:Grace Hall, Dollingstown, Northern Ireland": [],
+ "nominatim:Grand Central, Belfast": [
+  {
+   "lat": 54.5951509,
+   "lng": -5.9397315,
+   "type": "railway/station",
+   "name": "Belfast Grand Central",
+   "road": "Grosvenor Road",
+   "place": "Belfast City District",
+   "postcode": "BT12 4GT"
+  },
+  {
+   "lat": 54.5948849,
+   "lng": -5.9390157,
+   "type": "amenity/bus_station",
+   "name": "Belfast Grand Central Station",
+   "road": "Grosvenor Road",
+   "place": "Belfast City District",
+   "postcode": "BT12 4GX"
+  },
+  {
+   "lat": 54.5951728,
+   "lng": -5.9319007,
+   "type": "tourism/hotel",
+   "name": "Grand Central Hotel",
+   "road": "Bedford Street",
+   "place": "Belfast City District",
+   "postcode": "BT2 7EG"
+  }
+ ],
+ "nominatim:Greenvale Hotel, Cookstown": [
+  {
+   "lat": 54.6351147,
+   "lng": -6.755452,
+   "type": "tourism/hotel",
+   "name": "Greenvale Hotel",
+   "road": "Drumvale Park",
+   "place": "Cookstown",
+   "postcode": "BT80 8QB"
+  }
+ ],
+ "nominatim:Greyabbey, Northern Ireland": [
+  {
+   "lat": 54.5362024,
+   "lng": -5.5604594,
+   "type": "place/village",
+   "name": "Greyabbey",
+   "road": "",
+   "place": "Greyabbey",
+   "postcode": "BT22 2NE"
+  },
+  {
+   "lat": 54.5386108,
+   "lng": -5.5590367,
+   "type": "boundary/administrative",
+   "name": "Greyabbey",
+   "road": "",
+   "place": "Greyabbey",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Greys Hotel": [],
+ "nominatim:Greys Hotel, Bushmills": [],
+ "nominatim:Greys Hotel, Bushmills, Northern Ireland": [],
+ "nominatim:Greys, Bushmills": [],
+ "nominatim:Guildhall, Derry": [
+  {
+   "lat": 54.9976026,
+   "lng": -7.3193957,
+   "type": "amenity/townhall",
+   "name": "Guildhall",
+   "road": "Whittaker Street",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 6DF"
+  }
+ ],
+ "nominatim:Halfway House, Banbridge": [
+  {
+   "lat": 54.3781563,
+   "lng": -6.1956899,
+   "type": "amenity/restaurant",
+   "name": "Halfway House",
+   "road": "Halfway Road",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Harbour House": [
+  {
+   "lat": 54.1982712,
+   "lng": -5.8873939,
+   "type": "amenity/pub",
+   "name": "Harbour House",
+   "road": "South Promenade",
+   "place": "Newcastle",
+   "postcode": "BT33 0EX"
+  }
+ ],
+ "nominatim:Harbour House, Derry": [],
+ "nominatim:Harbour House, Northern Ireland": [
+  {
+   "lat": 54.1982712,
+   "lng": -5.8873939,
+   "type": "amenity/pub",
+   "name": "Harbour House",
+   "road": "South Promenade",
+   "place": "Newcastle",
+   "postcode": "BT33 0EX"
+  }
+ ],
+ "nominatim:Harbourview Hotel": [],
+ "nominatim:Harbourview Hotel, Carnlough": [],
+ "nominatim:Harbourview Hotel, Carnlough, Northern Ireland": [],
+ "nominatim:Harbourview, Carnlough": [],
+ "nominatim:Hastings Europa Hotel": [],
+ "nominatim:Hastings Europa Hotel, Belfast": [],
+ "nominatim:Hastings Europa Hotel, Belfast, Northern Ireland": [],
+ "nominatim:Hastings Europa, Belfast": [],
+ "nominatim:Hazelbank Cottages": [],
+ "nominatim:Hazelbank Cottages, Ballynahinch": [],
+ "nominatim:Hazelbank Cottages, Ballynahinch, Northern Ireland": [],
+ "nominatim:Hedges Hotel": [
+  {
+   "lat": 55.1387867,
+   "lng": -6.3843773,
+   "type": "tourism/hotel",
+   "name": "The Hedges Hotel",
+   "road": "Ballinlea Road",
+   "place": "",
+   "postcode": "BT53 8TU"
+  }
+ ],
+ "nominatim:Hedges Hotel, Armoy": [],
+ "nominatim:Hedges Hotel, Armoy, Northern Ireland": [],
+ "nominatim:Hedges, Armoy": [],
+ "nominatim:Hilden Brewery, Lisburn": [
+  {
+   "lat": 54.5202819,
+   "lng": -6.0257771,
+   "type": "craft/brewery",
+   "name": "Hilden Brewing Company",
+   "road": "Grand Street",
+   "place": "Lisburn",
+   "postcode": "BT27 4TY"
+  }
+ ],
+ "nominatim:Hill of the O’Neill and Ranfurly House": [],
+ "nominatim:Hill of the O’Neill and Ranfurly House, Dungannon": [],
+ "nominatim:Hill of the O’Neill and Ranfurly House, Dungannon, Northern Ireland": [],
+ "nominatim:Hillmount House, Larne": [
+  {
+   "lat": 54.8774618,
+   "lng": -5.8365268,
+   "type": "amenity/events_venue",
+   "name": "Hillmount House",
+   "road": "Old Glenarm Road",
+   "place": "Larne",
+   "postcode": "BT40 2LG"
+  }
+ ],
+ "nominatim:Hillsborough Castle, Hillsborough": [
+  {
+   "lat": 54.4614056,
+   "lng": -6.086076,
+   "type": "building/yes",
+   "name": "Hillsborough Castle",
+   "road": "The Square",
+   "place": "Royal Hillsborough",
+   "postcode": "BT26 6AG"
+  },
+  {
+   "lat": 54.4668778,
+   "lng": -6.0904473,
+   "type": "highway/motorway_junction",
+   "name": "Hillsborough Castle",
+   "road": "Hillsborough Bypass",
+   "place": "Royal Hillsborough",
+   "postcode": "BT26 6AG"
+  }
+ ],
+ "nominatim:Hillsborough, Northern Ireland": [
+  {
+   "lat": 54.462813,
+   "lng": -6.0830844,
+   "type": "place/village",
+   "name": "Royal Hillsborough",
+   "road": "",
+   "place": "Royal Hillsborough",
+   "postcode": "BT26 6AB"
+  },
+  {
+   "lat": 54.4577818,
+   "lng": -6.091781,
+   "type": "boundary/administrative",
+   "name": "Hillsborough",
+   "road": "",
+   "place": "Royal Hillsborough",
+   "postcode": ""
+  },
+  {
+   "lat": 54.4729076,
+   "lng": -6.0776736,
+   "type": "landuse/grass",
+   "name": "Hillsborough",
+   "road": "",
+   "place": "Royal Hillsborough",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Hilltown, Northern Ireland": [
+  {
+   "lat": 54.1949727,
+   "lng": -6.1445434,
+   "type": "place/village",
+   "name": "Hilltown",
+   "road": "",
+   "place": "Hilltown",
+   "postcode": "BT34 5UH"
+  }
+ ],
+ "nominatim:Hilton Hotel, Templepatrick": [
+  {
+   "lat": 54.7098187,
+   "lng": -6.0941618,
+   "type": "tourism/hotel",
+   "name": "DoubleTree by Hilton Belfast Templepatrick",
+   "road": "Paradise Walk",
+   "place": "Templepatrick",
+   "postcode": "BT39 0DD"
+  }
+ ],
+ "nominatim:Hinch Distillery, Lisburn": [],
+ "nominatim:Holywood, Northern Ireland": [
+  {
+   "lat": 54.6404494,
+   "lng": -5.8361723,
+   "type": "place/town",
+   "name": "Holywood",
+   "road": "",
+   "place": "Holywood",
+   "postcode": "BT18 9AE"
+  },
+  {
+   "lat": 54.6315674,
+   "lng": -5.8300084,
+   "type": "boundary/administrative",
+   "name": "Holywood",
+   "road": "",
+   "place": "Holywood",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Hugh McCann's, Newcastle": [
+  {
+   "lat": 54.2059906,
+   "lng": -5.893239,
+   "type": "amenity/pub",
+   "name": "Hugh McCann's Cafe/Bar",
+   "road": "Central Promenade",
+   "place": "Newcastle",
+   "postcode": "BT33 0EU"
+  }
+ ],
+ "nominatim:Ivanhoe Inn and Hotel": [],
+ "nominatim:Ivanhoe Inn and Hotel, Carryduff": [],
+ "nominatim:Ivanhoe Inn and Hotel, Carryduff, Northern Ireland": [],
+ "nominatim:Ivanhoe Inn and, Carryduff": [],
+ "nominatim:Kells, Northern Ireland": [
+  {
+   "lat": 54.8084156,
+   "lng": -6.2204439,
+   "type": "place/village",
+   "name": "Kells",
+   "road": "",
+   "place": "Kells",
+   "postcode": "BT42 3JH"
+  },
+  {
+   "lat": 54.8054969,
+   "lng": -6.2299419,
+   "type": "boundary/administrative",
+   "name": "Kells",
+   "road": "",
+   "place": "Kells",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Kesh, Northern Ireland": [
+  {
+   "lat": 54.5233599,
+   "lng": -7.7225138,
+   "type": "place/village",
+   "name": "Kesh",
+   "road": "",
+   "place": "Kesh",
+   "postcode": "BT93 1TF"
+  }
+ ],
+ "nominatim:Killeavy Castle, Newry": [
+  {
+   "lat": 54.1231792,
+   "lng": -6.4107255,
+   "type": "building/yes",
+   "name": "Killeavy Castle",
+   "road": "Slieve Gullion Forest Drive",
+   "place": "Meigh",
+   "postcode": "BT35 8LQ"
+  },
+  {
+   "lat": 54.1226975,
+   "lng": -6.4091926,
+   "type": "tourism/hotel",
+   "name": "Killeavy Castle Estate",
+   "road": "Ballintemple Road",
+   "place": "Newry",
+   "postcode": "BT35 8LQ"
+  }
+ ],
+ "nominatim:Killyhevlin Hotel, Enniskillen": [
+  {
+   "lat": 54.3304619,
+   "lng": -7.6204404,
+   "type": "tourism/hotel",
+   "name": "Killyhevlin Hotel",
+   "road": "Dublin Road",
+   "place": "Enniskillen",
+   "postcode": "BT74 6RW"
+  }
+ ],
+ "nominatim:Killyleagh, Northern Ireland": [
+  {
+   "lat": 54.3990651,
+   "lng": -5.6505384,
+   "type": "place/town",
+   "name": "Killyleagh",
+   "road": "",
+   "place": "Killyleagh",
+   "postcode": "BT30 9QQ"
+  }
+ ],
+ "nominatim:Killymoon Castle, Cookstown": [
+  {
+   "lat": 54.629813,
+   "lng": -6.7270354,
+   "type": "historic/manor",
+   "name": "Killymoon Castle",
+   "road": "Castle Road",
+   "place": "Cookstown",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Kilmore Country House": [],
+ "nominatim:Kilmore Country House, Coleraine": [],
+ "nominatim:Kilmore Country House, Northern Ireland": [],
+ "nominatim:Kiltonga Hall": [
+  {
+   "lat": 54.5988641,
+   "lng": -5.7234846,
+   "type": "amenity/place_of_worship",
+   "name": "Quakers' Church",
+   "road": "Belfast Road",
+   "place": "Bradshaw's Brae",
+   "postcode": "BT23 4FU"
+  }
+ ],
+ "nominatim:Kiltonga Hall, Newtownards": [],
+ "nominatim:Kiltonga Hall, Newtownards, Northern Ireland": [],
+ "nominatim:La Mon Hotel and Country Club, Castlereagh": [],
+ "nominatim:La Mon Hotel and Country Club, Castlereagh, Belfast": [],
+ "nominatim:La Mon Hotel and Country Club, Castlereagh, Belfast, Northern Ireland": [],
+ "nominatim:Lansdowne Hotel, Belfast": [
+  {
+   "lat": 54.6345971,
+   "lng": -5.9364263,
+   "type": "tourism/hotel",
+   "name": "The Lansdowne Hotel",
+   "road": "Antrim Road",
+   "place": "Belfast City District",
+   "postcode": "BT15 4EF"
+  }
+ ],
+ "nominatim:Laragh Lodge": [
+  {
+   "lat": 55.0992532,
+   "lng": -6.6224171,
+   "type": "building/detached",
+   "name": "Laragh Lodge",
+   "road": "Loughan Road",
+   "place": "Fish Loughan",
+   "postcode": "BT52 1UD"
+  },
+  {
+   "lat": 55.0179571,
+   "lng": -6.0982881,
+   "type": "amenity/restaurant",
+   "name": "Laragh Lodge",
+   "road": "Glen Road",
+   "place": "",
+   "postcode": "BT44 0RG"
+  }
+ ],
+ "nominatim:Laragh Lodge, Glenariffe": [],
+ "nominatim:Laragh Lodge, Glenariffe, Northern Ireland": [],
+ "nominatim:Larchfield Estate, Lisburn": [
+  {
+   "lat": 54.4590751,
+   "lng": -5.9795087,
+   "type": "leisure/park",
+   "name": "Larchfield Estate",
+   "road": "",
+   "place": "Bailliesmill",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Larne Masonic Hall": [],
+ "nominatim:Larne Masonic Hall, Larne": [],
+ "nominatim:Larne Masonic Hall, Larne, Northern Ireland": [],
+ "nominatim:Larne Town Hall, Ballymena": [],
+ "nominatim:Larne Town Hall, Northern Ireland": [
+  {
+   "lat": 54.8516652,
+   "lng": -5.8215277,
+   "type": "amenity/townhall",
+   "name": "Larne Town Hall",
+   "road": "Upper Cross Street",
+   "place": "Larne",
+   "postcode": "BT40 1RN"
+  }
+ ],
+ "nominatim:Larne, Northern Ireland": [
+  {
+   "lat": 54.8508458,
+   "lng": -5.8183116,
+   "type": "place/town",
+   "name": "Larne",
+   "road": "",
+   "place": "Larne",
+   "postcode": "BT40 1JS"
+  }
+ ],
+ "nominatim:Leighinmohr House Hotel, Ballymena": [
+  {
+   "lat": 54.8575459,
+   "lng": -6.2849888,
+   "type": "tourism/hotel",
+   "name": "Leighinmohr House Hotel",
+   "road": "Leighinmohr Avenue",
+   "place": "Ballymena",
+   "postcode": "BT42 2AN"
+  }
+ ],
+ "nominatim:Limavady, Northern Ireland": [
+  {
+   "lat": 55.0504857,
+   "lng": -6.9505134,
+   "type": "place/town",
+   "name": "Limavady",
+   "road": "",
+   "place": "Limavady",
+   "postcode": "BT49 0AB"
+  }
+ ],
+ "nominatim:Limepark, Armoy": [
+  {
+   "lat": 55.1197203,
+   "lng": -6.3279344,
+   "type": "amenity/arts_centre",
+   "name": "Limepark Arts & Cottages",
+   "road": "Drones Road",
+   "place": "Armoy",
+   "postcode": "BT53 8XJ"
+  }
+ ],
+ "nominatim:Linen Mill Studios, Banbridge": [
+  {
+   "lat": 54.3421093,
+   "lng": -6.2183366,
+   "type": "highway/service",
+   "name": "Linen Mill Studios",
+   "road": "Linen Mill Studios",
+   "place": "Banbridge",
+   "postcode": "BT32 3SG"
+  },
+  {
+   "lat": 54.3402969,
+   "lng": -6.2159134,
+   "type": "amenity/studio",
+   "name": "Linen Mill Studios",
+   "road": "Castlewellan Road",
+   "place": "Banbridge",
+   "postcode": "BT32 3SG"
+  }
+ ],
+ "nominatim:Lisbellaw, Northern Ireland": [
+  {
+   "lat": 54.3171222,
+   "lng": -7.5373355,
+   "type": "place/village",
+   "name": "Lisbellaw",
+   "road": "",
+   "place": "Lisbellaw",
+   "postcode": "BT94 5DW"
+  }
+ ],
+ "nominatim:Lisburn, Northern Ireland": [
+  {
+   "lat": 54.5112856,
+   "lng": -6.046717,
+   "type": "place/city",
+   "name": "Lisburn",
+   "road": "",
+   "place": "Lisburn",
+   "postcode": "BT28 1BJ"
+  }
+ ],
+ "nominatim:Lissan House Trust": [],
+ "nominatim:Lissan House Trust, Cookstown": [],
+ "nominatim:Lissan House Trust, Cookstown, Northern Ireland": [],
+ "nominatim:Lissanoure Castle": [],
+ "nominatim:Lissanoure Castle, Loughguile": [],
+ "nominatim:Lissanoure Castle, Loughguile, Northern Ireland": [],
+ "nominatim:Lodge Hotel, Coleraine": [
+  {
+   "lat": 55.1261704,
+   "lng": -6.654979,
+   "type": "tourism/hotel",
+   "name": "Lodge Hotel & Travelstop",
+   "road": "Lodge Road",
+   "place": "Coleraine",
+   "postcode": "BT52 1NF"
+  }
+ ],
+ "nominatim:Lough Erne Resort, Enniskillen": [],
+ "nominatim:Lough Erne Resort, Northern Ireland": [
+  {
+   "lat": 54.3976492,
+   "lng": -7.6915274,
+   "type": "leisure/golf_course",
+   "name": "Lough Erne Golf Resort",
+   "road": "Ely Lodge",
+   "place": "Drumcose",
+   "postcode": ""
+  },
+  {
+   "lat": 54.3977056,
+   "lng": -7.6933028,
+   "type": "tourism/hotel",
+   "name": "Lough Erne Golf Resort",
+   "road": "Dovecote Way",
+   "place": "Ballyhose",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Loughguile, Northern Ireland": [
+  {
+   "lat": 55.0630961,
+   "lng": -6.30547,
+   "type": "place/village",
+   "name": "Loughguile",
+   "road": "",
+   "place": "Loughguile",
+   "postcode": "BT44 9JR"
+  }
+ ],
+ "nominatim:Lurgan Golf Club, Craigavon": [],
+ "nominatim:Lurgan Golf Club, Northern Ireland": [],
+ "nominatim:Lurgan, Craigavon": [
+  {
+   "lat": 54.4818968,
+   "lng": -6.3632911,
+   "type": "highway/motorway_junction",
+   "name": "Lurgan",
+   "road": "M1",
+   "place": "Craigavon",
+   "postcode": "BT66 6NQ"
+  },
+  {
+   "lat": 54.460824,
+   "lng": -6.3292491,
+   "type": "place/town",
+   "name": "Lurgan",
+   "road": "",
+   "place": "Lurgan",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Lurgan, Northern Ireland": [
+  {
+   "lat": 54.460824,
+   "lng": -6.3292491,
+   "type": "place/town",
+   "name": "Lurgan",
+   "road": "",
+   "place": "Lurgan",
+   "postcode": ""
+  },
+  {
+   "lat": 54.4621925,
+   "lng": -6.3307722,
+   "type": "boundary/administrative",
+   "name": "Lurgan",
+   "road": "",
+   "place": "Lurgan",
+   "postcode": ""
+  },
+  {
+   "lat": 54.3168453,
+   "lng": -7.4126339,
+   "type": "boundary/administrative",
+   "name": "Lurgan",
+   "road": "",
+   "place": "Brookeborough",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Lusty Beg Island": [
+  {
+   "lat": 54.5082084,
+   "lng": -7.8321034,
+   "type": "boundary/administrative",
+   "name": "Lusty Beg Island",
+   "road": "",
+   "place": "Lusty Beg Island",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Lusty Beg Island, Kesh": [],
+ "nominatim:Lusty Beg Island, Kesh, Northern Ireland": [],
+ "nominatim:Lyric Theatre, Belfast": [
+  {
+   "lat": 54.5771903,
+   "lng": -5.9309562,
+   "type": "amenity/theatre",
+   "name": "Lyric Theatre",
+   "road": "Ridgeway Street",
+   "place": "Belfast City District",
+   "postcode": "BT9 5BJ"
+  }
+ ],
+ "nominatim:Maghera, Northern Ireland": [
+  {
+   "lat": 54.8448023,
+   "lng": -6.6718648,
+   "type": "place/town",
+   "name": "Maghera",
+   "road": "",
+   "place": "Maghera",
+   "postcode": "BT46 5AE"
+  },
+  {
+   "lat": 54.2415527,
+   "lng": -5.8991809,
+   "type": "place/hamlet",
+   "name": "Maghera",
+   "road": "",
+   "place": "Newcastle",
+   "postcode": "BT31 9HE"
+  }
+ ],
+ "nominatim:Magherafelt, Northern Ireland": [
+  {
+   "lat": 54.7544757,
+   "lng": -6.6078073,
+   "type": "place/town",
+   "name": "Magherafelt",
+   "road": "",
+   "place": "Magherafelt",
+   "postcode": "BT45 6EE"
+  },
+  {
+   "lat": 54.7521713,
+   "lng": -6.605563,
+   "type": "boundary/civil_parish",
+   "name": "Magherafelt",
+   "road": "",
+   "place": "Magherafelt",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Magheramorne Estate": [],
+ "nominatim:Magheramorne Estate, Ballymena": [],
+ "nominatim:Magheramorne Estate, Northern Ireland": [],
+ "nominatim:Maldron Hotel at Belfast International Airport": [],
+ "nominatim:Maldron Hotel at Belfast International Airport, Antrim": [],
+ "nominatim:Maldron Hotel at Belfast International Airport, Northern Ireland": [],
+ "nominatim:Maldron Hotel, Derry": [
+  {
+   "lat": 54.9961008,
+   "lng": -7.3226497,
+   "type": "tourism/hotel",
+   "name": "Maldron Hotel Derry",
+   "road": "Butcher Street",
+   "place": "Derry/Londonderry",
+   "postcode": "BT48 6HL"
+  }
+ ],
+ "nominatim:Malmaison Hotel, Belfast": [
+  {
+   "lat": 54.5999869,
+   "lng": -5.9239427,
+   "type": "tourism/hotel",
+   "name": "Malmaison",
+   "road": "Victoria Street",
+   "place": "Belfast City District",
+   "postcode": "BT1 3GH"
+  },
+  {
+   "lat": 54.5999858,
+   "lng": -5.9239164,
+   "type": "tourism/hotel",
+   "name": "Malmaison",
+   "road": "Marlborough Street",
+   "place": "Belfast City District",
+   "postcode": "BT1 3GH"
+  }
+ ],
+ "nominatim:Malone House, Belfast": [
+  {
+   "lat": 54.552997,
+   "lng": -5.9580063,
+   "type": "building/yes",
+   "name": "Malone House",
+   "road": "Lose Your Barnett (Red Trail)",
+   "place": "Belfast City District",
+   "postcode": "BT9 5PB"
+  }
+ ],
+ "nominatim:Malone Lodge Hotel, Belfast": [
+  {
+   "lat": 54.5817308,
+   "lng": -5.9424489,
+   "type": "tourism/hotel",
+   "name": "Malone Lodge Hotel Belfast",
+   "road": "Eglantine Avenue",
+   "place": "Belfast City District",
+   "postcode": "BT9 6DN"
+  }
+ ],
+ "nominatim:Manor House": [
+  {
+   "lat": 54.2560775,
+   "lng": -5.8496611,
+   "type": "building/yes",
+   "name": "Manor House",
+   "road": "Main Street",
+   "place": "Dundrum",
+   "postcode": "BT33 0LX"
+  }
+ ],
+ "nominatim:Manor House Country Hotel": [],
+ "nominatim:Manor House Country Hotel, Enniskillen": [],
+ "nominatim:Manor House Country Hotel, Northern Ireland": [],
+ "nominatim:Manor House Country, Enniskillen": [],
+ "nominatim:Manor House, Rathlin Island": [],
+ "nominatim:Manor House, Rathlin Island, Northern Ireland": [],
+ "nominatim:Marine Hotel, Ballycastle": [
+  {
+   "lat": 55.2049934,
+   "lng": -6.2399534,
+   "type": "tourism/hotel",
+   "name": "Marine Hotel",
+   "road": "North Street",
+   "place": "Ballycastle",
+   "postcode": "BT54 6BN"
+  }
+ ],
+ "nominatim:McConnell’s Distillery": [],
+ "nominatim:McConnell’s Distillery, Belfast": [],
+ "nominatim:McConnell’s Distillery, Belfast, Northern Ireland": [],
+ "nominatim:Mellon Country Hotel, Omagh": [
+  {
+   "lat": 54.6767678,
+   "lng": -7.3528981,
+   "type": "tourism/hotel",
+   "name": "Mellon Country Hotel",
+   "road": "A5",
+   "place": "Newtownstewart",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Millbrook Lodge Hotel, Ballynahinch": [
+  {
+   "lat": 54.3916852,
+   "lng": -5.8836467,
+   "type": "highway/bus_stop",
+   "name": "Millbrook Lodge Hotel",
+   "road": "Drumaness Road",
+   "place": "Ballynahinch",
+   "postcode": "BT24 8LS"
+  },
+  {
+   "lat": 54.3911061,
+   "lng": -5.8852198,
+   "type": "tourism/hotel",
+   "name": "Millbrook Lodge Hotel",
+   "road": "Drumaness Road",
+   "place": "Ballynahinch",
+   "postcode": "BT24 8LS"
+  }
+ ],
+ "nominatim:Moira, Northern Ireland": [
+  {
+   "lat": 54.4792925,
+   "lng": -6.2301652,
+   "type": "place/town",
+   "name": "Moira",
+   "road": "",
+   "place": "Moira",
+   "postcode": "BT67 0LE"
+  },
+  {
+   "lat": 54.4921322,
+   "lng": -6.2140621,
+   "type": "railway/stop",
+   "name": "Moira",
+   "road": "Station Road",
+   "place": "Moira",
+   "postcode": "BT67 0LT"
+  },
+  {
+   "lat": 54.4921069,
+   "lng": -6.2141498,
+   "type": "railway/station",
+   "name": "Moira",
+   "road": "Station Road",
+   "place": "Maghaberry",
+   "postcode": "BT67 0LT"
+  }
+ ],
+ "nominatim:Murphy’s Bar and Restaurant, Downpatrick": [],
+ "nominatim:Murphy’s Bar and Restaurant, Downpatrick, Northern Ireland": [],
+ "nominatim:Murphy’s Bar and, Downpatrick": [
+  {
+   "lat": 54.3268432,
+   "lng": -5.7178272,
+   "type": "amenity/bar",
+   "name": "Murphy's Bar & Restaurant",
+   "road": "Market Street",
+   "place": "Downpatrick",
+   "postcode": "BT30 6LZ"
+  }
+ ],
+ "nominatim:Mussenden Temple, Downhill": [
+  {
+   "lat": 55.1677625,
+   "lng": -6.8110001,
+   "type": "tourism/attraction",
+   "name": "Mussenden Temple",
+   "road": "Mussenden Road",
+   "place": "Castlerock",
+   "postcode": "BT51 4RP"
+  }
+ ],
+ "nominatim:Newcastle, Northern Ireland": [
+  {
+   "lat": 54.2118323,
+   "lng": -5.8897216,
+   "type": "place/town",
+   "name": "Newcastle",
+   "road": "",
+   "place": "Newcastle",
+   "postcode": "BT33 0AE"
+  }
+ ],
+ "nominatim:Newforge House": [],
+ "nominatim:Newforge House, Craigavon": [],
+ "nominatim:Newforge House, Craigavon, Northern Ireland": [],
+ "nominatim:Newry, Northern Ireland": [
+  {
+   "lat": 54.1775283,
+   "lng": -6.337506,
+   "type": "place/city",
+   "name": "Newry",
+   "road": "",
+   "place": "Newry",
+   "postcode": "BT34 1BT"
+  }
+ ],
+ "nominatim:Newtownabbey, Northern Ireland": [
+  {
+   "lat": 54.6778816,
+   "lng": -5.9249199,
+   "type": "place/town",
+   "name": "Newtownabbey",
+   "road": "",
+   "place": "Newtownabbey",
+   "postcode": "BT37 9QS"
+  }
+ ],
+ "nominatim:Newtownards, Northern Ireland": [
+  {
+   "lat": 54.5933779,
+   "lng": -5.6960935,
+   "type": "place/town",
+   "name": "Newtownards",
+   "road": "",
+   "place": "Newtownards",
+   "postcode": "BT23 4FA"
+  }
+ ],
+ "nominatim:Newtownbutler, Northern Ireland": [
+  {
+   "lat": 54.1825047,
+   "lng": -7.3609147,
+   "type": "place/village",
+   "name": "Newtownbutler",
+   "road": "",
+   "place": "Newtownbutler",
+   "postcode": "BT92 8JW"
+  }
+ ],
+ "nominatim:Old Court Barn": [],
+ "nominatim:Old Court Barn, Strangford": [],
+ "nominatim:Old Court Barn, Strangford, Northern Ireland": [],
+ "nominatim:Old Courthouse, Antrim": [
+  {
+   "lat": 54.7151744,
+   "lng": -6.2208934,
+   "type": "amenity/theatre",
+   "name": "The Old Courthouse",
+   "road": "Market Square",
+   "place": "Antrim",
+   "postcode": "BT41 4AW"
+  }
+ ],
+ "nominatim:Old Rectory, Killyman, Dungannon": [],
+ "nominatim:Omagh, Northern Ireland": [
+  {
+   "lat": 54.5992486,
+   "lng": -7.3029907,
+   "type": "place/town",
+   "name": "Omagh",
+   "road": "",
+   "place": "Omagh",
+   "postcode": "BT78 1ER"
+  },
+  {
+   "lat": 54.6002767,
+   "lng": -7.3022713,
+   "type": "boundary/administrative",
+   "name": "Omagh",
+   "road": "",
+   "place": "Omagh",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Orange Tree House, Greyabbey": [
+  {
+   "lat": 54.5337874,
+   "lng": -5.5615532,
+   "type": "building/yes",
+   "name": "Orange Tree House",
+   "road": "The Pound",
+   "place": "Greyabbey",
+   "postcode": "BT22 2QA"
+  }
+ ],
+ "nominatim:Oranmore House, Ballymena": [
+  {
+   "lat": 54.8596998,
+   "lng": -6.2980014,
+   "type": "tourism/hotel",
+   "name": "Oranmore House",
+   "road": "Galgorm Road",
+   "place": "Ballymena",
+   "postcode": "BT42 1HJ"
+  }
+ ],
+ "nominatim:Parkanaur Manor House": [
+  {
+   "lat": 54.4967838,
+   "lng": -6.8584364,
+   "type": "historic/castle",
+   "name": "Parkanaur Manor House",
+   "road": "Old Ballygawley Road",
+   "place": "Castlecaulfield",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Parkanaur Manor House, Dungannon": [],
+ "nominatim:Parkanaur Manor House, Dungannon, Northern Ireland": [],
+ "nominatim:Pitchers Wine Bar and Restaurant": [],
+ "nominatim:Pitchers Wine Bar and Restaurant, Derry": [],
+ "nominatim:Pitchers Wine Bar and Restaurant, Northern Ireland": [],
+ "nominatim:Pitchers Wine Bar and, Derry": [],
+ "nominatim:Portadown Town Hall": [
+  {
+   "lat": 54.4223804,
+   "lng": -6.4417993,
+   "type": "amenity/theatre",
+   "name": "Town Hall Theatre",
+   "road": "Edward Street",
+   "place": "Portadown",
+   "postcode": "BT62 1HZ"
+  }
+ ],
+ "nominatim:Portadown Town Hall, Craigavon": [],
+ "nominatim:Portadown Town Hall, Northern Ireland": [],
+ "nominatim:Portaferry Hotel, Portaferry": [],
+ "nominatim:Portaferry Hotel, Portaferry, Northern Ireland": [],
+ "nominatim:Portaferry, Northern Ireland": [
+  {
+   "lat": 54.3814602,
+   "lng": -5.5474766,
+   "type": "place/village",
+   "name": "Portaferry",
+   "road": "",
+   "place": "Portaferry",
+   "postcode": "BT22 1LR"
+  }
+ ],
+ "nominatim:Portaferry, Portaferry": [
+  {
+   "lat": 54.380419,
+   "lng": -5.5503411,
+   "type": "amenity/ferry_terminal",
+   "name": "Portaferry",
+   "road": "The Strand",
+   "place": "Portaferry",
+   "postcode": "BT22 1NZ"
+  },
+  {
+   "lat": 54.3964289,
+   "lng": -5.5185339,
+   "type": "boundary/registrars_district",
+   "name": "Portaferry Registrars District",
+   "road": "",
+   "place": "Cloghy",
+   "postcode": ""
+  },
+  {
+   "lat": 54.3991977,
+   "lng": -5.5398369,
+   "type": "boundary/historic",
+   "name": "Portaferry ED",
+   "road": "",
+   "place": "Portaferry",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Portglenone, Northern Ireland": [
+  {
+   "lat": 54.8733857,
+   "lng": -6.4751493,
+   "type": "place/village",
+   "name": "Portglenone",
+   "road": "",
+   "place": "Portglenone",
+   "postcode": "BT44 8AD"
+  }
+ ],
+ "nominatim:Portrush Atlantic Hotel, Coleraine": [],
+ "nominatim:Portrush Atlantic Hotel, Northern Ireland": [
+  {
+   "lat": 55.2078802,
+   "lng": -6.6550225,
+   "type": "tourism/hotel",
+   "name": "The Portrush Atlantic Hotel",
+   "road": "Main Street",
+   "place": "Portrush",
+   "postcode": "BT56 8BN"
+  }
+ ],
+ "nominatim:Portrush Town Hall": [
+  {
+   "lat": 55.2047467,
+   "lng": -6.653095,
+   "type": "information/office",
+   "name": "Town Hall",
+   "road": "Kerr Street",
+   "place": "Portrush",
+   "postcode": "BT56 8DG"
+  }
+ ],
+ "nominatim:Portrush Town Hall, Coleraine": [],
+ "nominatim:Portrush Town Hall, Northern Ireland": [],
+ "nominatim:Portrush, Northern Ireland": [
+  {
+   "lat": 55.2045078,
+   "lng": -6.6528595,
+   "type": "place/town",
+   "name": "Portrush",
+   "road": "",
+   "place": "Portrush",
+   "postcode": "BT56 8DX"
+  },
+  {
+   "lat": 55.2047147,
+   "lng": -6.6518928,
+   "type": "boundary/administrative",
+   "name": "Portrush",
+   "road": "",
+   "place": "Portrush",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Portstewart Golf Club, Coleraine": [
+  {
+   "lat": 55.1713946,
+   "lng": -6.7251746,
+   "type": "building/yes",
+   "name": "Portstewart Golf Club",
+   "road": "Strand Road",
+   "place": "Portstewart",
+   "postcode": "BT55 7PG"
+  }
+ ],
+ "nominatim:Pot Belly Restaurant, Gilford": [
+  {
+   "lat": 54.3769777,
+   "lng": -6.3336926,
+   "type": "amenity/restaurant",
+   "name": "Pot Belly",
+   "road": "Banbridge Road",
+   "place": "Lawrencetown",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Queen's Film Theatre": [
+  {
+   "lat": 54.5854753,
+   "lng": -5.9339518,
+   "type": "amenity/cinema",
+   "name": "Queens Film Theatre",
+   "road": "University Square",
+   "place": "Belfast City District",
+   "postcode": "BT7 1PA"
+  }
+ ],
+ "nominatim:Queen's Film Theatre, Belfast": [],
+ "nominatim:Queen's Film Theatre, Belfast, Northern Ireland": [],
+ "nominatim:Queen's Quay, Northern Ireland": [
+  {
+   "lat": 54.6015919,
+   "lng": -5.9184187,
+   "type": "highway/unclassified",
+   "name": "Queen's Quay",
+   "road": "Queen's Quay",
+   "place": "Belfast City District",
+   "postcode": "BT1 3NH"
+  },
+  {
+   "lat": 54.5999319,
+   "lng": -5.9191369,
+   "type": "highway/unclassified",
+   "name": "Queen's Quay",
+   "road": "Queen's Quay",
+   "place": "Belfast City District",
+   "postcode": "BT1 3WH"
+  },
+  {
+   "lat": 54.6022512,
+   "lng": -5.9181628,
+   "type": "highway/unclassified",
+   "name": "Queen's Quay",
+   "road": "Queen's Quay",
+   "place": "Belfast City District",
+   "postcode": "BT3 9QQ"
+  }
+ ],
+ "nominatim:Queen's University Belfast, Belfast": [
+  {
+   "lat": 54.5843022,
+   "lng": -5.9336528,
+   "type": "amenity/university",
+   "name": "Queen's University Belfast",
+   "road": "College Park Avenue",
+   "place": "Belfast City District",
+   "postcode": "BT7 1HL"
+  }
+ ],
+ "nominatim:Raceview Mill, Northern Ireland": [],
+ "nominatim:Rathlin Island, Northern Ireland": [
+  {
+   "lat": 55.2858345,
+   "lng": -6.1829114,
+   "type": "place/island",
+   "name": "Rathlin Island",
+   "road": "",
+   "place": "Church Bay",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Registrar’s office, Antrim, Antrim": [
+  {
+   "lat": 54.5931462,
+   "lng": -5.9280786,
+   "type": "office/government",
+   "name": "Registrar's Office",
+   "road": "Adelaide Street",
+   "place": "Belfast City District",
+   "postcode": "BT2 8FE"
+  }
+ ],
+ "nominatim:Registrar’s office, Ards, Newtownards": [],
+ "nominatim:Registrar’s office, Armagh, Armagh": [],
+ "nominatim:Registrar’s office, Ballycastle, Ballycastle": [],
+ "nominatim:Registrar’s office, Ballymena, Ballymena": [],
+ "nominatim:Registrar’s office, Ballymoney, Ballymoney": [],
+ "nominatim:Registrar’s office, Banbridge, Banbridge": [],
+ "nominatim:Registrar’s office, Bangor, Bangor": [],
+ "nominatim:Registrar’s office, Belfast City Hall, Belfast": [],
+ "nominatim:Registrar’s office, Carrickfergus, Carrickfergus": [],
+ "nominatim:Registrar’s office, Coleraine, Coleraine": [],
+ "nominatim:Registrar’s office, Cookstown, Cookstown": [],
+ "nominatim:Registrar’s office, Craigavon, Craigavon": [],
+ "nominatim:Registrar’s office, Downpatrick, Downpatrick": [],
+ "nominatim:Registrar’s office, Dungannon, Dungannon": [],
+ "nominatim:Registrar’s office, Enniskillen, Enniskillen": [],
+ "nominatim:Registrar’s office, Larne, Larne": [],
+ "nominatim:Registrar’s office, Limavady, Limavady": [],
+ "nominatim:Registrar’s office, Lisburn, Lisburn": [],
+ "nominatim:Registrar’s office, Magherafelt, Magherafelt": [],
+ "nominatim:Registrar’s office, Newry, Newry": [],
+ "nominatim:Registrar’s office, Newtownabbey, Newtownabbey": [],
+ "nominatim:Registrar’s office, Omagh, Omagh": [],
+ "nominatim:Riddel Hall, QUB": [],
+ "nominatim:Riddel Hall, QUB, Belfast": [],
+ "nominatim:Riddel Hall, QUB, Belfast, Northern Ireland": [],
+ "nominatim:Riverdale": [
+  {
+   "lat": 54.8491545,
+   "lng": -6.3024924,
+   "type": "landuse/residential",
+   "name": "Riverdale",
+   "road": "",
+   "place": "Ballymena",
+   "postcode": ""
+  },
+  {
+   "lat": 54.7559245,
+   "lng": -6.3221364,
+   "type": "landuse/residential",
+   "name": "Riverdale",
+   "road": "",
+   "place": "Randalstown",
+   "postcode": ""
+  },
+  {
+   "lat": 54.5207303,
+   "lng": -6.7252767,
+   "type": "place/locality",
+   "name": "Riverdale",
+   "road": "",
+   "place": "The Bush",
+   "postcode": "BT71 6QU"
+  }
+ ],
+ "nominatim:Riverdale, Craigavon": [
+  {
+   "lat": 54.4338783,
+   "lng": -6.2750605,
+   "type": "highway/residential",
+   "name": "Riverdale Crescent",
+   "road": "Riverdale Crescent",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Riverdale, Craigavon, Northern Ireland": [
+  {
+   "lat": 54.4338783,
+   "lng": -6.2750605,
+   "type": "highway/residential",
+   "name": "Riverdale Crescent",
+   "road": "Riverdale Crescent",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Rocky Mountain Cottage": [],
+ "nominatim:Rocky Mountain Cottage, Hilltown": [],
+ "nominatim:Rocky Mountain Cottage, Hilltown, Northern Ireland": [],
+ "nominatim:Roddy McCorley Heritage Centre, Belfast": [],
+ "nominatim:Roe Valley Arts and Cultural Centre": [],
+ "nominatim:Roe Valley Arts and Cultural Centre, Coleraine": [],
+ "nominatim:Roe Valley Arts and Cultural Centre, Northern Ireland": [],
+ "nominatim:Roe Valley Resort, Limavady": [
+  {
+   "lat": 55.0387475,
+   "lng": -6.9549343,
+   "type": "tourism/hotel",
+   "name": "Roe Valley Resort",
+   "road": "Roe Mill Road",
+   "place": "Limavady",
+   "postcode": "BT49 9EX"
+  }
+ ],
+ "nominatim:Rossharbour Holiday Complex": [],
+ "nominatim:Rossharbour Holiday Complex, Enniskillen": [],
+ "nominatim:Rossharbour Holiday Complex, Northern Ireland": [],
+ "nominatim:Rosspark Hotel": [],
+ "nominatim:Rosspark Hotel, Kells": [],
+ "nominatim:Rosspark Hotel, Kells, Northern Ireland": [],
+ "nominatim:Rosspark, Kells": [],
+ "nominatim:Royal Belfast, Cultra": [],
+ "nominatim:Royal Court Hotel, Portrush": [
+  {
+   "lat": 55.2045586,
+   "lng": -6.60765,
+   "type": "tourism/hotel",
+   "name": "Royal Court Hotel",
+   "road": "Dunluce Road",
+   "place": "Portrush",
+   "postcode": "BT56 8NH"
+  }
+ ],
+ "nominatim:Royal Hotel, Cookstown": [
+  {
+   "lat": 54.6486317,
+   "lng": -6.7421849,
+   "type": "tourism/hotel",
+   "name": "Royal Hotel",
+   "road": "Union Street",
+   "place": "Cookstown",
+   "postcode": "BT80 8NG"
+  }
+ ],
+ "nominatim:Royal Ulster Yacht Club": [],
+ "nominatim:Royal Ulster Yacht Club, Bangor": [],
+ "nominatim:Royal Ulster Yacht Club, Bangor, Northern Ireland": [],
+ "nominatim:Ryandale Inn, Dungannon": [],
+ "nominatim:Scarva, Northern Ireland": [
+  {
+   "lat": 54.3317503,
+   "lng": -6.3665402,
+   "type": "railway/stop",
+   "name": "Scarva",
+   "road": "Station Road",
+   "place": "Scarva",
+   "postcode": "BT63 6LS"
+  },
+  {
+   "lat": 54.3316331,
+   "lng": -6.3665647,
+   "type": "railway/station",
+   "name": "Scarva",
+   "road": "Station Road",
+   "place": "Scarva",
+   "postcode": "BT63 6LS"
+  },
+  {
+   "lat": 54.3314622,
+   "lng": -6.3623647,
+   "type": "place/village",
+   "name": "Scarva",
+   "road": "",
+   "place": "Scarva",
+   "postcode": "BT63 6NS"
+  }
+ ],
+ "nominatim:School House, Castletown": [],
+ "nominatim:Scrabo Golf Club, Newtownards": [
+  {
+   "lat": 54.5778824,
+   "lng": -5.7195318,
+   "type": "building/yes",
+   "name": "Scrabo Golf Club Clubhouse",
+   "road": "Scrabo Road",
+   "place": "Newtownards",
+   "postcode": "BT23 4GJ"
+  }
+ ],
+ "nominatim:Seagoe Hotel, Craigavon": [
+  {
+   "lat": 54.4344402,
+   "lng": -6.4178835,
+   "type": "tourism/hotel",
+   "name": "Seagoe Hotel",
+   "road": "Upper Church Lane",
+   "place": "Portadown",
+   "postcode": "BT63 5JE"
+  }
+ ],
+ "nominatim:Sentry Hill, Newtownabbey": [
+  {
+   "lat": 54.6882054,
+   "lng": -5.9688269,
+   "type": "highway/residential",
+   "name": "Sentry Hill Drive",
+   "road": "Sentry Hill Drive",
+   "place": "Newtownabbey",
+   "postcode": "BT36 4SP"
+  },
+  {
+   "lat": 54.6861906,
+   "lng": -5.9808274,
+   "type": "tourism/museum",
+   "name": "Sentry Hill Historic House",
+   "road": "Ballycraigy Road",
+   "place": "Newtownabbey",
+   "postcode": "BT36 4SU"
+  }
+ ],
+ "nominatim:Shane's Castle, Antrim": [
+  {
+   "lat": 54.7274716,
+   "lng": -6.2678393,
+   "type": "historic/ruins",
+   "name": "Shane's Castle",
+   "road": "Castle Road",
+   "place": "Antrim",
+   "postcode": "BT41 4NE"
+  },
+  {
+   "lat": 54.7283214,
+   "lng": -6.2751647,
+   "type": "building/house",
+   "name": "Shane's Castle",
+   "road": "",
+   "place": "Antrim",
+   "postcode": "BT41 4NE"
+  }
+ ],
+ "nominatim:Silverbirch Hotel, Omagh": [
+  {
+   "lat": 54.6091839,
+   "lng": -7.2990089,
+   "type": "tourism/hotel",
+   "name": "Silverbirch",
+   "road": "Gortin Road",
+   "place": "Omagh",
+   "postcode": "BT79 7DH"
+  }
+ ],
+ "nominatim:Sintons at the Bridge, Scarva": [
+  {
+   "lat": 54.3301803,
+   "lng": -6.3661387,
+   "type": "amenity/restaurant",
+   "name": "Sintons at the Bridge",
+   "road": "Newry Canal Towpath",
+   "place": "Scarva",
+   "postcode": "BT63 6LS"
+  }
+ ],
+ "nominatim:Slieve Donard Hotel, Newcastle": [
+  {
+   "lat": 54.2159093,
+   "lng": -5.8845693,
+   "type": "tourism/hotel",
+   "name": "Marine & Lawn Slieve Donard",
+   "road": "Downs Road",
+   "place": "Newcastle",
+   "postcode": "BT33 0AH"
+  }
+ ],
+ "nominatim:South West College Erne Campus": [],
+ "nominatim:South West College Erne Campus, Enniskillen": [],
+ "nominatim:South West College Erne Campus, Northern Ireland": [],
+ "nominatim:St Columb's Park House, Derry": [
+  {
+   "lat": 55.002834,
+   "lng": -7.3118612,
+   "type": "amenity/community_centre",
+   "name": "St Columb's Park House",
+   "road": "Saint Columb's Road",
+   "place": "Derry/Londonderry",
+   "postcode": "BT47 6JY"
+  }
+ ],
+ "nominatim:Stormont Hotel, Belfast": [
+  {
+   "lat": 54.5941327,
+   "lng": -5.838637,
+   "type": "tourism/hotel",
+   "name": "Stormont Hotel",
+   "road": "Upper Newtownards Road",
+   "place": "Belfast City District",
+   "postcode": "BT5 7EA"
+  }
+ ],
+ "nominatim:Strabane, Northern Ireland": [
+  {
+   "lat": 54.826115,
+   "lng": -7.4627993,
+   "type": "place/town",
+   "name": "Strabane",
+   "road": "",
+   "place": "Strabane",
+   "postcode": "BT82 8AH"
+  },
+  {
+   "lat": 54.4737225,
+   "lng": -7.3920117,
+   "type": "boundary/administrative",
+   "name": "Strabane",
+   "road": "",
+   "place": "",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Strangford Arms Hotel, Newtownards": [
+  {
+   "lat": 54.5953383,
+   "lng": -5.7083259,
+   "type": "tourism/hotel",
+   "name": "Strangford Arms",
+   "road": "Church Street",
+   "place": "Newtownards",
+   "postcode": "BT23 4AW"
+  }
+ ],
+ "nominatim:Strangford, Northern Ireland": [
+  {
+   "lat": 54.3705992,
+   "lng": -5.5561416,
+   "type": "place/village",
+   "name": "Strangford",
+   "road": "",
+   "place": "Strangford",
+   "postcode": "BT30 7NL"
+  }
+ ],
+ "nominatim:Strule Arts Centre, Omagh": [
+  {
+   "lat": 54.6007469,
+   "lng": -7.3033245,
+   "type": "amenity/arts_centre",
+   "name": "Strule Arts Centre",
+   "road": "George's Street",
+   "place": "Omagh",
+   "postcode": "BT78 1BL"
+  }
+ ],
+ "nominatim:Temple Golf Club Ltd": [],
+ "nominatim:Temple Golf Club Ltd, Lisburn": [],
+ "nominatim:Temple Golf Club Ltd, Lisburn, Northern Ireland": [],
+ "nominatim:Templepatrick, Northern Ireland": [
+  {
+   "lat": 54.7007241,
+   "lng": -6.103504,
+   "type": "place/village",
+   "name": "Templepatrick",
+   "road": "",
+   "place": "Templepatrick",
+   "postcode": "BT39 0AT"
+  },
+  {
+   "lat": 54.6231652,
+   "lng": -5.5371559,
+   "type": "boundary/administrative",
+   "name": "Templepatrick",
+   "road": "",
+   "place": "Donaghadee",
+   "postcode": ""
+  },
+  {
+   "lat": 54.7022753,
+   "lng": -6.0953044,
+   "type": "boundary/administrative",
+   "name": "Templepatrick",
+   "road": "",
+   "place": "Templepatrick",
+   "postcode": ""
+  }
+ ],
+ "nominatim:Terrace, Magherafelt": [
+  {
+   "lat": 54.751542,
+   "lng": -6.6082272,
+   "type": "highway/residential",
+   "name": "Princess Terrace",
+   "road": "Princess Terrace",
+   "place": "Magherafelt",
+   "postcode": "BT45 6AE"
+  },
+  {
+   "lat": 54.7535002,
+   "lng": -6.6082989,
+   "type": "highway/residential",
+   "name": "Princess Terrace",
+   "road": "Princess Terrace",
+   "place": "Magherafelt",
+   "postcode": "BT45 6AA"
+  },
+  {
+   "lat": 54.7492286,
+   "lng": -6.6019223,
+   "type": "highway/residential",
+   "name": "Upper Golf Terrace",
+   "road": "Upper Golf Terrace",
+   "place": "Magherafelt",
+   "postcode": "BT45 6EH"
+  }
+ ],
+ "nominatim:The Ballymac Hotel": [],
+ "nominatim:The Ballymac Hotel, Lisburn": [],
+ "nominatim:The Ballymac Hotel, Lisburn, Northern Ireland": [],
+ "nominatim:The Balmoral Hotel, Belfast": [
+  {
+   "lat": 54.560647,
+   "lng": -5.9995465,
+   "type": "tourism/hotel",
+   "name": "Balmoral Hotel",
+   "road": "Blacks Road",
+   "place": "Belfast City District",
+   "postcode": "BT10 0ND"
+  }
+ ],
+ "nominatim:The Beechlawn House Hotel": [],
+ "nominatim:The Beechlawn House Hotel, Belfast": [],
+ "nominatim:The Beechlawn House Hotel, Belfast, Northern Ireland": [],
+ "nominatim:The Brambles": [
+  {
+   "lat": 54.7616876,
+   "lng": -6.6068613,
+   "type": "landuse/residential",
+   "name": "The Brambles",
+   "road": "",
+   "place": "Magherafelt",
+   "postcode": ""
+  },
+  {
+   "lat": 54.7521035,
+   "lng": -6.3106465,
+   "type": "landuse/residential",
+   "name": "The Brambles",
+   "road": "",
+   "place": "Randalstown",
+   "postcode": ""
+  },
+  {
+   "lat": 54.5181506,
+   "lng": -6.0834157,
+   "type": "highway/residential",
+   "name": "The Brambles",
+   "road": "The Brambles",
+   "place": "Lisburn",
+   "postcode": "BT28 2XY"
+  }
+ ],
+ "nominatim:The Brambles, Annalong": [],
+ "nominatim:The Brambles, Annalong, Northern Ireland": [],
+ "nominatim:The Carriage Rooms Montalo House": [],
+ "nominatim:The Carriage Rooms Montalo House, Ballynahinch": [],
+ "nominatim:The Carriage Rooms Montalo House, Ballynahinch, Northern Ireland": [],
+ "nominatim:The Devenish, Belfast": [
+  {
+   "lat": 54.5645351,
+   "lng": -5.9867539,
+   "type": "amenity/bar",
+   "name": "The Devenish Bar",
+   "road": "Finaghy Road North",
+   "place": "Belfast City District",
+   "postcode": "BT10 0JB"
+  }
+ ],
+ "nominatim:The Dog and Duck Inn": [],
+ "nominatim:The Dog and Duck Inn, Lisbellaw": [],
+ "nominatim:The Dog and Duck Inn, Lisbellaw, Northern Ireland": [],
+ "nominatim:The Ebrington Hotel, Derry": [
+  {
+   "lat": 54.9987479,
+   "lng": -7.3110647,
+   "type": "tourism/hotel",
+   "name": "The Ebrington",
+   "road": "Ebrington Square",
+   "place": "Derry/Londonderry",
+   "postcode": "BT47 6FA"
+  }
+ ],
+ "nominatim:The Four Trees": [],
+ "nominatim:The Four Trees, Moira": [],
+ "nominatim:The Four Trees, Moira, Northern Ireland": [],
+ "nominatim:The Grand Central Hotel, Belfast": [],
+ "nominatim:The Grand Central Hotel, Belfast, Northern Ireland": [],
+ "nominatim:The Guildhall, Derry": [],
+ "nominatim:The Guildhall, Northern Ireland": [],
+ "nominatim:The Hinch Distillery": [],
+ "nominatim:The Hinch Distillery, Lisburn": [],
+ "nominatim:The Hinch Distillery, Lisburn, Northern Ireland": [],
+ "nominatim:The Lyric Theatre, Belfast": [],
+ "nominatim:The Lyric Theatre, Belfast, Northern Ireland": [],
+ "nominatim:The Merchant Hotel, Belfast": [
+  {
+   "lat": 54.6009401,
+   "lng": -5.9254846,
+   "type": "tourism/hotel",
+   "name": "The Merchant Hotel",
+   "road": "Skipper Street",
+   "place": "Belfast City District",
+   "postcode": "BT1 2DZ"
+  }
+ ],
+ "nominatim:The Mill at Ballydugan, Downpatrick": [
+  {
+   "lat": 54.3126044,
+   "lng": -5.7541594,
+   "type": "amenity/events_venue",
+   "name": "The Mill at Ballydugan",
+   "road": "Drumcullan Road",
+   "place": "Downpatrick",
+   "postcode": ""
+  }
+ ],
+ "nominatim:The Old Inn, Crawfordsburn": [
+  {
+   "lat": 54.6588119,
+   "lng": -5.7287738,
+   "type": "tourism/hotel",
+   "name": "The Old Inn, Crawfordsburn",
+   "road": "Main Street",
+   "place": "Crawfordsburn",
+   "postcode": "BT19 1JH"
+  }
+ ],
+ "nominatim:The Old Rectory, Killyman": [],
+ "nominatim:The Old Rectory, Killyman, Dungannon": [],
+ "nominatim:The Old Rectory, Killyman, Dungannon, Northern Ireland": [],
+ "nominatim:The Rabbit Hotel, Templepatrick": [
+  {
+   "lat": 54.703741,
+   "lng": -6.0922709,
+   "type": "tourism/hotel",
+   "name": "The Rabbit",
+   "road": "Antrim Road",
+   "place": "Templepatrick",
+   "postcode": "BT39 0AH"
+  }
+ ],
+ "nominatim:The Roddy McCorley Heritage Centre": [],
+ "nominatim:The Roddy McCorley Heritage Centre, Belfast": [],
+ "nominatim:The Roddy McCorley Heritage Centre, Belfast, Northern Ireland": [],
+ "nominatim:The Royal Belfast Golf Club": [],
+ "nominatim:The Royal Belfast Golf Club, Cultra": [],
+ "nominatim:The Royal Belfast Golf Club, Cultra, Northern Ireland": [],
+ "nominatim:The Ryandale Inn": [
+  {
+   "lat": 54.4468484,
+   "lng": -6.6928263,
+   "type": "tourism/hotel",
+   "name": "The Ryandale Inn",
+   "road": "The Square",
+   "place": "Moy",
+   "postcode": "BT71 7SG"
+  }
+ ],
+ "nominatim:The Ryandale Inn, Dungannon": [],
+ "nominatim:The Ryandale Inn, Dungannon, Northern Ireland": [],
+ "nominatim:The School House": [
+  {
+   "lat": 54.6270582,
+   "lng": -5.9346468,
+   "type": "amenity/cafe",
+   "name": "The Old School House Cafe (NI Hospice)",
+   "road": "Somerton Road",
+   "place": "Belfast City District",
+   "postcode": "BT15 3LH"
+  },
+  {
+   "lat": 54.5185815,
+   "lng": -5.6887043,
+   "type": "building/house",
+   "name": "The Old School House",
+   "road": "Tullynakill Road",
+   "place": "Lisbane",
+   "postcode": ""
+  },
+  {
+   "lat": 54.1019973,
+   "lng": -6.1962453,
+   "type": "amenity/restaurant",
+   "name": "The Old School House",
+   "road": "Church Street",
+   "place": "Rostrevor",
+   "postcode": "BT34 3BA"
+  }
+ ],
+ "nominatim:The School House, Castletown": [],
+ "nominatim:The School House, Castletown, Northern Ireland": [],
+ "nominatim:The Terrace Hotel": [],
+ "nominatim:The Terrace Hotel, Magherafelt": [],
+ "nominatim:The Terrace Hotel, Magherafelt, Northern Ireland": [],
+ "nominatim:The Ulster Hall, Belfast": [],
+ "nominatim:The Ulster Hall, Belfast, Northern Ireland": [],
+ "nominatim:The Ulster Museum, Belfast": [],
+ "nominatim:The Ulster Museum, Belfast, Northern Ireland": [],
+ "nominatim:The Valley Hotel, Fivemiletown": [
+  {
+   "lat": 54.3778866,
+   "lng": -7.3145905,
+   "type": "tourism/hotel",
+   "name": "The Valley Hotel",
+   "road": "Main Street",
+   "place": "Fivemiletown",
+   "postcode": "BT75 0PW"
+  }
+ ],
+ "nominatim:The Waterfoot Hotel, Derry": [],
+ "nominatim:The Waterfoot Hotel, Northern Ireland": [],
+ "nominatim:The Whistledown Hotel, Warrenpoint": [],
+ "nominatim:The Whistledown Hotel, Warrenpoint, Northern Ireland": [],
+ "nominatim:The White Horse Hotel, Derry": [],
+ "nominatim:The White Horse Hotel, Northern Ireland": [],
+ "nominatim:The Wild Duck Inn": [
+  {
+   "lat": 54.3169923,
+   "lng": -7.5370948,
+   "type": "amenity/pub",
+   "name": "The Wild Duck Inn",
+   "road": "Inishmore Road",
+   "place": "Lisbellaw",
+   "postcode": "BT94 5DW"
+  }
+ ],
+ "nominatim:The Wild Duck Inn, Portglenone": [],
+ "nominatim:The Wild Duck Inn, Portglenone, Northern Ireland": [],
+ "nominatim:The Windrose, Carrickfergus": [
+  {
+   "lat": 54.7113586,
+   "lng": -5.8139154,
+   "type": "amenity/restaurant",
+   "name": "The Windrose",
+   "road": "Rodgers Quay",
+   "place": "Carrickfergus",
+   "postcode": "BT38 8BE"
+  }
+ ],
+ "nominatim:The Wool Tower": [],
+ "nominatim:The Wool Tower, Raceview Mill": [],
+ "nominatim:The Wool Tower, Raceview Mill, Northern Ireland": [],
+ "nominatim:Titanic Belfast, Belfast": [
+  {
+   "lat": 54.608143,
+   "lng": -5.9098363,
+   "type": "tourism/attraction",
+   "name": "Titanic Belfast",
+   "road": "Queens Road",
+   "place": "Belfast City District",
+   "postcode": "BT3 9DP"
+  }
+ ],
+ "nominatim:Titanic Hotel, Belfast": [
+  {
+   "lat": 54.6077869,
+   "lng": -5.9089976,
+   "type": "tourism/hotel",
+   "name": "Titanic Hotel",
+   "road": "Queens Road",
+   "place": "Belfast City District",
+   "postcode": "BT3 9DT"
+  }
+ ],
+ "nominatim:Tully Mill": [
+  {
+   "lat": 54.2587213,
+   "lng": -7.713593,
+   "type": "amenity/restaurant",
+   "name": "Tully Mill",
+   "road": "Mill Road",
+   "place": "Tully",
+   "postcode": "BT92 1DJ"
+  }
+ ],
+ "nominatim:Tully Mill, Enniskillen": [],
+ "nominatim:Tully Mill, Enniskillen, Northern Ireland": [],
+ "nominatim:Tullyglass House Hotel, Ballymena": [
+  {
+   "lat": 54.8562911,
+   "lng": -6.3069109,
+   "type": "tourism/hotel",
+   "name": "Tullyglass House Hotel",
+   "road": "Galgorm Road",
+   "place": "Ballymena",
+   "postcode": "BT42 1HJ"
+  }
+ ],
+ "nominatim:Tullyveery House, Killyleagh": [],
+ "nominatim:Tullyveery House, Killyleagh, Downpatrick": [],
+ "nominatim:Tullyveery House, Killyleagh, Downpatrick, Northern Ireland": [],
+ "nominatim:Ulster Hall, Belfast": [
+  {
+   "lat": 54.5946179,
+   "lng": -5.9305172,
+   "type": "amenity/theatre",
+   "name": "Ulster Hall",
+   "road": "Linenhall Street",
+   "place": "Belfast City",
+   "postcode": "BT2 8BS"
+  }
+ ],
+ "nominatim:Ulster Museum, Belfast": [
+  {
+   "lat": 54.5822451,
+   "lng": -5.9353169,
+   "type": "tourism/museum",
+   "name": "Ulster Museum",
+   "road": "Stranmillis Road",
+   "place": "Belfast City District",
+   "postcode": "BT9 5AB"
+  },
+  {
+   "lat": 54.5827435,
+   "lng": -5.9365797,
+   "type": "highway/bus_stop",
+   "name": "Ulster Museum",
+   "road": "Stranmillis Road",
+   "place": "Belfast City District",
+   "postcode": "BT9 5AF"
+  }
+ ],
+ "nominatim:Ulster Reform Club": [],
+ "nominatim:Ulster Reform Club, Belfast": [],
+ "nominatim:Ulster Reform Club, Belfast, Northern Ireland": [],
+ "nominatim:Union Street Bar, Belfast": [
+  {
+   "lat": 54.6038664,
+   "lng": -5.931592,
+   "type": "amenity/bar",
+   "name": "Union Street Bar",
+   "road": "Union Street",
+   "place": "Belfast City District",
+   "postcode": "BT1 2JF"
+  }
+ ],
+ "nominatim:Warrenpoint, Northern Ireland": [
+  {
+   "lat": 54.0999923,
+   "lng": -6.2512827,
+   "type": "place/town",
+   "name": "Warrenpoint",
+   "road": "",
+   "place": "Warrenpoint",
+   "postcode": "BT34 8NU"
+  }
+ ],
+ "nominatim:Waterfoot, Derry": [
+  {
+   "lat": 55.0094995,
+   "lng": -7.2823208,
+   "type": "landuse/residential",
+   "name": "Waterfoot Park",
+   "road": "",
+   "place": "Derry/Londonderry",
+   "postcode": ""
+  },
+  {
+   "lat": 55.0102661,
+   "lng": -7.2821482,
+   "type": "highway/residential",
+   "name": "Waterfoot Park",
+   "road": "Waterfoot Park",
+   "place": "Derry/Londonderry",
+   "postcode": "BT47 6TB"
+  },
+  {
+   "lat": 55.0086927,
+   "lng": -7.2846292,
+   "type": "highway/residential",
+   "name": "Waterfoot Park",
+   "road": "Waterfoot Park",
+   "place": "Derry/Londonderry",
+   "postcode": "BT47 6LU"
+  }
+ ],
+ "nominatim:West Wing Crom Castle": [],
+ "nominatim:West Wing Crom Castle, Enniskillen": [],
+ "nominatim:West Wing Crom Castle, Northern Ireland": [],
+ "nominatim:Westville Hotel, Enniskillen": [
+  {
+   "lat": 54.3431411,
+   "lng": -7.6273133,
+   "type": "tourism/hotel",
+   "name": "Westville Hotel",
+   "road": "Tempo Road",
+   "place": "Enniskillen",
+   "postcode": "BT74 6HR"
+  },
+  {
+   "lat": 54.343018,
+   "lng": -7.6270859,
+   "type": "amenity/bar",
+   "name": "WV Bar",
+   "road": "Tempo Road",
+   "place": "Enniskillen",
+   "postcode": "BT74 6HR"
+  }
+ ],
+ "nominatim:Whistledown, Warrenpoint": [
+  {
+   "lat": 54.098718,
+   "lng": -6.249424,
+   "type": "tourism/hotel",
+   "name": "Whistledown Hotel",
+   "road": "Queen Street",
+   "place": "Warrenpoint",
+   "postcode": "BT34 8NU"
+  },
+  {
+   "lat": 54.0987412,
+   "lng": -6.2493596,
+   "type": "amenity/bar",
+   "name": "Finn’s Bar",
+   "road": "Seaview",
+   "place": "Warrenpoint",
+   "postcode": "BT34 3NH"
+  }
+ ],
+ "nominatim:White Horse, Derry": [
+  {
+   "lat": 55.0304889,
+   "lng": -7.2183533,
+   "type": "tourism/hotel",
+   "name": "Best Western White Horse Hotel Derry",
+   "road": "Clooney Road",
+   "place": "Derry/Londonderry",
+   "postcode": "BT47 3PA"
+  }
+ ],
+ "nominatim:Whitehead, Northern Ireland": [
+  {
+   "lat": 54.7525197,
+   "lng": -5.7095385,
+   "type": "railway/stop",
+   "name": "Whitehead",
+   "road": "Marine Lane",
+   "place": "Whitehead",
+   "postcode": "BT38 9QQ"
+  },
+  {
+   "lat": 54.752181,
+   "lng": -5.7094669,
+   "type": "railway/station",
+   "name": "Whitehead",
+   "road": "Marine Lane",
+   "place": "Whitehead",
+   "postcode": "BT38 9QQ"
+  },
+  {
+   "lat": 54.7537033,
+   "lng": -5.7116235,
+   "type": "place/village",
+   "name": "Whitehead",
+   "road": "",
+   "place": "Whitehead",
+   "postcode": "BT38 9QB"
+  }
+ ],
+ "nominatim:Wild Duck Inn, Portglenone": [],
+ "nominatim:Woodville Arms, Lurgan": [
+  {
+   "lat": 54.4737641,
+   "lng": -6.333268,
+   "type": "amenity/pub",
+   "name": "Woodville Arms",
+   "road": "Lake Street",
+   "place": "Lurgan",
+   "postcode": "BT67 9DY"
+  }
+ ],
+ "nominatim:Wool Tower, Raceview Mill": [],
+ "postcodes.io:BT3 9QQ": {
+  "lat": 54.603919,
+  "lng": -5.915391,
+  "district": "Belfast"
+ }
+}

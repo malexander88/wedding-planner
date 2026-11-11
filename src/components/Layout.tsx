@@ -40,6 +40,13 @@ export function Layout() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
+  // Router links to "/" come out as /wedding-planner (no slash); keep the canonical /wedding-planner/
+  // so a refresh or a shared link always hits the real index.html.
+  useEffect(() => {
+    const base = import.meta.env.BASE_URL
+    if (base.length > 1 && window.location.pathname === base.slice(0, -1))
+      window.history.replaceState(window.history.state, '', base + window.location.search + window.location.hash)
+  }, [pathname])
   const names = [state.profile.partnerAName, state.profile.partnerBName].filter(Boolean).join(' & ')
 
   return (

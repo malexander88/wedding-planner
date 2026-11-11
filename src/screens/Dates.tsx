@@ -8,6 +8,7 @@ import {
   checkWeddingDate,
   daysBetween,
   feeForDate,
+  feeGapLabel,
   formatLong,
   seasonOf,
   todayIso,
@@ -143,16 +144,16 @@ export function Dates() {
                           return (
                             <li key={v.id}>
                               <span>{v.name}</span>
-                              <b>{f ? (f.amount === null ? 'No ceremonies' : gbp(f.amount)) : <Link to={`/find/${v.id}`}>Set council</Link>}</b>
+                              <b>{f ? (f.amount === null ? feeGapLabel(f.reason) : gbp(f.amount)) : fee.council ? <a href={`tel:${COUNCILS[fee.council].registrarPhone.replace(/\s/g, '')}`}>Ask registrar</a> : <Link to={`/find/${v.id}`}>Set council</Link>}</b>
                             </li>
                           )
                         })
                       : (['anbc', 'belfast', 'mea'] as CouncilId[]).map((id) => {
-                          const f = feeForDate(iso, COUNCILS[id].approved)
+                          const f = feeForDate(iso, COUNCILS[id].approved!)
                           return (
                             <li key={id}>
                               <span>Approved venue · {COUNCILS[id].short}</span>
-                              <b>{f.amount === null ? 'No ceremonies' : gbp(f.amount)}</b>
+                              <b>{f.amount === null ? feeGapLabel(f.reason) : gbp(f.amount)}</b>
                             </li>
                           )
                         })}

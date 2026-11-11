@@ -109,11 +109,57 @@ Dietary notes can count as sensitive health or faith information. The app asks y
 
 There is no paid search key hidden in the app.
 
-1. **A curated starter list** of venues and suppliers around Antrim, Newtownabbey and Belfast, each checked against a public official page (the council’s approved civil-venue list, the supplier’s own website, or nidirect). We only store the facts we verified: name, area, website, category, and sometimes a public phone number.
-2. **Search buttons** that open Google, Hitched, Bridebook and Google Maps with the category and your area already filled in.
-3. **Add someone yourself** if you found them another way.
+1. **Every approved wedding venue in Northern Ireland, in the app.** Find loads nidirect’s full list of places approved for civil marriage and civil partnership (all 11 councils, about 207 venues plus 25 council registrar offices), each with its town, council and a map pin. You can search by name or town, filter by council area, distance from Newtownabbey (straight line), kind of place and known capacity, and sort nearest-first or A–Z. Each venue has its own page: a read-only **Facts** card with the source link, a free OpenStreetMap map, directions, the registrar fees for *that* council, Save to shortlist and Draft an enquiry.
+2. **The checked starter list** (18 venues around Antrim, Newtownabbey and Belfast, plus suppliers), checked against the council’s own lists or the supplier’s website. These are merged into the directory, so no venue appears twice and their checked facts and capacities stay attached.
+3. **Search buttons** that open Google, Hitched, Bridebook and Google Maps with the category and your area already filled in.
+4. **Add someone yourself** if you found them another way.
 
-Later, an AI or web-search helper can plug into the same “find” slot without changing the shortlist, quote or booking flow. Enquiry drafts are written on your phone for you to copy; nothing is emailed automatically.
+Your own notes stay yours: checked facts are shown in the Facts card, never copied into Notes.
+
+Enquiry drafts are written on your phone for you to copy; nothing is emailed automatically.
+
+### Where the venue data comes from (and the licences)
+
+- **List of places:** nidirect, “Registration office venues for civil marriage and civil partnerships” (https://www.nidirect.gov.uk/articles/registration-office-venues-civil-marriage-and-civil-partnerships). The page was last updated on 15 September 2026, and we checked it on 11 November 2026. nidirect’s copyright statement says its content is Crown copyright and may be re-used free of charge under the **Open Government Licence v3.0**, as long as you acknowledge the source and don’t imply official endorsement. Logos and third-party images are excluded. The app shows the attribution “Contains public sector information licensed under the Open Government Licence v3.0.” in Find and on every venue page, with a link to the source. We only use the text list (names, towns, phone numbers), never nidirect’s logos or images.
+- **Map pins:** geocoded once at build time with OpenStreetMap Nominatim. We sent one request per second or slower, with an identifying User-Agent, and cached every answer in the repo (`scripts/venues/geocode-cache.json`), so the app never calls Nominatim itself. The coordinates are © OpenStreetMap contributors and available under the **ODbL**. The derived file `scripts/venues/geocoded.json` and the copy inside `src/data/venues.generated.json` stay under ODbL, and the app credits OpenStreetMap wherever pins or maps appear. Where Nominatim found only the town, the venue page says the pin is approximate.
+- **Maps:** an OpenStreetMap embed that loads only when you tap “Show map”, with © OpenStreetMap contributors shown underneath.
+- **Kind of place** (hotel, castle, country house and so on) is our guess from the name, and the app labels it that way. **Capacity** is shown only where a checked source gives it, which today means the starter venues.
+- **Registrar fees** come only from each council’s own published pages or PDFs. Where a council doesn’t publish an approved-venue fee (Ards & North Down, Armagh Banbridge & Craigavon, Derry & Strabane, Mid Ulster, and Newry Mourne & Down at the time of checking), the app says so and gives the registrar’s phone number instead of guessing.
+
+**Refreshing the list** (every few months, or when nidirect’s “updated” date changes):
+
+```
+curl -s https://www.nidirect.gov.uk/articles/registration-office-venues-civil-marriage-and-civil-partnerships > scripts/venues/nidirect-snapshot.html
+node scripts/venues/parse-nidirect.mjs     # -> scripts/venues/nidirect.json
+node scripts/venues/geocode.mjs            # only new places hit Nominatim; the rest come from the cache
+node scripts/venues/build-directory.mjs    # -> src/data/venues.generated.json (set checkedOn inside)
+npm test
+```
+
+If a starter venue’s nidirect name changes, update `STARTER_MATCH` in `src/data/venues.ts`. The tests check that no venue appears twice.
+
+### Google Places (prepared, switched off)
+
+The app works fully without this. When it’s switched on, a venue page also shows Google’s photo, address and a Google Maps link, plus phone, website and rating if you choose the Enterprise tier. That information is fetched fresh each time the page opens and never stored. The only thing kept is Google’s `place_id` on a shortlisted venue, which Google’s terms allow caching.
+
+How it is built:
+- `supabase/functions/places/index.ts` is a Supabase Edge Function that holds the Google key. The browser never sees the key.
+- The function uses tight field masks:
+  - Finding a venue uses Text Search with `places.id` only (the Essentials IDs Only SKU).
+  - Details use the Pro fields `id, displayName, formattedAddress, googleMapsUri, businessStatus, photos`. Phone, website and rating are added only with `PLACES_TIER=enterprise`.
+  - It fetches at most one photo, using `skipHttpRedirect`, so the image URL doesn’t carry the key.
+- Daily caps keep usage inside Google’s monthly free allowance. The defaults are 300 finds, 150 Pro details (or 30 Enterprise) and 30 photos a day. They are counted atomically in `public.places_usage` by `places_bump()` (`supabase/002_places_usage.sql`). Row-level security is on, there are no policies, and the function is executable only by the service role, so the app’s publishable key can’t read or change the counts.
+- Origins are restricted to an allowlist (GitHub Pages and localhost by default), and requests must carry the app’s publishable key.
+- Attribution: the venue page labels the section “From Google”, links to Google Maps, and shows the photo author credits Google returns.
+
+Setup, when you have a key:
+1. In Google Cloud, create a project, enable **Places API (New)**, create an API key and restrict it to Places API (New). Billing must be on, but the caps above are designed to keep you within the free monthly usage. Also set a budget alert.
+2. In the Supabase SQL editor, run `supabase/002_places_usage.sql`.
+3. `supabase secrets set GOOGLE_PLACES_KEY=... PLACES_CLIENT_KEY=<the app's publishable key>`. Optionally also set `PLACES_TIER=enterprise`, `PLACES_CAP_DETAILS=...` and `PLACES_ALLOWED_ORIGINS=...`.
+4. `supabase functions deploy places --no-verify-jwt`. Publishable keys aren’t JWTs, so the function checks the key and origin itself.
+5. Build the app with `VITE_PLACES_ENABLED=true` (and `VITE_PLACES_FUNCTION_URL=` if the function URL isn’t `<project>/functions/v1/places`), then redeploy.
+
+To switch it off again, rebuild without `VITE_PLACES_ENABLED`, or `supabase secrets unset GOOGLE_PLACES_KEY`. The function then answers 503 and the app simply doesn’t show the Google card.
 
 ---
 
@@ -174,5 +220,5 @@ The database schema, row-level security, and the Supabase storage adapter belong
 - Vite, React and TypeScript.
 - A `StorageAdapter` (`getState` / `setState`) with an IndexedDB implementation now; a Supabase implementation later that upserts the same document or normalised tables, with row-level security.
 - PWA via `vite-plugin-pwa` so Android and iPhone can “Add to Home Screen”. A Capacitor Android wrapper can come in round 3.
-- GitHub Pages at https://malexander88.github.io/wedding-planner/ (project path `/wedding-planner/`). The first publish used the `gh-pages` branch because the available GitHub token could not push Actions workflow files (`workflow` scope). A workflow file lives in `.github/workflows/pages.yml` locally for when that scope is available.
+- GitHub Pages at https://malexander88.github.io/wedding-planner/ (project path `/wedding-planner/`). Deep links such as `/wedding-planner/budget` use the spa-github-pages pattern. The generated `404.html` redirects to `/wedding-planner/?/budget`, which is served with a 200, and a small script in `index.html` restores the real path before React starts. A bare `/wedding-planner` is normalised to `/wedding-planner/`. The first publish used the `gh-pages` branch because the available GitHub token could not push Actions workflow files (`workflow` scope). A workflow file lives in `.github/workflows/pages.yml` locally for when that scope is available.
 - No guest identity documents, no vendor marketplace, no selling of guest data.

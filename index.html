@@ -26,6 +26,19 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Restore a deep link bounced through 404.html (/base/?/budget -> /base/budget),
+      // and add the trailing slash to a bare /base so the app and its service worker agree.
+      (function (l) {
+        var base = '%BASE_URL%'
+        if (l.search[1] === '/') {
+          var path = l.search.slice(1).split('&').map(function (s) { return s.replace(/~and~/g, '&') }).join('?')
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + path + l.hash)
+        } else if (base.length > 1 && l.pathname === base.slice(0, -1)) {
+          window.history.replaceState(null, '', base + l.search + l.hash)
+        }
+      })(window.location)
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

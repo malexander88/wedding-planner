@@ -8,6 +8,7 @@ import { Home } from './screens/Home'
 import { Onboarding } from './screens/Onboarding'
 import { Settings } from './screens/Settings'
 import { SupplierDetail } from './screens/SupplierDetail'
+import { VenueDetail } from './screens/VenueDetail'
 import { Suppliers } from './screens/Suppliers'
 import { JoinPrompt } from './components/JoinPrompt'
 import { StoreProvider, useStore } from './state/store'
@@ -57,6 +58,7 @@ function ReadyApp() {
         <Route path="/plan" element={<Checklist />} />
         <Route path="/dates" element={<Dates />} />
         <Route path="/find" element={<Suppliers />} />
+        <Route path="/find/place/:venueId" element={<VenueDetail />} />
         <Route path="/find/:id" element={<SupplierDetail />} />
         <Route path="/budget" element={<Budget />} />
         <Route path="/guests" element={<Guests />} />
