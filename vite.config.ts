@@ -5,6 +5,8 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const base = process.env.GITHUB_PAGES === 'true' ? '/wedding-planner/' : '/'
+let outDir = resolve('dist')
+let resolvedBase = base
 
 export default defineConfig({
   base,
@@ -42,9 +44,16 @@ export default defineConfig({
       // That page bounces straight to /wedding-planner/?/budget (served 200 as index.html), and the
       // restore script in index.html turns the URL back into /wedding-planner/budget before React starts.
       // (The spa-github-pages pattern by Rafael Pedicini, MIT.)
+      // Build only: Vitest's dev server also calls closeBundle on shutdown (without GITHUB_PAGES),
+      // which used to overwrite dist/404.html with keep = 0 and break deep links after a test run.
       name: 'spa-fallback',
+      apply: 'build',
+      configResolved(config) {
+        outDir = resolve(config.root, config.build.outDir)
+        resolvedBase = config.base
+      },
       closeBundle() {
-        const keep = base.split('/').filter(Boolean).length
+        const keep = resolvedBase.split('/').filter(Boolean).length
         const html = `<!doctype html>
 <html lang="en-GB">
 <head>
@@ -67,7 +76,7 @@ export default defineConfig({
 </html>
 `
         try {
-          writeFileSync(resolve('dist/404.html'), html)
+          writeFileSync(resolve(outDir, '404.html'), html)
         } catch {
           // preview builds without dist yet
         }
