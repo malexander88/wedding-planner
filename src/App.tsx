@@ -15,8 +15,22 @@ import { StoreProvider, useStore } from './state/store'
 import { SyncProvider, useSync } from './sync/SyncProvider'
 
 function ReadyApp() {
-  const { state, ready } = useStore()
+  const { state, ready, loadStatus } = useStore()
   const { joining } = useSync()
+  if (loadStatus === 'error') {
+    return (
+      <div className="loading">
+        <div style={{ maxWidth: 340, textAlign: 'center' }}>
+          <div className="brand-mark" style={{ width: 52, height: 52, borderRadius: 16, fontSize: '1.6rem', margin: '0 auto 14px' }}>W</div>
+          <h2>Couldn’t open your saved plan</h2>
+          <p>Nothing has been changed or deleted. Close other tabs or windows with the planner open, then try again.</p>
+          <button className="btn" type="button" onClick={() => window.location.reload()}>
+            Try again
+          </button>
+        </div>
+      </div>
+    )
+  }
   if (!ready || (joining && !state.profile.onboardingComplete)) {
     return (
       <div className="loading">

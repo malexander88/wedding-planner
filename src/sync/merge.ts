@@ -12,6 +12,7 @@
 // (last-writer-wins); deletes leave a tombstone so they are not resurrected by
 // the other phone. Ties are broken deterministically so both phones converge.
 
+import { isBlankPlan } from '../data/blank'
 import type { AppState } from '../types'
 
 export interface Clock {
@@ -249,11 +250,48 @@ function pruneTombstones(col: Record<string, Entry>, horizon: number): Record<st
   return out
 }
 
+function hasAnyClock(meta: SyncMeta | undefined): boolean {
+  if (!meta) return false
+  return Object.values(meta.records ?? {}).some((c) => Object.keys(c ?? {}).length > 0) ||
+    Object.values(meta.fields ?? {}).some((c) => Object.keys(c ?? {}).length > 0)
+}
+
+/**
+ * A never-edited default plan: blank and without a single clock. It carries no
+ * information, so it must never win anything in a merge (it is "no data", not
+ * "everything deleted").
+ */
+export function isFreshDoc(doc: SyncDoc): boolean {
+  return isBlankPlan(doc.state) && !hasAnyClock(doc.meta)
+}
+
+/** True when the doc records an explicit erase (blank, with deletion tombstones). */
+export function isErasedDoc(doc: SyncDoc): boolean {
+  if (!isBlankPlan(doc.state)) return false
+  return Object.values(doc.meta.records ?? {}).some((c) => Object.values(c ?? {}).some((e) => e.del))
+    || Object.keys(doc.meta.fields?.profile ?? {}).length > 0
+}
+
+/**
+ * Last line of defence before a push: never send a blank plan over a real
+ * shared one unless this phone explicitly erased.
+ */
+export function pushWouldWipe(remote: SyncDoc | null, outgoing: SyncDoc, wipeIntent: boolean): boolean {
+  if (wipeIntent) return false
+  if (!isBlankPlan(outgoing.state)) return false
+  return !!remote && !isBlankPlan(remote.state)
+}
+
 /**
  * Merge two documents. Deterministic and symmetric: merge(a, b) and merge(b, a)
  * give the same records; list order follows `remote`, then local-only records.
  */
 export function mergeDocs(local: SyncDoc, remote: SyncDoc, now = Date.now()): SyncDoc {
+  // A fresh default carries no data: the other side is the answer as-is.
+  const lFresh = isFreshDoc(local)
+  const rFresh = isFreshDoc(remote)
+  if (lFresh && !rFresh) return { state: { ...remote.state, version: 1 }, meta: remote.meta }
+  if (rFresh && !lFresh) return { state: { ...local.state, version: 1 }, meta: local.meta }
   const horizon = now - TOMBSTONE_TTL_MS
   const state = { ...local.state } as unknown as AnyRecord
   const records: SyncMeta['records'] = {}

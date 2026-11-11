@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useCallback,
   useEffect,
   useMemo,
   useReducer,
@@ -12,7 +13,8 @@ import { pruneStarterLines } from '../data/budget'
 import { mergeTasks } from '../data/checklist'
 import { applyTaskDetail } from '../data/taskDetails'
 import { uid } from '../lib/ids'
-import { indexedDbStorage, saveStateNow } from '../storage/indexeddb'
+import { backupState, indexedDbStorage, saveStateNow } from '../storage/indexeddb'
+import { isBlankPlan } from '../data/blank'
 import type {
   AppState,
   BudgetLine,
@@ -114,6 +116,8 @@ export type Action =
   | { type: 'removeGuest'; id: string }
   | { type: 'importState'; state: AppState }
   | { type: 'reset' }
+  /** Explicit 'erase everything' from Settings: the only way a blank plan may replace a real one. */
+  | { type: 'eraseAll' }
   | { type: 'pruneStarterLines' }
 
 function touch(state: AppState): AppState {
@@ -126,6 +130,7 @@ function reducer(state: AppState, action: Action): AppState {
     case 'importState':
       return { ...emptyState(), ...action.state, version: 1 }
     case 'reset':
+    case 'eraseAll':
       return emptyState()
     case 'pruneStarterLines': {
       // Old versions pre-filled estimate lines; drop the untouched ones as a
@@ -374,52 +379,91 @@ function reducer(state: AppState, action: Action): AppState {
   }
 }
 
+export type LoadStatus = 'loading' | 'ok' | 'error'
+
 type Ctx = {
   state: AppState
+  /** True once loading finished (successfully or not). */
   ready: boolean
+  /** 'ok' only when the saved plan was actually read; nothing is saved or synced otherwise. */
+  loadStatus: LoadStatus
   dispatch: (action: Action) => void
   tasks: ReturnType<typeof mergeTasks>
+  /** Set (timestamp) when the couple explicitly erased; lets a blank plan be saved/synced. */
+  wipeIntent: { current: number }
 }
 
 const StoreContext = createContext<Ctx | null>(null)
 
-export function StoreProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, undefined, emptyState)
-  const [ready, setReady] = useState(false)
-  const skipSave = useRef(true)
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-  useEffect(() => {
-    indexedDbStorage
-      .getState()
-      .then((saved) => {
-        if (saved?.version === 1) dispatch({ type: 'hydrate', state: saved })
-        setReady(true)
-        setTimeout(() => {
-          skipSave.current = false
-        }, 0)
-      })
-      .catch(() => setReady(true))
+export function StoreProvider({ children }: { children: ReactNode }) {
+  const [state, rawDispatch] = useReducer(reducer, undefined, emptyState)
+  const [loadStatus, setLoadStatus] = useState<LoadStatus>('loading')
+  const wipeIntent = useRef(0)
+  /** The first committed render after loading holds what we just read: don't write it back. */
+  const primed = useRef(false)
+  const pending = useRef<{ state: AppState; allowWipe: boolean } | null>(null)
+
+  const dispatch = useCallback((action: Action) => {
+    if (action.type === 'eraseAll') wipeIntent.current = Date.now()
+    rawDispatch(action)
   }, [])
 
-  // Save shortly after each change; flush straight away if the app is hidden
-  // or closed so the last edit is never lost.
-  const pending = useRef<AppState | null>(null)
+  // ---- load: retry, and never fall back to a blank plan on failure --------
   useEffect(() => {
-    if (!ready || skipSave.current) return
-    pending.current = state
+    let cancelled = false
+    ;(async () => {
+      for (let attempt = 0; attempt < 4; attempt++) {
+        try {
+          const saved = await indexedDbStorage.getState()
+          if (cancelled) return
+          // Hydrate and mark loaded in the same task so React commits them together.
+          if (saved?.version === 1) rawDispatch({ type: 'hydrate', state: saved })
+          setLoadStatus('ok')
+          if (saved && !isBlankPlan(saved)) backupState(saved).catch(() => undefined)
+          return
+        } catch (e) {
+          console.warn('[wedding-planner] could not read saved plan, retrying', e)
+          await sleep(300 * (attempt + 1))
+        }
+      }
+      if (!cancelled) setLoadStatus('error')
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // ---- save shortly after each change -------------------------------------
+  useEffect(() => {
+    if (loadStatus !== 'ok') return
+    if (!primed.current) {
+      primed.current = true
+      return
+    }
+    if (!isBlankPlan(state)) wipeIntent.current = 0
+    const allowWipe = wipeIntent.current > 0
+    pending.current = { state, allowWipe }
     const t = setTimeout(() => {
       pending.current = null
-      indexedDbStorage.setState(state).catch(() => undefined)
+      indexedDbStorage
+        .setState(state, { allowWipe })
+        .then(() => backupState(state))
+        .catch((e) => console.warn('[wedding-planner] save skipped:', e instanceof Error ? e.message : e))
     }, 250)
     return () => clearTimeout(t)
-  }, [state, ready])
+  }, [state, loadStatus])
 
+  // ---- flush straight away if the app is hidden or closed -------------------
   useEffect(() => {
     const flush = () => {
-      const s = pending.current
-      if (!s) return
+      const p = pending.current
+      if (!p) return
       pending.current = null
-      if (!saveStateNow(s)) indexedDbStorage.setState(s).catch(() => undefined)
+      if (!saveStateNow(p.state, p.allowWipe)) {
+        indexedDbStorage.setState(p.state, { allowWipe: p.allowWipe }).catch(() => undefined)
+      }
     }
     const onVis = () => document.visibilityState === 'hidden' && flush()
     window.addEventListener('pagehide', flush)
@@ -431,7 +475,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const tasks = useMemo(() => mergeTasks(state), [state])
-  const value = useMemo(() => ({ state, ready, dispatch, tasks }), [state, ready, tasks])
+  const ready = loadStatus !== 'loading'
+  const value = useMemo(
+    () => ({ state, ready, loadStatus, dispatch, tasks, wipeIntent }),
+    [state, ready, loadStatus, dispatch, tasks],
+  )
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }
 

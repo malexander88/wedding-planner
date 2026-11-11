@@ -7,8 +7,11 @@ import {
   docsEqual,
   emptyMeta,
   fromWire,
+  isErasedDoc,
+  isFreshDoc,
   makeClock,
   mergeDocs,
+  pushWouldWipe,
   stableStringify,
   stampChanges,
   toWire,
@@ -459,5 +462,56 @@ describe('task details merge field by field', () => {
     const m2 = mergeDocs(a.doc, b.doc, time.now())
     expect(m2.state.taskDetails).toHaveLength(1)
     expect(m2.state.taskDetails[0].values.notes).toBe('still on')
+  })
+})
+
+describe('a fresh default plan never wins (data-loss guard)', () => {
+  const real = (): AppState => {
+    const s = base()
+    s.profile = { ...s.profile, area: 'Antrim', totalBudget: 21000 }
+    s.suppliers = [sup('s1', 'Barn')]
+    s.taskDone = { 'book-venue': true }
+    return s
+  }
+  const fresh = (): SyncDoc => ({ state: emptyState(), meta: emptyMeta() })
+
+  it('fresh local + legacy remote (no clocks): remote is kept exactly, both ways', () => {
+    const remote: SyncDoc = { state: real(), meta: emptyMeta() }
+    for (const m of [mergeDocs(fresh(), remote), mergeDocs(remote, fresh())]) {
+      expect(m.state.profile).toMatchObject({ partnerAName: 'Matt', area: 'Antrim', totalBudget: 21000, onboardingComplete: true })
+      expect(m.state.suppliers).toHaveLength(1)
+      expect(m.state.taskDone['book-venue']).toBe(true)
+    }
+  })
+
+  it('fresh local + clocked remote: remote kept', () => {
+    const time = fakeTime()
+    const a = device('a', { state: base(), meta: emptyMeta() }, time)
+    a.edit(() => real())
+    const m = mergeDocs(fresh(), a.doc, time.now())
+    expect(m.state.suppliers.map((s) => s.id)).toEqual(['s1'])
+    expect(m.state.profile.area).toBe('Antrim')
+  })
+
+  it('an explicit erase (tombstones) still propagates', () => {
+    const time = fakeTime()
+    const a = device('a', { state: real(), meta: emptyMeta() }, time)
+    const b = device('b', a.doc, time)
+    time.advance()
+    a.edit(() => emptyState())
+    expect(isErasedDoc(a.doc)).toBe(true)
+    expect(isFreshDoc(a.doc)).toBe(false)
+    b.absorb(a.doc)
+    expect(b.doc.state.suppliers).toHaveLength(0)
+    expect(b.doc.state.profile.onboardingComplete).toBe(false)
+  })
+
+  it('pushWouldWipe blocks a blank push over a real shared plan unless erased on purpose', () => {
+    const remote: SyncDoc = { state: real(), meta: emptyMeta() }
+    expect(pushWouldWipe(remote, fresh(), false)).toBe(true)
+    expect(pushWouldWipe(remote, fresh(), true)).toBe(false)
+    expect(pushWouldWipe(remote, remote, false)).toBe(false)
+    expect(pushWouldWipe(null, fresh(), false)).toBe(false)
+    expect(pushWouldWipe(fresh(), fresh(), false)).toBe(false)
   })
 })

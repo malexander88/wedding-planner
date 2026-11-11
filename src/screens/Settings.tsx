@@ -1,6 +1,9 @@
 import { SharingCard } from '../components/SharingCard'
 import { downloadText } from '../lib/csv'
-import { emptyState, useStore } from '../state/store'
+import { useEffect, useState } from 'react'
+import { useStore } from '../state/store'
+import { describePlan, isBlankPlan } from '../data/blank'
+import { backupState, getBackups, getItem, type Backup } from '../storage/indexeddb'
 import { useSync } from '../sync/SyncProvider'
 import type { AppState, CeremonyType, Season, StyleTag } from '../types'
 
@@ -24,7 +27,12 @@ export function Settings() {
       alert('That file does not look like a Wedding Planner backup.')
       return
     }
+    if (isBlankPlan(data)) {
+      alert('That backup is empty, so it was not loaded. Your plan is unchanged.')
+      return
+    }
     if (confirm('Replace everything on this device with the backup?')) {
+      await backupState(state, { force: true }).catch(() => undefined)
       dispatch({ type: 'importState', state: data })
     }
   }
@@ -128,6 +136,8 @@ export function Settings() {
         </div>
       </section>
 
+      <BackupsCard />
+
       <section className="card">
         <h2>Privacy</h2>
         <ul className="plain-list">
@@ -146,7 +156,9 @@ export function Settings() {
             if (confirm(sync.paired
               ? 'Erase this wedding from this phone? It is shared, so this will also clear it on your partner’s phone the next time they sync. Use “Stop sharing on this phone” first if you only want to clear this phone.'
               : 'Erase this wedding from this device? This cannot be undone unless you have a backup.')) {
-              dispatch({ type: 'importState', state: emptyState() })
+              void backupState(state, { force: true })
+                .catch(() => undefined)
+                .then(() => dispatch({ type: 'eraseAll' }))
             }
           }}
         >
@@ -154,5 +166,55 @@ export function Settings() {
         </button>
       </section>
     </div>
+  )
+}
+
+function BackupsCard() {
+  const { state, dispatch } = useStore()
+  const { paired } = useSync()
+  const [backups, setBackups] = useState<(Backup & { label?: string })[] | null>(null)
+  useEffect(() => {
+    let live = true
+    ;(async () => {
+      const list: (Backup & { label?: string })[] = await getBackups().catch(() => [])
+      const pre = await getItem<Backup>('preJoinBackup').catch(() => null)
+      if (pre?.state && !isBlankPlan(pre.state)) list.push({ ...pre, label: 'Before joining a shared plan' })
+      if (live) setBackups(list)
+    })()
+    return () => {
+      live = false
+    }
+  }, [state.updatedAt])
+  if (!backups?.length) return null
+  return (
+    <section className="card">
+      <h2>Restore a backup</h2>
+      <p className="tiny">
+        This phone keeps the last {backups.length > 1 ? `${backups.length} versions` : 'version'} of your plan, taken at most every 10 minutes and
+        before erasing or importing. Restoring replaces the plan{' '}
+        {paired ? 'on both phones' : 'on this phone'}; the current one is backed up first.
+      </p>
+      <div className="list">
+        {backups.map((b, i) => (
+          <div className="row" key={`${b.savedAt}-${i}`} style={{ alignItems: 'center' }}>
+            <div style={{ minWidth: 0 }}>
+              <strong>{b.label ?? new Date(b.savedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</strong>
+              <div className="tiny">{describePlan(b.state)}</div>
+            </div>
+            <button
+              className="btn ghost small"
+              type="button"
+              onClick={async () => {
+                if (!confirm('Restore this version of your plan? The current plan is backed up first.')) return
+                await backupState(state, { force: true }).catch(() => undefined)
+                dispatch({ type: 'importState', state: b.state })
+              }}
+            >
+              Restore
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }

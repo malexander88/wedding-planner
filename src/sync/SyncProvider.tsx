@@ -11,6 +11,7 @@ import {
 import { isSyncConfigured } from '../config/supabase'
 import { useStore } from '../state/store'
 import { needsBudgetCleanup } from '../data/budget'
+import { isBlankPlan } from '../data/blank'
 import { getItem, removeItem, setItem, setItemNow } from '../storage/indexeddb'
 import type { AppState } from '../types'
 import { syncApi } from './api'
@@ -19,7 +20,9 @@ import {
   emptyMeta,
   fromWire,
   makeClock,
+  isErasedDoc,
   mergeDocs,
+  pushWouldWipe,
   stampChanges,
   toWire,
   type Clock,
@@ -82,7 +85,9 @@ function hasOwnPlan(s: AppState): boolean {
 }
 
 export function SyncProvider({ children }: { children: ReactNode }) {
-  const { state, ready, dispatch } = useStore()
+  const { state, loadStatus, dispatch, wipeIntent } = useStore()
+  // Only a successfully loaded plan may be synced: never sync a placeholder.
+  const ready = loadStatus === 'ok'
   const configured = isSyncConfigured()
 
   const [loaded, setLoaded] = useState(false)
@@ -120,12 +125,20 @@ export function SyncProvider({ children }: { children: ReactNode }) {
   /** Replace local state+meta with a doc without stamping it as a local edit. */
   const applyDoc = useCallback(
     (doc: SyncDoc) => {
+      // A blank result is only acceptable when it records an explicit erase.
+      if (isBlankPlan(doc.state) && !isBlankPlan(baseRef.current)) {
+        if (!isErasedDoc(doc)) {
+          console.warn('[wedding-planner] ignored an empty shared plan')
+          return
+        }
+        wipeIntent.current = Date.now()
+      }
       metaRef.current = doc.meta
       baseRef.current = doc.state
       persistMeta()
       dispatch({ type: 'hydrate', state: doc.state })
     },
-    [dispatch, persistMeta],
+    [dispatch, persistMeta, wipeIntent],
   )
 
   const localDoc = (): SyncDoc => ({ state: baseRef.current, meta: metaRef.current })
@@ -182,6 +195,11 @@ export function SyncProvider({ children }: { children: ReactNode }) {
         const merged = remoteDoc ? mergeDocs(snapshot, remoteDoc) : snapshot
         const needPush = !remoteDoc || !docsEqual(merged, remoteDoc)
         let version = remote.version ?? link.version
+        if (needPush && pushWouldWipe(remoteDoc, merged, wipeIntent.current > 0)) {
+          setStatus('error')
+          setError('Didn’t send: this would have emptied your shared plan. Nothing was changed on the other phone.')
+          return
+        }
         if (needPush) {
           const res = await syncApi.putState(link.secret, toWire(merged), version)
           if (!res.ok) {
@@ -254,6 +272,12 @@ export function SyncProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!loaded) return
     if (state === baseRef.current) return
+    if (isBlankPlan(state) && !isBlankPlan(baseRef.current) && !wipeIntent.current) {
+      // Never record "everything deleted" unless the couple pressed Erase.
+      console.warn('[wedding-planner] refused to record an empty plan over a real one; restoring it')
+      dispatch({ type: 'hydrate', state: baseRef.current })
+      return
+    }
     const { meta, changed } = stampChanges(baseRef.current, state, metaRef.current, tickRef.current)
     baseRef.current = state
     if (!changed) return
@@ -400,6 +424,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     if (!configured || linkRef.current) return
     setStatus('syncing')
     try {
+      if (isBlankPlan(baseRef.current)) throw new Error('Set up your plan first, then share it.')
       const secret = generateSecret()
       const res = await syncApi.createHousehold(secret, toWire(localDoc()))
       await saveLink({ secret, version: res.version ?? 1, lastSyncedAt: new Date().toISOString() })
