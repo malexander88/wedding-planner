@@ -145,7 +145,12 @@ public class MainActivity extends Activity {
         try {
             String html = new String(readAll(getAssets().open("www/index.html")), StandardCharsets.UTF_8);
             // The bridge script must run before the app's module script.
-            html = html.replaceFirst("<head>", "<head><script>" + bridgeJs() + "</script>");
+            // Plain splice, not a regex replacement: bridge.js contains "$" characters.
+            int at = html.indexOf("<head>");
+            if (at >= 0) {
+                at += "<head>".length();
+                html = html.substring(0, at) + "<script>" + bridgeJs() + "</script>" + html.substring(at);
+            }
             Map<String, String> h = new HashMap<>();
             h.put("Cache-Control", "no-store");
             return new WebResourceResponse("text/html", "utf-8", 200, "OK", h, new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8)));

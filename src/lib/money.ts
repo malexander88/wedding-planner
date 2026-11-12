@@ -23,7 +23,7 @@ function fmt(c: Currency, exact: boolean) {
     f = new Intl.NumberFormat(c === 'EUR' ? 'en-IE' : 'en-GB', {
       style: 'currency',
       currency: c,
-      ...(exact ? { maximumFractionDigits: 2, minimumFractionDigits: 2 } : { maximumFractionDigits: 0 }),
+      ...(exact ? { maximumFractionDigits: 2, minimumFractionDigits: 2 } : { maximumFractionDigits: 0, minimumFractionDigits: 0 }),
     })
     formats.set(key, f)
   }

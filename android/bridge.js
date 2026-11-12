@@ -1,3 +1,32 @@
+// Older Android System WebViews (e.g. Chrome 83 on an un-updated Android 11 phone) lack a few
+// newer built-ins the app and its libraries use. Syntax is lowered at build time (build-apk.sh);
+// these fill the gaps at runtime and do nothing on an up-to-date WebView.
+(function () {
+  function def(o, k, v) { if (!(k in o)) Object.defineProperty(o, k, { value: v, writable: true, configurable: true }) }
+  def(Object, 'hasOwn', function (o, k) { return Object.prototype.hasOwnProperty.call(o, k) })
+  function at(i) { i = Math.trunc(i) || 0; if (i < 0) i += this.length; return i < 0 || i >= this.length ? undefined : this[i] }
+  def(Array.prototype, 'at', at); def(String.prototype, 'at', at)
+  def(Array.prototype, 'toSorted', function (f) { return Array.prototype.slice.call(this).sort(f) })
+  def(Array.prototype, 'toReversed', function () { return Array.prototype.slice.call(this).reverse() })
+  def(Array.prototype, 'findLast', function (f, t) { for (var i = this.length - 1; i >= 0; i--) if (f.call(t, this[i], i, this)) return this[i] })
+  def(Array.prototype, 'findLastIndex', function (f, t) { for (var i = this.length - 1; i >= 0; i--) if (f.call(t, this[i], i, this)) return i; return -1 })
+  def(String.prototype, 'replaceAll', function (a, b) {
+    if (a instanceof RegExp) return this.replace(a, b)
+    return this.replace(new RegExp(String(a).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), b)
+  })
+  if (typeof AbortSignal !== 'undefined') def(AbortSignal, 'timeout', function (ms) { var c = new AbortController(); setTimeout(function () { c.abort() }, ms); return c.signal })
+  def(window, 'structuredClone', function clone(v) {
+    if (v === null || typeof v !== 'object') return v
+    if (v instanceof Date) return new Date(v.getTime())
+    if (v instanceof Map) { var m = new Map(); v.forEach(function (x, k) { m.set(clone(k), clone(x)) }); return m }
+    if (v instanceof Set) { var s = new Set(); v.forEach(function (x) { s.add(clone(x)) }); return s }
+    if (v instanceof RegExp) return new RegExp(v.source, v.flags)
+    if (ArrayBuffer.isView(v)) return v.slice()
+    var o = Array.isArray(v) ? [] : {}
+    for (var k in v) if (Object.prototype.hasOwnProperty.call(v, k)) o[k] = clone(v[k])
+    return o
+  })
+})();
 /* Injected by the Android app before the web app runs. Fills gaps in Android's WebView. */
 (function () {
   var B = window.WPAndroid
@@ -46,10 +75,22 @@
   }
 
   // Back button: close an open sheet or dialog before leaving the page.
+  // Back closes the top sheet or dialog first. Tapping the backdrop closes most of them; dialogs that must be
+  // answered (e.g. a partner's link) ignore that, so fall back to their own dismiss button. Never go back in
+  // history underneath an open dialog.
   window.__wpBack = function () {
     var m = document.querySelectorAll('.modal-back')
-    if (m.length) { m[m.length - 1].click(); return 'closed' }
-    return ''
+    if (!m.length) return ''
+    var top = m[m.length - 1]
+    top.click()
+    if (document.contains(top)) {
+      var bs = top.querySelectorAll('button, [aria-label]')
+      for (var i = 0; i < bs.length; i++) {
+        var t = (bs[i].getAttribute('aria-label') || bs[i].textContent || '').trim()
+        if (/^(close|cancel|not now|ok|done|back)$/i.test(t)) { bs[i].click(); break }
+      }
+    }
+    return 'closed'
   }
 
   // Status and navigation bars follow the app's light/dark theme.
