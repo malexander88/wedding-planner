@@ -26,7 +26,7 @@ export function Budget() {
   const dash = `${(Math.min(1, sum.ratio) * circ).toFixed(2)} ${circ.toFixed(2)}`
 
   return (
-    <div className="grid">
+    <div className="grid budget-page">
       <header className="page-head">
         <div className="kicker">Money</div>
         <h1>Budget</h1>
@@ -85,7 +85,7 @@ export function Budget() {
         </dl>
       </section>
 
-      <section className="card">
+      <section className="card budget-costs">
         <div className="sec-head">
           <h2>Your costs</h2>
           <button className="btn ghost small" type="button" onClick={() => setAdding(true)}>
@@ -123,7 +123,7 @@ export function Budget() {
         )}
       </section>
 
-      <section className="card">
+      <section className="card budget-payments">
         <div className="sec-head">
           <h2>Payments</h2>
           {state.budgetLines.length > 0 && (

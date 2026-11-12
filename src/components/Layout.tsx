@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useStore } from '../state/store'
 import {
+  BrandMark,
   IconBudget,
   IconGear,
   IconGuests,
@@ -53,7 +54,7 @@ export function Layout() {
     <div className="app-shell">
       <aside className="sidebar">
         <NavLink to="/" className="brand">
-          <div className="brand-mark">W</div>
+          <div className="brand-mark"><BrandMark /></div>
           <div>
             <div className="brand-name">Wedding Planner</div>
             <small>{names || 'Your wedding'}</small>
@@ -75,7 +76,7 @@ export function Layout() {
       <main className="main">
         <div className="topbar">
           <div className="brand">
-            <div className="brand-mark">W</div>
+            <div className="brand-mark"><BrandMark /></div>
             <div className="brand-name">Wedding Planner</div>
           </div>
           <NavLink to="/settings" className="icon-btn" aria-label="Settings">

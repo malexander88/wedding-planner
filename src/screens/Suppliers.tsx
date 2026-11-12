@@ -23,7 +23,7 @@ import { newSupplier, useStore } from '../state/store'
 import type { CouncilId, Supplier, SupplierCategory } from '../types'
 import { CategoryIcon, IconSearch } from '../components/Icons'
 import { GoogleResults } from '../components/GoogleResults'
-import { placesEnabled } from '../lib/places'
+import { placesEnabled, sessionPhoto, venuePhotoKey } from '../lib/places'
 import { CategoryArt, VenueArt } from '../components/VenueArt'
 
 const VALID = new Set<string>(CATEGORIES.map((c) => c.id))
@@ -281,7 +281,7 @@ function VenueFinder({ params, set }: { params: URLSearchParams; set: (p: Record
 function VenueCard({ v, km, savedId }: { v: DirectoryVenue; km: number | null; savedId?: string }) {
   return (
     <Link to={`/find/place/${v.id}`} className="venue-card">
-      <VenueArt type={v.type} seed={v.id} photo={v.photo} />
+      <VenueArt type={v.type} seed={v.id} photo={v.photo} google={sessionPhoto(venuePhotoKey(v.name, v.town))} />
       <div className="venue-card-body">
         <strong>{v.name}</strong>
         <span className="venue-where">{venuePlace(v)}</span>
@@ -309,7 +309,11 @@ function ShortlistList({ suppliers, empty }: { suppliers: Supplier[]; empty: str
         const dir = s.catalogueId ? DIRECTORY.find((d) => d.id === s.catalogueId) : undefined
         return (
           <Link key={s.id} to={`/find/${s.id}`} className="venue-card">
-            {s.category === 'venue' ? <VenueArt type={dir?.type ?? 'other'} seed={s.id} photo={dir?.photo} /> : <CategoryArt category={s.category} />}
+            {s.category === 'venue' ? (
+              <VenueArt type={dir?.type ?? 'other'} seed={s.id} photo={dir?.photo} google={sessionPhoto(s.placeId ? `place:${s.placeId}` : null) ?? (dir ? sessionPhoto(venuePhotoKey(dir.name, dir.town)) : null)} />
+            ) : (
+              <CategoryArt category={s.category} seed={s.id} google={sessionPhoto(s.placeId ? `place:${s.placeId}` : null)} />
+            )}
             <div className="venue-card-body">
               <strong>{s.name}</strong>
               <span className="venue-where">{s.area || dir?.town || 'Area not set'}</span>
@@ -351,7 +355,7 @@ function OtherFinder({ category, q }: { category: SupplierCategory; q: string })
               const saved = state.suppliers.find((s) => s.catalogueId === item.id)
               return (
                 <article key={item.id} className="venue-card">
-                  <CategoryArt category={item.category} />
+                  <CategoryArt category={item.category} seed={item.id} />
                   <div className="venue-card-body">
                     <strong>{item.name}</strong>
                     <span className="venue-where">{item.area}</span>

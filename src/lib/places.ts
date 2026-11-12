@@ -71,7 +71,10 @@ async function request<T>(body: Record<string, string>, fetcher: typeof fetch = 
 }
 
 /** For tests: forget the session cache. */
-export const clearPlacesCache = () => cache.clear()
+export const clearPlacesCache = () => {
+  cache.clear()
+  photos.clear()
+}
 
 /** Free "IDs only" text search: the best-matching place_id for a venue, or null. */
 export async function findPlaceId(name: string, town: string): Promise<string | null> {
@@ -85,7 +88,22 @@ export async function placeDetails(placeId: string): Promise<PlaceDetails | null
   return r.ok ? r.data : null
 }
 export function fetchPlaceDetails(placeId: string): Promise<PlacesResult<PlaceDetails>> {
-  return request<PlaceDetails>({ op: 'details', id: placeId })
+  return request<PlaceDetails>({ op: 'details', id: placeId }).then((r) => {
+    if (r.ok && r.data.photo) rememberPhoto(`place:${placeId}`, r.data.photo)
+    return r
+  })
+}
+
+// Photos already loaded this session (a place was opened), so cards can show them without another call.
+// Memory only: Google photo links are short-lived and mustn't be stored.
+const photos = new Map<string, NonNullable<PlaceDetails['photo']>>()
+export const venuePhotoKey = (name: string, town: string) => `venue:${name.toLowerCase().trim()}|${town.toLowerCase().trim()}`
+export function rememberPhoto(key: string, photo: NonNullable<PlaceDetails['photo']>) {
+  photos.set(key, photo)
+}
+/** A Google photo for `place:<id>` or a venuePhotoKey(), if one was loaded this session; never fetches. */
+export function sessionPhoto(key: string | null | undefined): NonNullable<PlaceDetails['photo']> | null {
+  return (key && photos.get(key)) || null
 }
 
 /** Google Text Search within Northern Ireland: one call, up to 12 places. */

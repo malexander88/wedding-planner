@@ -1,5 +1,7 @@
+import { useState, type ReactNode } from 'react'
 import type { VenueType } from '../data/venues'
 import { CategoryIcon } from './Icons'
+import { categoryImage, photoVariant, venueImage, type CardPhoto } from '../lib/art'
 
 /** Background tones per venue type, so a results list isn't a wall of the same green tile. */
 const TONES: Record<VenueType | 'category', [string, string]> = {
@@ -116,8 +118,8 @@ function hash(s: string) {
   return Math.abs(h)
 }
 
-/** Photo when there is one, otherwise a line drawing for the kind of place. */
-export function VenueArt({ type, seed, photo, alt = '', className = '' }: { type: VenueType; seed: string; photo?: string; alt?: string; className?: string }) {
+/** Line drawing for the kind of place (fallback when a photo can't load). */
+function VenueLineArt({ type, seed, photo, alt = '', className = '' }: { type: VenueType; seed: string; photo?: string; alt?: string; className?: string }) {
   if (photo) return <img className={`venue-art ${className}`} src={photo} alt={alt} loading="lazy" />
   const [a, b] = TONES[type]
   const h = hash(seed)
@@ -144,10 +146,53 @@ export function VenueArt({ type, seed, photo, alt = '', className = '' }: { type
 }
 
 /** Same treatment for non-venue suppliers: the category icon on a tinted card. */
-export function CategoryArt({ category, className = '' }: { category: string; className?: string }) {
+function CategoryLineArt({ category, className = '' }: { category: string; className?: string }) {
   return (
     <div className={`venue-art cat-art ${className}`} data-cat={category}>
       <CategoryIcon category={category} />
     </div>
   )
+}
+
+// ---- Photographic imagery (round 8b) ----
+// One editorial photo per kind of venue and per supplier category (public/images/cat/*.webp), varied per
+// card by crop and mirroring so a list of hotels doesn't look copy-pasted. A Google photo is shown instead
+// only when that place was already opened this session (never fetched just to fill a card), with its credit.
+
+function Photo({ src, seed, alt, className, fallback, credit }: { src: string; seed: string; alt: string; className: string; fallback: ReactNode; credit?: string }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) return <>{fallback}</>
+  const v = photoVariant(seed)
+  const img = (
+    <img
+      className={`venue-art photo ${className}`}
+      src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      onError={() => setFailed(true)}
+      style={credit ? undefined : { objectPosition: `${v.x}% ${v.y}%`, transform: v.flip ? 'scaleX(-1)' : undefined }}
+    />
+  )
+  if (!credit) return img
+  return (
+    <span className={`art-wrap ${className}`}>
+      {img}
+      <span className="art-credit">Photo: {credit} · Google</span>
+    </span>
+  )
+}
+
+/** Venue picture: its own photo, else a Google photo already loaded this session, else the editorial photo for its type. */
+export function VenueArt({ type, seed, photo, google, alt = '', className = '' }: { type: VenueType; seed: string; photo?: string; google?: CardPhoto | null; alt?: string; className?: string }) {
+  const fallback = <VenueLineArt type={type} seed={seed} alt={alt} className={className} />
+  if (photo) return <img className={`venue-art ${className}`} src={photo} alt={alt} loading="lazy" />
+  if (google) return <Photo src={google.url} seed={seed} alt={alt} className={className} fallback={fallback} credit={google.attributions.map((a) => a.name).join(', ') || 'Google user'} />
+  return <Photo src={venueImage(type)} seed={seed} alt={alt} className={className} fallback={fallback} />
+}
+
+export function CategoryArt({ category, seed = category, google, className = '' }: { category: string; seed?: string; google?: CardPhoto | null; className?: string }) {
+  const fallback = <CategoryLineArt category={category} className={className} />
+  if (google) return <Photo src={google.url} seed={seed} alt="" className={className} fallback={fallback} credit={google.attributions.map((a) => a.name).join(', ') || 'Google user'} />
+  return <Photo src={categoryImage(category)} seed={seed} alt="" className={className} fallback={fallback} />
 }

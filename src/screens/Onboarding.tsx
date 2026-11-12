@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { BrandMark } from '../components/Icons'
 import { useNavigate } from 'react-router-dom'
 import type { CeremonyType, Season, StyleTag, WeddingProfile } from '../types'
 import { useStore } from '../state/store'
@@ -44,7 +45,7 @@ export function Onboarding() {
   return (
     <div className="wizard">
       <div className="wizard-brand">
-        <div className="brand-mark">W</div>
+        <div className="brand-mark"><BrandMark /></div>
         <div className="brand-name">Wedding Planner</div>
       </div>
       <div className="kicker">Welcome</div>

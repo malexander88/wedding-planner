@@ -1,3 +1,4 @@
+import { AppearanceCard } from '../components/Appearance'
 import { SharingCard } from '../components/SharingCard'
 import { downloadText } from '../lib/csv'
 import { useEffect, useState } from 'react'
@@ -114,6 +115,8 @@ export function Settings() {
       </section>
 
       <SharingCard />
+
+      <AppearanceCard />
 
       <section className="card">
         <h2>Backup</h2>

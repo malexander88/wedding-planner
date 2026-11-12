@@ -18,7 +18,15 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webp,woff,woff2,ttf}'],
         // Launch screens are read by iOS when the app is added to the home screen; no need to precache 2.5 MB of them.
-        globIgnores: ['**/splash/**'],
+        globIgnores: ['**/splash/**', '**/images/cat/**'],
+        // Card photos (~40 KB each) are cached as they're first seen rather than all downloaded on install.
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/images/cat/'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'card-photos', expiration: { maxEntries: 40 } },
+          },
+        ],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
       manifest: {
@@ -26,7 +34,7 @@ export default defineConfig({
         short_name: 'Wedding',
         description: 'Plan a Northern Ireland wedding together, from the first ideas to the last thank-you.',
         theme_color: '#1F3B2D',
-        background_color: '#F4EFE4',
+        background_color: '#1F3B2D',
         display: 'standalone',
         orientation: 'portrait',
         start_url: base,

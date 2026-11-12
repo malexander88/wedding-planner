@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { categoryPlural } from '../data/categories'
 import { approvedMatch, googleQuery, resultKm, townFromAddress } from '../data/googleFind'
-import { fetchPlaceDetails, problemText, searchPlaces, type PlaceDetails, type PlaceResult, type PlacesProblem } from '../lib/places'
+import { fetchPlaceDetails, problemText, searchPlaces, sessionPhoto, type PlaceDetails, type PlaceResult, type PlacesProblem } from '../lib/places'
 import { newSupplier, useStore } from '../state/store'
 import type { SupplierCategory } from '../types'
 import { Sheet } from './Sheet'
@@ -95,13 +95,16 @@ function ResultRow({ r, category, onOpen }: { r: PlaceResult; category: Supplier
   const approved = category === 'venue' ? approvedMatch(r) : null
   const saved = state.suppliers.find((s) => s.placeId === r.id)
   const km = resultKm(r)
+  const thumb = sessionPhoto(`place:${r.id}`)
   return (
     <li>
-      <button type="button" className="gr-row" onClick={onOpen}>
+      <button type="button" className={`gr-row${thumb ? ' has-thumb' : ''}`} onClick={onOpen}>
+        {thumb && <img className="gr-thumb" src={thumb.url} alt="" loading="lazy" />}
         <span className="gr-name">{r.name}</span>
         <span className="gr-meta tiny">
           {[r.type, r.address].filter(Boolean).join(' · ')}
           {km !== null && ` · ${km < 10 ? km.toFixed(1) : Math.round(km)} km`}
+          {thumb && ` · Photo: ${thumb.attributions.map((a) => a.name).join(', ') || 'Google user'}`}
         </span>
         <span className="badges">
           {r.closed && <span className="b out">Permanently closed</span>}

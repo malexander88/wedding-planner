@@ -302,3 +302,16 @@ export function StageIcon({ stage, ...props }: IconProps & { stage: string }) {
   const Cmp = stageMap[stage] ?? IconPlan
   return <Cmp {...props} />
 }
+
+/** The app mark: a gold ring with a small sparkle and an italic ampersand (matches the home-screen icon). */
+export function BrandMark() {
+  return (
+    <svg viewBox="0 0 36 36" aria-hidden="true" className="brand-svg">
+      <circle cx="18" cy="19.2" r="10.6" fill="none" stroke="var(--gold)" strokeWidth="1.4" />
+      <path fill="var(--gold)" d="M18 5.6c.3 1.5 1 2.3 2.4 2.6-1.4.3-2.1 1.1-2.4 2.6-.3-1.5-1-2.3-2.4-2.6 1.4-.3 2.1-1.1 2.4-2.6z" />
+      <text x="18.3" y="25.6" textAnchor="middle" fontFamily="'Cormorant Garamond', Georgia, serif" fontStyle="italic" fontSize="17" fill="var(--on-primary)">
+        &amp;
+      </text>
+    </svg>
+  )
+}

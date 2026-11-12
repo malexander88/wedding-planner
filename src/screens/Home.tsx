@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { currentStage, STAGES } from '../data/checklist'
 import { daysBetween, daysUntil, formatLong, formatShort, todayIso as localToday } from '../data/legal'
@@ -8,6 +9,8 @@ import { comingUp, reminders } from '../data/taskDetails'
 import { catchUpBefore, isCatchUp, nextDeadlines, sortTasks } from '../data/plan'
 import { useTaskSheet } from '../components/TaskDetailsSheet'
 import { haptic } from '../lib/celebrate'
+import { HomePhotoSheet } from '../components/Appearance'
+import { useHomePhoto } from '../lib/homePhoto'
 import {
   CategoryIcon,
   IconBloom,
@@ -81,12 +84,17 @@ export function Home() {
   const money = budgetSummary(state)
   const barPct = Math.min(100, money.ratio * 100)
   const hero = `${import.meta.env.BASE_URL}images/hero.webp`
+  const photo = useHomePhoto()
+  const [photoOpen, setPhotoOpen] = useState(false)
   const place = (p.area || 'Northern Ireland').split(/[,&]/)[0].trim()
 
   return (
-    <div className="grid">
-      <section className="hero-photo">
-        <img src={hero} alt="" />
+    <div className="grid home">
+      <section className={`hero-photo${photo ? ' own' : ''}`}>
+        {photo ? <img src={photo.dataUrl} alt="" style={{ objectPosition: `50% ${photo.focusY}%`, filter: 'none' }} /> : photo === null && <img src={hero} alt="" />}
+        <button type="button" className="hero-edit" aria-label={photo ? 'Change your Home photo' : 'Add your own photo'} onClick={() => setPhotoOpen(true)}>
+          <IconCamera />
+        </button>
         <div className="tint" />
         <div className="scrim" />
         <div className="hero-copy">
@@ -107,6 +115,7 @@ export function Home() {
           </p>
         </div>
       </section>
+      {photoOpen && <HomePhotoSheet onClose={() => setPhotoOpen(false)} />}
 
       <section className="card progress-card">
         <div className="ring-wrap">
@@ -150,7 +159,7 @@ export function Home() {
         </button>
       )}
 
-      <section className="card">
+      <section className="card home-next">
         <div className="sec-head">
           <h2>{dated ? 'Next deadlines' : 'Next up'}</h2>
           <Link className="text-btn" to="/plan">
@@ -192,7 +201,7 @@ export function Home() {
       </section>
 
       {coming.length > 0 && (
-        <section className="card">
+        <section className="card home-coming">
           <div className="sec-head">
             <h2>Coming up</h2>
             <Link className="text-btn" to="/budget">
@@ -247,7 +256,7 @@ export function Home() {
         </div>
       </Link>
 
-      <section>
+      <section className="home-find">
         <div className="sec-head">
           <h2>Find suppliers</h2>
           <Link className="text-btn" to="/find">

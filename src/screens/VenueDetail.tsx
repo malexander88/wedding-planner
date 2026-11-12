@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { directoryVenue, directionsUrl, distanceKm, formatKm, venuePlace, venueTypeOne, type DirectoryVenue } from '../data/venues'
 import { GoogleAttribution, Stars } from '../components/GoogleResults'
-import { fetchPlaceDetails, findPlaceId, placesEnabled, problemText, type PlaceDetails } from '../lib/places'
+import { fetchPlaceDetails, findPlaceId, placesEnabled, problemText, rememberPhoto, venuePhotoKey, type PlaceDetails } from '../lib/places'
 import { newSupplier, useStore } from '../state/store'
 import { IconBack } from '../components/Icons'
 import { VenueArt } from '../components/VenueArt'
@@ -99,6 +99,7 @@ export function GoogleCard({ v, placeId, onId }: { v: Pick<DirectoryVenue, 'name
       const id = placeId ?? (await findPlaceId(v.name, v.town))
       if (id && id !== placeId) onId?.(id)
       const r = id ? await fetchPlaceDetails(id) : null
+      if (r?.ok && r.data.photo) rememberPhoto(venuePhotoKey(v.name, v.town), r.data.photo)
       if (live) setD(r?.ok ? r.data : r?.problem === 'limit' ? 'limit' : null)
     })()
     return () => {
