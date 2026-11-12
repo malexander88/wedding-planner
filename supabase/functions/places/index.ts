@@ -1,11 +1,13 @@
-// Google Places (New) proxy for the Wedding Planner — NOT DEPLOYED until a key exists (see PLAN.md, "Google Places").
+// Google Places (New) proxy for the Wedding Planner (see PLAN.md, "Google Places").
 //
 // Why a proxy: the Google key must never reach the browser. The app sends { op, ... } here with its public
 // publishable key; this function adds the Google key, applies a tight field mask, and enforces per-day caps
 // (counted in public.places_usage via the places_bump() function, which only the service role may call).
 //
 // Ops
-//   { op: 'find', query }  -> { id }          Text Search, field mask `places.id` (Essentials IDs Only SKU)
+//   { op: 'find', query }  -> { id }          Text Search, field mask `places.id` (Essentials IDs Only SKU, free)
+//   { op: 'search', query } -> { results }    Text Search Pro: up to 12 places in Northern Ireland with name,
+//                                             address, type and Maps link (no photos, no ratings: those cost more)
 //   { op: 'details', id }  -> PlaceDetails    Place Details, Pro mask (+ Enterprise fields only if PLACES_TIER=enterprise)
 //                                             + one photo (Place Details Photos SKU) if under the photo cap
 // Nothing is stored here except daily counts. The app keeps only the place id and re-fetches details on open.
@@ -18,8 +20,11 @@ const env = (k: string, d = '') => Deno.env.get(k) ?? d
 const GOOGLE_KEY = env('GOOGLE_PLACES_KEY')
 const CLIENT_KEY = env('PLACES_CLIENT_KEY')
 const TIER = env('PLACES_TIER', 'pro')
+// Daily caps, counted in Europe/London days. Worst case (every cap hit every day for 31 days) stays inside
+// Google's free monthly usage per SKU: Text Search Pro 5,000; Place Details Enterprise 1,000; Photos 1,000.
 const CAPS = {
-  find: Number(env('PLACES_CAP_FIND', '300')),
+  // Shared by 'find' (free IDs-only) and 'search' (Text Search Pro): 100/day -> at most 3,100 a month.
+  find: Number(env('PLACES_CAP_FIND', '100')),
   // Pro details: 5,000 free a month -> 150/day stays under it. Enterprise: 1,000 free -> 30/day.
   details: Number(env('PLACES_CAP_DETAILS', TIER === 'enterprise' ? '30' : '150')),
   // Photos: 1,000 free a month -> 30/day.
@@ -30,7 +35,16 @@ const ORIGINS = env('PLACES_ALLOWED_ORIGINS', 'https://malexander88.github.io,ht
   .map((s) => s.trim())
 
 const PRO_FIELDS = ['id', 'displayName', 'formattedAddress', 'googleMapsUri', 'businessStatus', 'photos']
-const ENTERPRISE_FIELDS = ['nationalPhoneNumber', 'websiteUri', 'rating', 'userRatingCount']
+const ENTERPRISE_FIELDS = ['nationalPhoneNumber', 'websiteUri', 'rating', 'userRatingCount', 'regularOpeningHours']
+const SEARCH_MASK = [
+  'places.id',
+  'places.displayName',
+  'places.formattedAddress',
+  'places.googleMapsUri',
+  'places.businessStatus',
+  'places.primaryTypeDisplayName',
+  'places.location',
+].join(',')
 const DETAILS_MASK = [...PRO_FIELDS, ...(TIER === 'enterprise' ? ENTERPRISE_FIELDS : [])].join(',')
 // Northern Ireland, so "The Old Courthouse" doesn't match one in England.
 const NI = { low: { latitude: 54.0, longitude: -8.2 }, high: { latitude: 55.35, longitude: -5.4 } }
@@ -100,6 +114,37 @@ Deno.serve(async (req) => {
       return json({ id: r.places?.[0]?.id ?? null }, 200, origin)
     }
 
+    if (body.op === 'search') {
+      const query = String(body.query ?? '').slice(0, 160).trim()
+      if (!query) return json({ error: 'query' }, 400, origin)
+      if (!(await bump('find'))) return json({ error: 'daily limit' }, 429, origin)
+      const r = await google('places:searchText', {
+        method: 'POST',
+        mask: SEARCH_MASK,
+        body: JSON.stringify({ textQuery: query, regionCode: 'GB', languageCode: 'en-GB', pageSize: 12, locationRestriction: { rectangle: NI } }),
+      })
+      type P = {
+        id: string
+        displayName?: { text?: string }
+        formattedAddress?: string
+        googleMapsUri?: string
+        businessStatus?: string
+        primaryTypeDisplayName?: { text?: string }
+        location?: { latitude: number; longitude: number }
+      }
+      const results = ((r.places ?? []) as P[]).map((p) => ({
+        id: p.id,
+        name: p.displayName?.text ?? '',
+        address: p.formattedAddress,
+        mapsUrl: p.googleMapsUri,
+        closed: p.businessStatus === 'CLOSED_PERMANENTLY',
+        type: p.primaryTypeDisplayName?.text,
+        lat: p.location?.latitude,
+        lng: p.location?.longitude,
+      }))
+      return json({ results }, 200, origin)
+    }
+
     if (body.op === 'details') {
       const id = String(body.id ?? '')
       if (!PLACE_ID.test(id)) return json({ error: 'id' }, 400, origin)
@@ -127,6 +172,9 @@ Deno.serve(async (req) => {
           website: p.websiteUri,
           rating: p.rating,
           ratingCount: p.userRatingCount,
+          hours: p.regularOpeningHours
+            ? { openNow: p.regularOpeningHours.openNow, days: p.regularOpeningHours.weekdayDescriptions ?? [] }
+            : undefined,
           photo,
         },
         200,
