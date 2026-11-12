@@ -5,6 +5,7 @@
 
 import type { AppState, BudgetLine, Payment, PlanTask, Supplier, SupplierCategory, Task, TaskDetail } from '../types'
 import { catchUpBefore, isCatchUp } from './plan'
+import { guestCounts, planningNumbers } from './guests'
 import { addDays, formatShort, noticeDueDate, noticeMinimumDate, scheduleFromDate, scheduleReturnDate } from './legal'
 import { allFields, budgetCategory, money, templateFor, TEMPLATES, type TemplateDef } from './taskTemplates'
 
@@ -57,8 +58,12 @@ export function initialValues(task: Task, state: AppState): { values: Record<str
     const appt = findDetail(state, 'legal-book-appointment')
     if (appt?.values.office) values.office = appt.values.office
   }
-  if (template.id === 'guests' && task.key === 'people-households') {
-    values.count = String(state.households.length || '')
+  if (template.id === 'guests') {
+    // Counts from the guest list: people for catering numbers, households for stationery.
+    const c = guestCounts(state)
+    const n = planningNumbers(state)
+    const count = task.key === 'people-final-numbers' || task.key === 'people-dietary' ? n.day + n.evening : c.invitesSent + c.invitesToSend
+    if (count) values.count = String(count)
   }
   return { values, supplierId }
 }

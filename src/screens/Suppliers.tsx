@@ -1,3 +1,4 @@
+import { planningNumbers } from '../data/guests'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { CATALOGUE } from '../data/catalogue'
@@ -115,7 +116,7 @@ function VenueFinder({ params, set }: { params: URLSearchParams; set: (p: Record
   const fit = params.get('fit') === '1'
   const sort = (params.get('sort') === 'az' ? 'az' : 'nearest') as VenueSort
   const shown = Number(params.get('n')) || PAGE
-  const guests = state.profile.estimatedDayGuests
+  const guests = planningNumbers(state).day
 
   const results = useMemo(
     () =>

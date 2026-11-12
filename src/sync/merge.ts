@@ -74,9 +74,10 @@ export const COLLECTIONS: Record<CollectionName, (r: AnyRecord) => string> = {
 /**
  * Collections whose records also merge field by field (flattened: `p:prop`, `v:valueKey`).
  * The value names an inner object that merges key by key too; '' means top-level properties only.
- * Tasks merge per field so one phone re-dating a task and the other assigning it both stick.
+ * Tasks, households and guests merge per field: one phone re-dating a task (or ticking an invitation)
+ * while the other edits notes, assignee or a guest's name keeps both changes.
  */
-const NESTED: Partial<Record<CollectionName, string>> = { taskDetails: 'values', tasks: '' }
+const NESTED: Partial<Record<CollectionName, string>> = { taskDetails: 'values', tasks: '', households: '', guests: '' }
 const nestedKey = (name: string, id: string) => `${name}/${id}`
 
 function flatten(rec: AnyRecord | undefined, inner: string): AnyRecord {

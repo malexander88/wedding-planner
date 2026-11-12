@@ -1,3 +1,4 @@
+import { planningNumbers } from '../data/guests'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BUDGET_CATEGORY_OPTIONS, budgetSummary, committedGroups, type CommittedItem } from '../data/budget'
@@ -10,6 +11,7 @@ import type { BudgetLine } from '../types'
 export function Budget() {
   const { state, dispatch, tasks } = useStore()
   const sum = budgetSummary(state)
+  const numbers = planningNumbers(state)
   const groups = committedGroups(state)
   const [adding, setAdding] = useState(false)
   const payments = [...state.payments].sort((a, b) => {
@@ -106,6 +108,13 @@ export function Budget() {
                 <h3>{g.label}</h3>
                 <span>{gbp(g.total)}</span>
               </div>
+              {g.category === 'catering' && numbers.day > 0 && g.total > 0 && (
+                <p className="tiny per-head">
+                  About {gbp(Math.round(g.total / (numbers.day + numbers.evening)))} a head for {numbers.day} day
+                  {numbers.evening ? ` + ${numbers.evening} evening` : ''} guests
+                  {numbers.fromList ? ' on your guest list' : ' (your first guess — add guests for real numbers)'}.
+                </p>
+              )}
               {g.items.map((item) => (
                 <CostItem key={item.line.id} item={item} taskTitle={taskTitle(item.line.taskKey)} />
               ))}

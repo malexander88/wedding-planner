@@ -62,9 +62,22 @@ export interface Household {
   id: string
   name: string
   side: 'a' | 'b' | 'both'
+  /** One group per household, e.g. "Matt's family", "Uni friends". */
+  group?: string
+  /**
+   * Contact details are private: for posting invitations only. They sync only to the couple's own
+   * paired phone, never appear in enquiry drafts, the guest list view or the default export.
+   */
   email?: string
+  phone?: string
   address?: string
+  postcode?: string
   notes?: string
+  /** Manual ticks by the couple. There are no RSVP links or guest-facing pages. */
+  saveDateSent?: boolean
+  inviteSent?: boolean
+  inviteSentOn?: string
+  addedAt?: string
 }
 
 export interface Guest {
@@ -76,13 +89,17 @@ export interface Guest {
   plusOneOfGuestId?: string
   plusOneNamed: boolean
   child: boolean
+  /** ['day', 'evening'] for a day guest, ['evening'] for evening only. */
   invitedTo: InvitePart[]
+  /** Only 'no' matters now: the couple marking someone as not coming. No RSVP pages exist. */
   rsvp: RsvpStatus
   meal: string
   dietary: string
   dietaryConsent: boolean
   travelFrom: string
   notes: string
+  tags?: string[]
+  addedAt?: string
 }
 
 export interface WeddingEvent {

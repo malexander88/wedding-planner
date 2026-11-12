@@ -1,8 +1,11 @@
 import type { AppState, Supplier } from '../types'
 import { formatLong } from '../data/legal'
+import { planningNumbers } from '../data/guests'
 
 export function draftEnquiry(state: AppState, supplier: Supplier): string {
   const p = state.profile
+  // Only counts leave the app — never names, addresses or dietary details.
+  const n = planningNumbers(state)
   const names = [p.partnerAName, p.partnerBName].filter(Boolean).join(' and ') || 'us'
   const dateLine = p.date
     ? `We are getting married on ${formatLong(p.date)}.`
@@ -17,7 +20,7 @@ export function draftEnquiry(state: AppState, supplier: Supplier): string {
 Hello,
 
 We are ${names}, and we are planning a wedding in the ${p.area || 'Belfast / Antrim / Newtownabbey'} area. ${dateLine}
-We are expecting around ${p.estimatedDayGuests || 80} day guests and ${p.estimatedEveningGuests || 40} evening guests. The style we have in mind is ${p.style}.
+We are expecting ${n.fromList ? '' : 'around '}${n.day || 80} day guests and ${n.fromList ? n.evening : n.evening || 40} extra evening guests${n.children ? `, including ${n.children} children` : ''}. The style we have in mind is ${p.style}.
 
 We found you while looking for a ${supplier.category} and would love to know:
 

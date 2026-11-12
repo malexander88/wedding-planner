@@ -12,6 +12,7 @@ import {
 import { pruneStarterLines } from '../data/budget'
 import { activeTasks, EDIT_FIELDS, generatedSpecs, isTaskDone, mergeTasks, overrideId, type TaskEdits } from '../data/checklist'
 import { stableStringify } from '../sync/merge'
+import { sanitizeGuest, UNSORTED_ID } from '../data/guests'
 import { applyTaskDetail } from '../data/taskDetails'
 import { uid } from '../lib/ids'
 import { backupState, indexedDbStorage, saveStateNow } from '../storage/indexeddb'
@@ -121,6 +122,10 @@ export type Action =
   | { type: 'updateHousehold'; id: string; patch: Partial<Household> }
   | { type: 'removeHousehold'; id: string }
   | { type: 'addGuest'; guest: Guest }
+  /** Quick add and bulk paste: many households and people in one change. */
+  | { type: 'addGuests'; households: Household[]; guests: Guest[] }
+  /** Manual "invitation sent" ticks for several households at once. */
+  | { type: 'setInvitesSent'; ids: string[]; sent: boolean }
   | { type: 'updateGuest'; id: string; patch: Partial<Guest> }
   | { type: 'removeGuest'; id: string }
   | { type: 'restoreGuests'; household?: Household; householdIndex?: number; guests: Guest[]; guestIndex?: number }
@@ -460,24 +465,55 @@ function baseReducer(state: AppState, action: Action): AppState {
       return touch({ ...state, payments: state.payments.filter((p) => p.id !== action.id) })
     case 'addHousehold':
       return touch({ ...state, households: [...state.households, action.household] })
-    case 'updateHousehold':
-      return touch({
-        ...state,
-        households: state.households.map((h) => (h.id === action.id ? { ...h, ...action.patch } : h)),
+    case 'addGuests': {
+      const hhIds = new Set(state.households.map((h) => h.id))
+      const gIds = new Set(state.guests.map((g) => g.id))
+      const hh = action.households.filter((h) => !hhIds.has(h.id))
+      const gs = action.guests.filter((g) => !gIds.has(g.id)).map((g) => sanitizeGuest(g))
+      if (!hh.length && !gs.length) return state
+      return touch({ ...state, households: [...state.households, ...hh], guests: [...state.guests, ...gs] })
+    }
+    case 'setInvitesSent': {
+      const ids = new Set(action.ids)
+      let changed = false
+      const today = new Date().toISOString().slice(0, 10)
+      const households = state.households.map((h) => {
+        if (!ids.has(h.id) || !!h.inviteSent === action.sent) return h
+        changed = true
+        return withInvite(h, action.sent, today)
       })
+      return changed ? touch({ ...state, households }) : state
+    }
+    case 'updateHousehold': {
+      const cur = state.households.find((h) => h.id === action.id)
+      if (!cur) return state
+      let next: Household = { ...cur, ...action.patch }
+      if ('inviteSent' in action.patch && !!action.patch.inviteSent !== !!cur.inviteSent)
+        next = withInvite(next, !!action.patch.inviteSent, new Date().toISOString().slice(0, 10))
+      next = dropEmpty(next, HOUSEHOLD_OPTIONAL)
+      if (stableStringify(next) === stableStringify(cur)) return state
+      return touch({ ...state, households: state.households.map((h) => (h.id === action.id ? next : h)) })
+    }
     case 'removeHousehold':
+      if (action.id === UNSORTED_ID) {
+        // People whose household was removed on the other phone.
+        const ids = new Set(state.households.map((h) => h.id))
+        return touch({ ...state, guests: state.guests.filter((g) => ids.has(g.householdId)) })
+      }
       return touch({
         ...state,
         households: state.households.filter((h) => h.id !== action.id),
         guests: state.guests.filter((g) => g.householdId !== action.id),
       })
     case 'addGuest':
-      return touch({ ...state, guests: [...state.guests, action.guest] })
-    case 'updateGuest':
-      return touch({
-        ...state,
-        guests: state.guests.map((g) => (g.id === action.id ? { ...g, ...action.patch } : g)),
-      })
+      return touch({ ...state, guests: [...state.guests, sanitizeGuest(action.guest)] })
+    case 'updateGuest': {
+      const cur = state.guests.find((g) => g.id === action.id)
+      if (!cur) return state
+      const next = dropEmpty(sanitizeGuest({ ...cur, ...action.patch }, cur), GUEST_OPTIONAL)
+      if (stableStringify(next) === stableStringify(cur)) return state
+      return touch({ ...state, guests: state.guests.map((g) => (g.id === action.id ? next : g)) })
+    }
     case 'restoreGuests': {
       // Undo for a removed person or household: put the same records back.
       const households = [...state.households]
@@ -640,10 +676,26 @@ export function newGuest(householdId: string, firstName = ''): Guest {
     dietaryConsent: false,
     travelFrom: '',
     notes: '',
+    addedAt: new Date().toISOString(),
   }
 }
 
-export function newHousehold(name: string): Household {
-  return { id: uid('hh'), name, side: 'both' }
+export function newHousehold(name: string, side: Household['side'] = 'both'): Household {
+  return { id: uid('hh'), name, side, addedAt: new Date().toISOString() }
 }
+
+function withInvite(h: Household, sent: boolean, today: string): Household {
+  const { inviteSentOn: _drop, ...rest } = h
+  void _drop
+  return sent ? { ...rest, inviteSent: true, inviteSentOn: today } : { ...rest, inviteSent: false }
+}
+
+/** Optional fields cleared to '' or undefined are dropped, so records stay small and merge cleanly. */
+function dropEmpty<T extends object>(r: T, fields: readonly string[]): T {
+  const out = { ...r } as Record<string, unknown>
+  for (const k of fields) if (out[k] === undefined || out[k] === '' || (Array.isArray(out[k]) && !(out[k] as unknown[]).length)) delete out[k]
+  return out as T
+}
+const HOUSEHOLD_OPTIONAL = ['group', 'email', 'phone', 'address', 'postcode', 'notes', 'inviteSentOn'] as const
+const GUEST_OPTIONAL = ['tags', 'plusOneOfGuestId'] as const
 
