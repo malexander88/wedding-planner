@@ -23,8 +23,21 @@
     <link rel="apple-touch-startup-image" href="/wedding-planner/splash/iphone-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
     <link rel="apple-touch-startup-image" href="/wedding-planner/splash/iphone-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
     <title>Wedding Planner</title>
-    <script type="module" crossorigin src="/wedding-planner/assets/index-CbeQm1OL.js"></script>
-    <link rel="stylesheet" crossorigin href="/wedding-planner/assets/index-CC3n-Vh2.css">
+    <script>
+      // Appearance before first paint (mirrors src/lib/theme.ts): no light flash for dark-mode users.
+      (function () {
+        try {
+          var t = localStorage.getItem('wp.theme'), a = localStorage.getItem('wp.accent');
+          var dark = t === 'dark' || (t !== 'light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+          var r = document.documentElement;
+          r.dataset.theme = dark ? 'dark' : 'light';
+          r.dataset.accent = /^(gold|rose|heather|sage)$/.test(a || '') ? a : 'gold';
+          if (dark) document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0E1712');
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/wedding-planner/assets/index-CfvNsyPf.js"></script>
+    <link rel="stylesheet" crossorigin href="/wedding-planner/assets/index-V9nv-OBt.css">
   <link rel="manifest" href="/wedding-planner/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/wedding-planner/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
