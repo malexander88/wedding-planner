@@ -106,7 +106,15 @@ export function GoogleCard({ v, placeId, onId }: { v: Pick<DirectoryVenue, 'name
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placeId, v.name, v.town])
-  if (d === 'loading') return <section className="card"><p className="tiny">Checking Google…</p></section>
+  if (d === 'loading')
+    return (
+      <section className="card" aria-busy="true">
+        <span className="sr-only">Checking Google…</span>
+        <span className="skeleton w40" aria-hidden="true" />
+        <div className="skeleton photo" aria-hidden="true" />
+        <span className="skeleton w90" aria-hidden="true" />
+      </section>
+    )
   if (d === 'limit') return <section className="card"><p className="tiny">{problemText('limit')}</p></section>
   if (!d) return null
   return (

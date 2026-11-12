@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { STAGES } from '../data/checklist'
 import { formatShort } from '../data/legal'
@@ -19,6 +19,7 @@ import {
 import { useStore } from '../state/store'
 import { IconCalendar, IconChevron, StageIcon } from '../components/Icons'
 import { useDetailSummary, useTaskSheet } from '../components/TaskDetailsSheet'
+import { completeStages, haptic, newlyComplete } from '../lib/celebrate'
 import { TaskEditSheet } from '../components/TaskEditSheet'
 import { CUSTOM_TEMPLATE_CHOICES, TEMPLATES } from '../data/taskTemplates'
 import type { Assignee, PlanTask, Task, TemplateId } from '../types'
@@ -76,6 +77,22 @@ export function Checklist() {
     const t = window.setTimeout(() => setRemoved(null), 10000)
     return () => window.clearTimeout(t)
   }, [removed])
+
+  // A quiet celebration when the last task in a stage is ticked off (not for stages already done on arrival).
+  const doneStages = useMemo(() => completeStages(allTasks), [allTasks])
+  const prevDone = useRef(doneStages)
+  const [celebrate, setCelebrate] = useState<string | null>(null)
+  useEffect(() => {
+    const fresh = newlyComplete(prevDone.current, doneStages)
+    prevDone.current = doneStages
+    if (!fresh.length) return
+    const stage = STAGES.find((s) => s.id === fresh[0])
+    if (!stage) return
+    haptic(18)
+    setCelebrate(stage.title)
+    const t = window.setTimeout(() => setCelebrate(null), 5000)
+    return () => window.clearTimeout(t)
+  }, [doneStages])
 
   const visible = useMemo(
     () => allTasks.filter((t) => matchesFilter(t, filter, me, today, before)),
@@ -222,7 +239,11 @@ export function Checklist() {
                   const m = movePatch(sec.tasks, i, dir, effView)
                   if (m) dispatch({ type: 'editTask', key: m.key, patch: m.patch })
                 }}
-                onTick={() => (t.done ? dispatch({ type: 'setTaskDone', key: t.key, done: false }) : openSheet(t, 'tick'))}
+                onTick={() => {
+                  haptic()
+                  if (t.done) dispatch({ type: 'setTaskDone', key: t.key, done: false })
+                  else openSheet(t, 'tick')
+                }}
                 onDetails={() => openSheet(t, 'edit')}
                 onEdit={() => setEditing(t.key)}
               />
@@ -296,6 +317,14 @@ export function Checklist() {
         />
       )}
       {sheet}
+      {celebrate && !removed && (
+        <div className="toast celebrate" role="status">
+          <span className="spark" aria-hidden="true">✦</span>
+          <span>
+            Stage complete: <strong>{celebrate}</strong>. Lovely work.
+          </span>
+        </div>
+      )}
       {removed && (
         <div className="toast" role="status">
           <span>{removed.label}</span>

@@ -1002,7 +1002,7 @@ details.plan-group:not([open]) .plan-group-head { padding-bottom: 0; }
 .guest-stats .feeds { opacity: 0.8; margin: 0; }
 .stat-big { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .stat-big > div { display: flex; flex-direction: column; align-items: flex-start; }
-.stat-big b { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.3rem; line-height: 1.05; color: var(--gold); font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat-big b { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.3rem; line-height: 1.05; color: var(--gold); font-weight: 600; font-variant-numeric: lining-nums proportional-nums; letter-spacing: -0.01em; }
 .stat-big span { font-size: 0.85rem; opacity: 0.85; }
 .side-bar { display: flex; gap: 3px; border-radius: 999px; overflow: hidden; font-size: 0.75rem; font-weight: 700; }
 .side-seg { padding: 4px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex-basis: 0; }
@@ -1109,3 +1109,95 @@ details.plan-group:not([open]) .plan-group-head { padding-bottom: 0; }
 .stars .on { color: var(--gold); }
 .stars .half { background: linear-gradient(90deg, var(--gold) 50%, var(--line-strong) 50%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .ps-attr { margin-top: 10px; }
+
+/* ───────── Round 8: premium polish ─────────
+   Motion is short and soft (180–320 ms, one easing), never blocks input, and is switched off entirely
+   for anyone who asks their device for reduced motion. */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-fast: 160ms;
+  --t-med: 260ms;
+  --focus: 0 0 0 3px rgba(201, 165, 92, 0.45);
+  font-variant-numeric: lining-nums;
+}
+/* Cormorant's default figures are old-style ("4o"); planning numbers read better as lining figures. */
+h1, h2, h3, .display, .stat, .budget-ring .ring-label b, .hero-copy h1 { font-variant-numeric: lining-nums proportional-nums; }
+h1, h2, h3 { text-wrap: balance; }
+p, .tiny, dd { text-wrap: pretty; }
+::selection { background: rgba(201, 165, 92, 0.35); }
+
+/* One focus style everywhere: a soft gold halo for keyboard users only. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: none; box-shadow: var(--focus); border-radius: 10px; }
+.btn:focus-visible, .chip:focus-visible, .icon-btn:focus-visible { box-shadow: var(--focus), var(--shadow); }
+input[type='checkbox']:focus-visible { box-shadow: var(--focus); border-radius: 7px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Press feedback: things you tap give slightly, like paper. */
+.btn, .chip, .icon-btn, .gr-row, .venue-card, .dates-cta, .bottom-nav a, .nav-link, .seg button {
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out), background-color var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+}
+.btn:active, .chip:active, .icon-btn:active, .gr-row:active, .dates-cta:active, .seg button:active { transform: scale(0.97); }
+.venue-card:active { transform: scale(0.985); }
+.bottom-nav a:active svg { transform: scale(0.9); }
+.bottom-nav a svg { transition: transform var(--t-fast) var(--ease-out); }
+.bottom-nav a.active svg { color: var(--forest); }
+.bottom-nav a.active::before {
+  content: ''; position: absolute; top: 0; width: 26px; height: 3px; border-radius: 0 0 3px 3px; background: var(--gold);
+  animation: nav-pip var(--t-med) var(--ease-out);
+}
+.bottom-nav a { position: relative; }
+@media (hover: hover) {
+  .venue-card:hover, .gr-row:hover { box-shadow: var(--shadow-float); }
+}
+
+/* Pages ease in; sheets rise; the backdrop fades. */
+/* "backwards" so no transform lingers after the entrance (a transform would trap fixed sheets and toasts). */
+.page-in { animation: page-in var(--t-med) var(--ease-out) backwards; min-width: 0; }
+.modal-back { animation: fade-in var(--t-fast) ease-out both; }
+.modal-back > .modal { animation: sheet-up 320ms var(--ease-out) both; }
+@media (min-width: 720px) { .modal-back > .modal { animation-name: dialog-in; animation-duration: var(--t-med); } }
+.toast { animation: toast-in var(--t-med) var(--ease-out) both; }
+
+/* Ticking a box: a small, satisfying pop. */
+input[type='checkbox'] { transition: background-color var(--t-fast), border-color var(--t-fast); }
+input[type='checkbox']:checked { animation: tick-pop 300ms var(--ease-out); }
+
+/* Progress fills glide rather than jump. */
+.ring-wrap .fill, .budget-ring .fill { transition: stroke-dasharray 600ms var(--ease-out), stroke-dashoffset 600ms var(--ease-out); }
+.progress > div { transition: width 600ms var(--ease-out); }
+
+/* Loading placeholders: a slow gold-tinted shimmer instead of "Loading…" text. */
+.skeleton {
+  display: block; height: 12px; border-radius: 8px; margin: 8px 0;
+  background: linear-gradient(90deg, var(--ivory-2) 0%, #F3EBDB 40%, var(--ivory-2) 80%);
+  background-size: 300% 100%; animation: shimmer 1.4s ease-in-out infinite;
+}
+.skeleton.photo { height: 180px; border-radius: 14px; margin-bottom: 12px; }
+.skeleton.w40 { width: 40%; } .skeleton.w60 { width: 60%; height: 14px; } .skeleton.w90 { width: 90%; }
+.skeleton-row { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 8px 14px; }
+
+/* Stage complete: the one celebratory moment — gold, brief, quiet. */
+.toast.celebrate { width: min(380px, calc(100% - 32px)); background: linear-gradient(120deg, var(--forest-deep), var(--forest)); border: 1px solid rgba(201, 165, 92, 0.55); gap: 12px; }
+.toast.celebrate strong { color: var(--gold); font-weight: 650; }
+.toast.celebrate .spark { color: var(--gold); font-size: 1.2rem; display: inline-block; animation: spark 1.2s var(--ease-out) both; }
+
+/* Hero names settle in on Home. */
+.hero-copy h1 { animation: rise-in 600ms var(--ease-out) both; }
+.hero-copy .flourish, .hero-copy p { animation: fade-in 700ms 150ms ease-out both; }
+
+@keyframes page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(8px); letter-spacing: 0.02em; } to { opacity: 1; transform: none; } }
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0.4; } to { transform: none; opacity: 1; } }
+@keyframes dialog-in { from { transform: translateY(8px) scale(0.98); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes tick-pop { 0% { transform: scale(0.82); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+@keyframes spark { 0% { transform: scale(0.4) rotate(-40deg); opacity: 0; } 60% { transform: scale(1.3) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+@keyframes nav-pip { from { width: 0; opacity: 0; } to { width: 26px; opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  .skeleton { animation: none; }
+}

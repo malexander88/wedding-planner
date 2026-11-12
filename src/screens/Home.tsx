@@ -7,6 +7,7 @@ import { useStore } from '../state/store'
 import { comingUp, reminders } from '../data/taskDetails'
 import { catchUpBefore, isCatchUp, nextDeadlines, sortTasks } from '../data/plan'
 import { useTaskSheet } from '../components/TaskDetailsSheet'
+import { haptic } from '../lib/celebrate'
 import {
   CategoryIcon,
   IconBloom,
@@ -173,7 +174,11 @@ export function Home() {
                   type="checkbox"
                   checked={!!t.done}
                   aria-label={`Mark “${t.title}” done`}
-                  onChange={() => (t.done ? dispatch({ type: 'setTaskDone', key: t.key, done: false }) : openSheet(t, 'tick'))}
+                  onChange={() => {
+                    haptic()
+                    if (t.done) dispatch({ type: 'setTaskDone', key: t.key, done: false })
+                    else openSheet(t, 'tick')
+                  }}
                 />
               </label>
             ))}

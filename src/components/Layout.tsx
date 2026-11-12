@@ -82,7 +82,9 @@ export function Layout() {
             <IconGear />
           </NavLink>
         </div>
-        <Outlet />
+        <div className="page-in" key={pathname}>
+          <Outlet />
+        </div>
       </main>
       <nav className="bottom-nav">
         {mainNav.map((n) => (

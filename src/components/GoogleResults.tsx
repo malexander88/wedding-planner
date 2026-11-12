@@ -48,7 +48,17 @@ export function GoogleResults({ category, q, area }: { category: SupplierCategor
           Search Google for “{query.replace(/, Northern Ireland$/, '')}”
         </button>
       )}
-      {st.kind === 'loading' && <p className="tiny" aria-live="polite">Searching Google…</p>}
+      {st.kind === 'loading' && (
+        <div className="gr-list" aria-live="polite" aria-busy="true">
+          <span className="sr-only">Searching Google…</span>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="skeleton-row" aria-hidden="true">
+              <span className="skeleton w60" />
+              <span className="skeleton w90" />
+            </div>
+          ))}
+        </div>
+      )}
       {st.kind === 'problem' && (
         <div className="gr-problem" role="status">
           <p>{problemText(st.problem)}</p>
@@ -145,7 +155,15 @@ export function PlaceSheet({ result, category, onClose }: { result: PlaceResult;
 
   return (
     <Sheet id="ps" kicker={result.type ?? 'From Google'} title={result.name} onClose={onClose}>
-      {!d && !problem && <p className="tiny">Loading details from Google…</p>}
+      {!d && !problem && (
+        <div aria-busy="true">
+          <span className="sr-only">Loading details from Google…</span>
+          <div className="skeleton photo" aria-hidden="true" />
+          <span className="skeleton w60" aria-hidden="true" />
+          <span className="skeleton w90" aria-hidden="true" />
+          <span className="skeleton w40" aria-hidden="true" />
+        </div>
+      )}
       {problem && <p className="gr-problem">{problemText(problem)}</p>}
       {(d?.closed || result.closed) && <p className="pill warn">Google lists this place as permanently closed.</p>}
       {d?.photo && (
@@ -178,6 +196,12 @@ export function PlaceSheet({ result, category, onClose }: { result: PlaceResult;
               <dd>
                 <Stars rating={d.rating} /> <strong>{d.rating.toFixed(1)}</strong> <span className="tiny">({(d.ratingCount ?? 0).toLocaleString('en-GB')} Google reviews)</span>
               </dd>
+            </>
+          )}
+          {!d.hours && (
+            <>
+              <dt>Opening</dt>
+              <dd className="tiny">Hours not listed on Google — venues often open by appointment.</dd>
             </>
           )}
           {d.hours && (
