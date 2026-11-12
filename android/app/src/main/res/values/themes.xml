@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.WeddingPlanner" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:statusBarColor">@color/forest</item>
+        <item name="android:navigationBarColor">@color/forest</item>
+        <item name="android:colorPrimary">@color/forest</item>
+        <item name="android:colorAccent">#C9A55C</item>
+    </style>
+</resources>

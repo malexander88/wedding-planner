@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 7–11 cloud backup: keep the plan (WebView storage lives under app_webview). -->
+<full-backup-content>
+    <exclude domain="file" path="exports" />
+</full-backup-content>

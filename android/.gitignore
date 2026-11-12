@@ -1,0 +1,14 @@
+/.gradle/
+/local.properties
+/build/
+/app/build/
+/.idea/
+*.iml
+*.apk
+*.aab
+# The built web app is copied in by build-apk.sh, never committed
+/app/src/main/assets/
+# Release signing secrets: never commit
+*.jks
+*.keystore
+keystore.properties
