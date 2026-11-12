@@ -13,39 +13,96 @@ export interface PlaceDetails {
   closed?: boolean
   rating?: number
   ratingCount?: number
+  hours?: { openNow?: boolean; days: string[] }
   photo?: { url: string; attributions: { name: string; uri?: string }[] }
 }
 
+/** One Google search result (Text Search Pro fields only: no photo or rating until it's opened). */
+export interface PlaceResult {
+  id: string
+  name: string
+  address?: string
+  mapsUrl?: string
+  closed?: boolean
+  type?: string
+  lat?: number
+  lng?: number
+}
+
+/**
+ * Why Google results aren't showing: switched off in this build, today's cap used up, the function down
+ * or unreachable, or an older function that doesn't know this request yet.
+ */
+export type PlacesProblem = 'off' | 'limit' | 'down' | 'unsupported'
+export type PlacesResult<T> = { ok: true; data: T } | { ok: false; problem: PlacesProblem }
+
 export const placesEnabled = () => PLACES_ENABLED
 
-// Session-only cache so flipping between pages doesn't spend quota twice. Never persisted.
-const cache = new Map<string, Promise<unknown>>()
+// Session-only cache so flipping between pages doesn't spend quota twice. Never persisted; failures aren't cached.
+const cache = new Map<string, Promise<PlacesResult<unknown>>>()
 
-async function call<T>(body: Record<string, string>): Promise<T | null> {
-  if (!PLACES_ENABLED) return null
-  const key = JSON.stringify(body)
-  if (!cache.has(key)) {
-    cache.set(
-      key,
-      fetch(PLACES_FUNCTION_URL, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', apikey: SUPABASE_ANON_KEY, authorization: `Bearer ${SUPABASE_ANON_KEY}` },
-        body: key,
-      })
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null),
-    )
-  }
-  return (await cache.get(key)) as T | null
+export function problemFor(status: number, body: unknown): PlacesProblem {
+  if (status === 429) return 'limit'
+  if (status === 400 && (body as { error?: string } | null)?.error === 'op') return 'unsupported'
+  return 'down'
 }
+
+async function request<T>(body: Record<string, string>, fetcher: typeof fetch = fetch): Promise<PlacesResult<T>> {
+  if (!PLACES_ENABLED) return { ok: false, problem: 'off' }
+  const key = JSON.stringify(body)
+  const hit = cache.get(key)
+  if (hit) return hit as Promise<PlacesResult<T>>
+  const p: Promise<PlacesResult<T>> = fetcher(PLACES_FUNCTION_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', apikey: SUPABASE_ANON_KEY, authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+    body: key,
+  })
+    .then(async (r) => {
+      const json = await r.json().catch(() => null)
+      if (r.ok && json) return { ok: true as const, data: json as T }
+      return { ok: false as const, problem: problemFor(r.status, json) }
+    })
+    .catch(() => ({ ok: false as const, problem: 'down' as const }))
+  cache.set(key, p)
+  p.then((r) => {
+    if (!r.ok) cache.delete(key)
+  })
+  return p
+}
+
+/** For tests: forget the session cache. */
+export const clearPlacesCache = () => cache.clear()
 
 /** Free "IDs only" text search: the best-matching place_id for a venue, or null. */
 export async function findPlaceId(name: string, town: string): Promise<string | null> {
-  const r = await call<{ id: string | null }>({ op: 'find', query: `${name}, ${town || 'Northern Ireland'}` })
-  return r?.id ?? null
+  const r = await request<{ id: string | null }>({ op: 'find', query: `${name}, ${town || 'Northern Ireland'}` })
+  return r.ok ? r.data.id : null
 }
 
 /** Fresh details for a place_id (refreshed every time a page opens; not stored). */
 export async function placeDetails(placeId: string): Promise<PlaceDetails | null> {
-  return call<PlaceDetails>({ op: 'details', id: placeId })
+  const r = await fetchPlaceDetails(placeId)
+  return r.ok ? r.data : null
+}
+export function fetchPlaceDetails(placeId: string): Promise<PlacesResult<PlaceDetails>> {
+  return request<PlaceDetails>({ op: 'details', id: placeId })
+}
+
+/** Google Text Search within Northern Ireland: one call, up to 12 places. */
+export async function searchPlaces(query: string): Promise<PlacesResult<PlaceResult[]>> {
+  const r = await request<{ results: PlaceResult[] }>({ op: 'search', query: query.trim().slice(0, 160) })
+  return r.ok ? { ok: true, data: r.data.results ?? [] } : r
+}
+
+export function problemText(p: PlacesProblem): string {
+  switch (p) {
+    case 'limit':
+      return 'Google results have reached today’s limit (it keeps this app free). They’ll be back tomorrow — the approved list and web search buttons still work.'
+    case 'unsupported':
+      return 'Google search isn’t switched on for this app yet. The approved list and web search buttons still work.'
+    case 'off':
+      return 'Google results are switched off in this version.'
+    default:
+      return 'Couldn’t reach Google just now. Try again in a minute — the approved list and web search buttons still work.'
+  }
 }

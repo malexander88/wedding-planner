@@ -222,8 +222,8 @@ export function SupplierDetail() {
           </p>
         </section>
       )}
-      {dir && placesEnabled() && (
-        <GoogleCard v={dir} placeId={supplier.placeId} onId={(placeId) => dispatch({ type: 'updateSupplier', id: supplier.id, patch: { placeId } })} />
+      {(dir || supplier.placeId) && placesEnabled() && (
+        <GoogleCard v={dir ?? { name: supplier.name, town: supplier.area }} placeId={supplier.placeId} onId={(placeId) => dispatch({ type: 'updateSupplier', id: supplier.id, patch: { placeId } })} />
       )}
 
       <section className="card">

@@ -22,6 +22,8 @@ import {
 import { newSupplier, useStore } from '../state/store'
 import type { CouncilId, Supplier, SupplierCategory } from '../types'
 import { CategoryIcon, IconSearch } from '../components/Icons'
+import { GoogleResults } from '../components/GoogleResults'
+import { placesEnabled } from '../lib/places'
 import { CategoryArt, VenueArt } from '../components/VenueArt'
 
 const VALID = new Set<string>(CATEGORIES.map((c) => c.id))
@@ -209,6 +211,7 @@ function VenueFinder({ params, set }: { params: URLSearchParams; set: (p: Record
             {DIRECTORY_SOURCE.licence} Locations © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors.
             Distances are straight-line from {HOME_BASE.label}. Council-maintained beaches can also be approved — ask the registrar.
           </p>
+          {placesEnabled() && <GoogleResults category="venue" q={params.get('q') ?? ''} area={state.profile.area || 'Northern Ireland'} />}
           <AddSomeone category="venue" />
         </>
       )}
@@ -373,6 +376,7 @@ function OtherFinder({ category, q }: { category: SupplierCategory; q: string })
         <div className="sec-head"><h2>Your {categoryLabel(category).toLowerCase()} shortlist</h2></div>
         <ShortlistList suppliers={mine} empty="Nobody here yet. Save a starter, add someone you know, or search the web below." />
       </section>
+      {placesEnabled() && <GoogleResults category={category} q={q} area={area} />}
       <AddSomeone category={category} />
       <section className="card">
         <h2>Search the web for {categoryPlural(category)}</h2>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { directoryVenue, directionsUrl, distanceKm, formatKm, venuePlace, venueTypeOne, type DirectoryVenue } from '../data/venues'
-import { findPlaceId, placeDetails, placesEnabled, type PlaceDetails } from '../lib/places'
+import { GoogleAttribution, Stars } from '../components/GoogleResults'
+import { fetchPlaceDetails, findPlaceId, placesEnabled, problemText, type PlaceDetails } from '../lib/places'
 import { newSupplier, useStore } from '../state/store'
 import { IconBack } from '../components/Icons'
 import { VenueArt } from '../components/VenueArt'
@@ -91,14 +92,14 @@ function VenuePage({ v }: { v: DirectoryVenue }) {
 
 /** Live Google details (only when the Places proxy is switched on). Shown fresh, never stored. */
 export function GoogleCard({ v, placeId, onId }: { v: Pick<DirectoryVenue, 'name' | 'town'>; placeId?: string; onId?: (id: string) => void }) {
-  const [d, setD] = useState<PlaceDetails | null | 'loading'>('loading')
+  const [d, setD] = useState<PlaceDetails | null | 'loading' | 'limit'>('loading')
   useEffect(() => {
     let live = true
     ;(async () => {
       const id = placeId ?? (await findPlaceId(v.name, v.town))
       if (id && id !== placeId) onId?.(id)
-      const det = id ? await placeDetails(id) : null
-      if (live) setD(det)
+      const r = id ? await fetchPlaceDetails(id) : null
+      if (live) setD(r?.ok ? r.data : r?.problem === 'limit' ? 'limit' : null)
     })()
     return () => {
       live = false
@@ -106,6 +107,7 @@ export function GoogleCard({ v, placeId, onId }: { v: Pick<DirectoryVenue, 'name
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placeId, v.name, v.town])
   if (d === 'loading') return <section className="card"><p className="tiny">Checking Google…</p></section>
+  if (d === 'limit') return <section className="card"><p className="tiny">{problemText('limit')}</p></section>
   if (!d) return null
   return (
     <section className="card google-card">
@@ -118,14 +120,28 @@ export function GoogleCard({ v, placeId, onId }: { v: Pick<DirectoryVenue, 'name
         </figure>
       )}
       <dl className="facts">
-        {d.rating !== undefined && (<><dt>Rating</dt><dd>{d.rating.toFixed(1)} ★ ({d.ratingCount ?? 0} reviews)</dd></>)}
+        {d.rating !== undefined && (<><dt>Rating</dt><dd><Stars rating={d.rating} /> <strong>{d.rating.toFixed(1)}</strong> <span className="tiny">({(d.ratingCount ?? 0).toLocaleString('en-GB')} Google reviews)</span></dd></>)}
+        {d.hours && (d.hours.openNow !== undefined || d.hours.days.length > 0) && (
+          <>
+            <dt>Opening</dt>
+            <dd>
+              {d.hours.openNow !== undefined && <span className={`b ${d.hours.openNow ? 'eve' : ''}`}>{d.hours.openNow ? 'Open now' : 'Closed now'}</span>}
+              {d.hours.days.length > 0 && (
+                <details className="ps-hours">
+                  <summary>Opening hours</summary>
+                  <ul>{d.hours.days.map((x) => <li key={x}>{x}</li>)}</ul>
+                </details>
+              )}
+            </dd>
+          </>
+        )}
         {d.address && (<><dt>Address</dt><dd>{d.address}</dd></>)}
-        {d.phone && (<><dt>Phone</dt><dd>{d.phone}</dd></>)}
+        {d.phone && (<><dt>Phone</dt><dd><a href={`tel:${d.phone.replace(/\s+/g, '')}`}>{d.phone}</a></dd></>)}
         {d.website && (<><dt>Website</dt><dd><a href={d.website} target="_blank" rel="noreferrer">{d.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a></dd></>)}
       </dl>
       <p className="tiny google-attr">
         {d.mapsUrl && <><a href={d.mapsUrl} target="_blank" rel="noreferrer">Open in Google Maps</a> · </>}
-        <span translate="no">Google Maps</span>
+        <GoogleAttribution />
       </p>
     </section>
   )
