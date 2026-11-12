@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useStore } from '../state/store'
+import { useActivity } from '../sync/activityLog'
 import {
+  IconBell,
   BrandMark,
   IconBudget,
   IconGear,
@@ -23,6 +25,9 @@ const mainNav = [
 // Pages that aren't built yet stay out of the nav (phone and desktop alike) until they are.
 const moreNav = [
   { to: '/dates', label: 'Dates' },
+  { to: '/seating', label: 'Seating plan' },
+  { to: '/run-sheet', label: 'Run sheet' },
+  { to: '/activity', label: 'Activity' },
   { to: '/settings', label: 'Settings & backup' },
 ]
 
@@ -37,6 +42,7 @@ function NavGlyph({ name, filled }: { name: (typeof mainNav)[number]['icon']; fi
 export function Layout() {
   const { state } = useStore()
   const { pathname } = useLocation()
+  const { unseen } = useActivity()
   // A new page starts at the top (otherwise opening a supplier lands half-way down).
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -70,6 +76,7 @@ export function Layout() {
         {moreNav.map((n) => (
           <NavLink key={n.to} to={n.to} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
             {n.label}
+            {n.to === '/activity' && unseen > 0 && <span className="nav-count" aria-label={`${unseen} new`}>{unseen}</span>}
           </NavLink>
         ))}
       </aside>
@@ -79,9 +86,15 @@ export function Layout() {
             <div className="brand-mark"><BrandMark /></div>
             <div className="brand-name">Wedding Planner</div>
           </div>
+          <div className="topbar-actions">
+          <NavLink to="/activity" className="icon-btn bell" aria-label={unseen ? `Activity, ${unseen} new` : 'Activity'}>
+            <IconBell />
+            {unseen > 0 && <span className="bell-dot" aria-hidden="true" />}
+          </NavLink>
           <NavLink to="/settings" className="icon-btn" aria-label="Settings">
             <IconGear />
           </NavLink>
+          </div>
         </div>
         <div className="page-in" key={pathname}>
           <Outlet />

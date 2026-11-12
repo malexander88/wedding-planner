@@ -1,3 +1,4 @@
+import { clearActivity } from '../sync/activityLog'
 import { CurrencyCard } from '../components/CurrencyCard'
 import { currencySymbol } from '../lib/money'
 import { AppearanceCard } from '../components/Appearance'
@@ -165,6 +166,7 @@ export function Settings() {
               : 'Erase this wedding from this device? This cannot be undone unless you have a backup.')) {
               void backupState(state, { force: true })
                 .catch(() => undefined)
+                .then(() => clearActivity())
                 .then(() => dispatch({ type: 'eraseAll' }))
             }
           }}

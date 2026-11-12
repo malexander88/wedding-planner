@@ -315,3 +315,43 @@ export function BrandMark() {
     </svg>
   )
 }
+
+export function IconBell(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z" />
+      <path d="M10 19a2 2 0 0 0 4 0" />
+    </Svg>
+  )
+}
+
+export function IconTable(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="3.5" r="1.4" />
+      <circle cx="12" cy="20.5" r="1.4" />
+      <circle cx="3.5" cy="12" r="1.4" />
+      <circle cx="20.5" cy="12" r="1.4" />
+    </Svg>
+  )
+}
+
+export function IconClock(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.5V12l3 2" />
+    </Svg>
+  )
+}
+
+export function IconPrint(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M7 9V4h10v5" />
+      <rect x="3.5" y="9" width="17" height="7.5" rx="1.5" />
+      <path d="M7 14h10v6H7z" />
+    </Svg>
+  )
+}

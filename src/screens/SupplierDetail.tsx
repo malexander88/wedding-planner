@@ -8,7 +8,7 @@ import { placesEnabled } from '../lib/places'
 import { CouncilFeesCard, VenueFactsCard, VenueMapCard } from '../components/VenueFacts'
 import { GoogleCard } from './VenueDetail'
 import { HIDDEN_EXTRAS } from '../data/hiddenExtras'
-import { draftEnquiry } from '../lib/enquiry'
+import { EnquirySheet } from '../components/EnquirySheet'
 import { uid } from '../lib/ids'
 import { currencySymbol, gbp, money } from '../lib/money'
 import { useStore } from '../state/store'
@@ -56,7 +56,6 @@ export function SupplierDetail() {
   useEffect(() => {
     if (params.has('enquire')) setParams({}, { replace: true })
   }, [params, setParams])
-  const [copied, setCopied] = useState(false)
   const [booking, setBooking] = useState(false)
   const [deposit, setDeposit] = useState(0)
   const [depositDue, setDepositDue] = useState('')
@@ -80,7 +79,6 @@ export function SupplierDetail() {
     )
   }
 
-  const draft = draftEnquiry(state, supplier)
   const dir = supplier.catalogueId ? directoryVenue(supplier.catalogueId) : undefined
   const starter = supplier.catalogueId ? CATALOGUE.find((c) => c.id === supplier.catalogueId) : undefined
   // Older saves copied the starter facts into Notes. Those facts now show in the read-only Facts card,
@@ -348,29 +346,7 @@ export function SupplierDetail() {
         </section>
       )}
 
-      {showDraft && (
-        <div className="modal-back" onClick={() => setShowDraft(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Enquiry draft</h2>
-            <p>Copy this and send it yourself from your own email. The app will not send anything.</p>
-            <pre className="draft">{draft}</pre>
-            <div className="btn-row">
-              <button
-                className="btn"
-                type="button"
-                onClick={async () => {
-                  await navigator.clipboard.writeText(draft)
-                  setCopied(true)
-                  dispatch({ type: 'setSupplierStatus', id: supplier.id, status: supplier.status === 'shortlisted' ? 'enquired' : supplier.status })
-                }}
-              >
-                {copied ? 'Copied' : 'Copy to clipboard'}
-              </button>
-              <button className="btn secondary" type="button" onClick={() => setShowDraft(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {showDraft && <EnquirySheet supplier={supplier} onClose={() => setShowDraft(false)} />}
 
       {booking && (
         <div className="modal-back" onClick={() => setBooking(false)}>
@@ -378,7 +354,7 @@ export function SupplierDetail() {
             <h2>Book {supplier.name}</h2>
             <p>
               This will mark them as booked, add or update a budget line
-              {latest ? ` for ${gbp(latest.amount)}` : ''}, create deposit and balance payments, and drop a placeholder onto the run sheet.
+              {latest ? ` for ${money(latest.amount)}` : ''}, create deposit and balance payments, and drop a placeholder onto the run sheet.
             </p>
             <label className="field">
               <span>Deposit ({currencySymbol()})</span>

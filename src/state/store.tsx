@@ -19,6 +19,7 @@ import { setPlanCurrency } from '../lib/money'
 import { uid } from '../lib/ids'
 import { backupState, indexedDbStorage, saveStateNow } from '../storage/indexeddb'
 import { isBlankPlan } from '../data/blank'
+import { withSeats } from '../data/seating'
 import type {
   AppState,
   BudgetLine,
@@ -26,6 +27,8 @@ import type {
   Household,
   Payment,
   Quote,
+  RunSheetItem,
+  SeatingTable,
   Supplier,
   SupplierCategory,
   SupplierStatus,
@@ -132,6 +135,14 @@ export type Action =
   | { type: 'setInvitesSent'; ids: string[]; sent: boolean }
   | { type: 'updateGuest'; id: string; patch: Partial<Guest> }
   | { type: 'removeGuest'; id: string }
+  | { type: 'upsertSeatingTable'; table: SeatingTable }
+  | { type: 'removeSeatingTable'; id: string }
+  /** Seat guests at a table, or unseat them (tableId null). */
+  | { type: 'seatGuests'; guestIds: string[]; tableId: string | null }
+  | { type: 'setEventStart'; id: string; start: string }
+  | { type: 'upsertRunItem'; item: RunSheetItem }
+  | { type: 'removeRunItem'; id: string }
+  | { type: 'setRunSheet'; items: RunSheetItem[] }
   | { type: 'restoreGuests'; household?: Household; householdIndex?: number; guests: Guest[]; guestIndex?: number }
   | { type: 'importState'; state: AppState }
   | { type: 'reset' }
@@ -427,7 +438,7 @@ function baseReducer(state: AppState, action: Action): AppState {
           time: '',
           title: `${supplier.name} — arrival / setup`,
           owner: supplier.name,
-          notes: 'Added when you booked this supplier. Fine-tune times in the run sheet (coming next).',
+          notes: 'Added when you booked this supplier. Set the time once you’ve agreed it with them.',
           supplierId: supplier.id,
         },
       ]
@@ -510,6 +521,7 @@ function baseReducer(state: AppState, action: Action): AppState {
         ...state,
         households: state.households.filter((h) => h.id !== action.id),
         guests: state.guests.filter((g) => g.householdId !== action.id),
+        seatingAssignments: state.seatingAssignments.filter((a) => state.guests.some((g) => g.id === a.guestId && g.householdId !== action.id)),
       })
     case 'addGuest':
       return touch({ ...state, guests: [...state.guests, sanitizeGuest(action.guest)] })
@@ -532,7 +544,39 @@ function baseReducer(state: AppState, action: Action): AppState {
       return touch({ ...state, households, guests })
     }
     case 'removeGuest':
-      return touch({ ...state, guests: state.guests.filter((g) => g.id !== action.id) })
+      return touch({
+        ...state,
+        guests: state.guests.filter((g) => g.id !== action.id),
+        seatingAssignments: state.seatingAssignments.filter((a) => a.guestId !== action.id),
+      })
+    case 'upsertSeatingTable': {
+      const t = { ...action.table, name: action.table.name.trim() || 'Table', seats: Math.max(1, Math.min(40, Math.round(action.table.seats) || 1)) }
+      const exists = state.seatingTables.some((x) => x.id === t.id)
+      return touch({ ...state, seatingTables: exists ? state.seatingTables.map((x) => (x.id === t.id ? t : x)) : [...state.seatingTables, t] })
+    }
+    case 'removeSeatingTable':
+      return touch({
+        ...state,
+        seatingTables: state.seatingTables.filter((t) => t.id !== action.id),
+        seatingAssignments: state.seatingAssignments.filter((a) => a.tableId !== action.id),
+      })
+    case 'seatGuests':
+      if (action.tableId && !state.seatingTables.some((t) => t.id === action.tableId)) return state
+      return touch({ ...state, seatingAssignments: withSeats(state.seatingAssignments, action.guestIds, action.tableId) })
+    case 'setEventStart': {
+      const start = action.start.trim()
+      if (!state.events.some((e) => e.id === action.id)) return state
+      return touch({ ...state, events: state.events.map((e) => (e.id === action.id ? (start ? { ...e, start } : { id: e.id, kind: e.kind, name: e.name }) : e)) })
+    }
+    case 'upsertRunItem': {
+      const exists = state.runSheet.some((x) => x.id === action.item.id)
+      const item = { ...action.item, title: action.item.title.trim() || 'Untitled' }
+      return touch({ ...state, runSheet: exists ? state.runSheet.map((x) => (x.id === item.id ? item : x)) : [...state.runSheet, item] })
+    }
+    case 'removeRunItem':
+      return touch({ ...state, runSheet: state.runSheet.filter((x) => x.id !== action.id) })
+    case 'setRunSheet':
+      return touch({ ...state, runSheet: action.items })
     default:
       return state
   }

@@ -87,7 +87,7 @@ describe('counts and planning numbers', () => {
     let s = reducer(s0, { type: 'updateHousehold', id: s0.households[0].id, patch: { address: '1 Main St, Antrim' } })
     s = reducer(s, { type: 'updateGuest', id: byName(s, 'Anna').id, patch: { dietaryConsent: true, dietary: 'Coeliac' } })
     const text = draftEnquiry(s, newSupplier({ name: 'Galgorm', category: 'venue' }))
-    expect(text).toContain('8 day guests and 1 extra evening guests, including 2 children')
+    expect(text).toContain('8 day guests and 1 more joining in the evening, including 2 children')
     for (const secret of ['Anna', 'Smith', 'Main St', 'Coeliac']) expect(text).not.toContain(secret)
   })
 })

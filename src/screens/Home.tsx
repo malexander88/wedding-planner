@@ -11,6 +11,7 @@ import { useTaskSheet } from '../components/TaskDetailsSheet'
 import { haptic } from '../lib/celebrate'
 import { HomePhotoSheet } from '../components/Appearance'
 import { useHomePhoto } from '../lib/homePhoto'
+import { ActivityPeek, DayTools } from '../components/ActivityPeek'
 import {
   CategoryIcon,
   IconBloom,
@@ -159,6 +160,8 @@ export function Home() {
         </button>
       )}
 
+      <ActivityPeek />
+
       <section className="card home-next">
         <div className="sec-head">
           <h2>{dated ? 'Next deadlines' : 'Next up'}</h2>
@@ -255,6 +258,8 @@ export function Home() {
           <span className="bar-pct">{money.total ? `${Math.round(money.ratio * 100)}%` : 'Set a budget'}</span>
         </div>
       </Link>
+
+      <DayTools />
 
       <section className="home-find">
         <div className="sec-head">

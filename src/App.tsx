@@ -1,4 +1,7 @@
 import { VenueCompare } from './screens/VenueCompare'
+import { Activity } from './screens/Activity'
+import { Seating } from './screens/Seating'
+import { RunSheet } from './screens/RunSheet'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { Budget } from './screens/Budget'
@@ -65,6 +68,9 @@ function ReadyApp() {
         <Route path="/budget" element={<Budget />} />
         <Route path="/guests" element={<Guests />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/activity" element={<Activity />} />
+        <Route path="/seating" element={<Seating />} />
+        <Route path="/run-sheet" element={<RunSheet />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

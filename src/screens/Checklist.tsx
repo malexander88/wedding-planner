@@ -23,29 +23,8 @@ import { useDetailSummary, useTaskSheet } from '../components/TaskDetailsSheet'
 import { completeStages, haptic, newlyComplete } from '../lib/celebrate'
 import { TaskEditSheet } from '../components/TaskEditSheet'
 import { CUSTOM_TEMPLATE_CHOICES, TEMPLATES } from '../data/taskTemplates'
+import { useMe } from '../lib/me'
 import type { Assignee, PlanTask, Task, TemplateId } from '../types'
-
-const ME_KEY = 'wp-me'
-function useMe(): ['a' | 'b', (m: 'a' | 'b') => void] {
-  const [me, setMe] = useState<'a' | 'b'>(() => {
-    try {
-      return localStorage.getItem(ME_KEY) === 'b' ? 'b' : 'a'
-    } catch {
-      return 'a'
-    }
-  })
-  return [
-    me,
-    (m) => {
-      setMe(m)
-      try {
-        localStorage.setItem(ME_KEY, m)
-      } catch {
-        /* private mode: fine for this session */
-      }
-    },
-  ]
-}
 
 const FILTERS: { id: PlanFilter; label: (n: { a: string; b: string }, me: 'a' | 'b') => string }[] = [
   { id: 'all', label: () => 'All' },

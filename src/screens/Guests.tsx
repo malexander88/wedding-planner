@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
 import {
   allGroups,
@@ -149,6 +150,9 @@ export function Guests() {
           <button className="btn ghost small" type="button" onClick={() => setSheet({ kind: 'export' })} disabled={!state.guests.length}>
             Export
           </button>
+          <Link className="btn ghost small" to="/seating">
+            Seating plan
+          </Link>
         </div>
       </header>
 

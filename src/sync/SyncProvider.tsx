@@ -15,6 +15,8 @@ import { isBlankPlan } from '../data/blank'
 import { getItem, removeItem, setItem, setItemNow } from '../storage/indexeddb'
 import type { AppState } from '../types'
 import { syncApi } from './api'
+import { describeRemoteChanges } from './activity'
+import { recordActivity } from './activityLog'
 import {
   docsEqual,
   emptyMeta,
@@ -101,6 +103,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
   const baseRef = useRef<AppState>(state)
   const linkRef = useRef<SyncLink | null>(null)
   const tickRef = useRef<() => Clock>(makeClock('pending'))
+  const deviceRef = useRef('')
   const dirtyRef = useRef(false)
   const inFlight = useRef(false)
   const rerun = useRef(false)
@@ -157,6 +160,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
       const link = await getItem<SyncLink>(LINK_KEY).catch(() => null)
       if (cancelled) return
       tickRef.current = makeClock(deviceId)
+      deviceRef.current = deviceId
       metaRef.current = { records: meta.records ?? {}, fields: meta.fields ?? {} }
       baseRef.current = state
       if (link && isValidSecret(link.secret)) {
@@ -215,7 +219,15 @@ export function SyncProvider({ children }: { children: ReactNode }) {
         // Fold in anything typed while we were talking to the server.
         const latest = localDoc()
         const final = latest.state === snapshot.state ? merged : mergeDocs(latest, merged)
-        if (!docsEqual(final, latest)) applyDoc(final)
+        if (!docsEqual(final, latest)) {
+          // Note what the other phone changed, in plain words, for the activity feed (this phone only).
+          try {
+            void recordActivity(describeRemoteChanges(latest.state, final, deviceRef.current)).catch(() => undefined)
+          } catch (e) {
+            console.warn('[wedding-planner] activity feed skipped', e)
+          }
+          applyDoc(final)
+        }
         if (latest.state === snapshot.state) dirtyRef.current = false
         await saveLink({ ...link, version, lastSyncedAt: new Date().toISOString() })
         setError(null)
