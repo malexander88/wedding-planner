@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { BUDGET_CATEGORY_OPTIONS, budgetSummary, committedGroups, type CommittedItem } from '../data/budget'
 import { formatShort } from '../data/legal'
 import { uid } from '../lib/ids'
-import { gbp } from '../lib/money'
+import { currencySymbol, money, parseMoney } from '../lib/money'
 import { useStore } from '../state/store'
 import type { BudgetLine } from '../types'
 
@@ -46,7 +46,7 @@ export function Budget() {
         </div>
         <div className="budget-total">
           <label className="field" style={{ marginBottom: 6 }}>
-            <span>Total budget (£)</span>
+            <span>Total budget ({currencySymbol()})</span>
             <input
               id="total-budget"
               type="number"
@@ -58,18 +58,18 @@ export function Budget() {
               onChange={(e) => dispatch({ type: 'patchProfile', patch: { totalBudget: Math.max(0, Number(e.target.value) || 0) } })}
             />
           </label>
-          {sum.level === 'over' && <div className="budget-flag over">Over budget by {gbp(sum.committed - sum.total)}</div>}
-          {sum.level === 'amber' && <div className="budget-flag amber">Nearly there — {gbp(sum.left)} left</div>}
+          {sum.level === 'over' && <div className="budget-flag over">Over budget by {money(sum.committed - sum.total)}</div>}
+          {sum.level === 'amber' && <div className="budget-flag amber">Nearly there — {money(sum.left)} left</div>}
         </div>
         <dl className="budget-figures">
-          <div><dt>Total budget</dt><dd>{sum.total ? gbp(sum.total) : 'Not set'}</dd></div>
-          <div><dt>Committed</dt><dd>{gbp(sum.committed)}</dd></div>
-          <div><dt>Paid so far</dt><dd>{gbp(sum.paid)}</dd></div>
-          <div><dt>Still to pay</dt><dd>{gbp(sum.toPay)}</dd></div>
+          <div><dt>Total budget</dt><dd>{sum.total ? money(sum.total) : 'Not set'}</dd></div>
+          <div><dt>Committed</dt><dd>{money(sum.committed)}</dd></div>
+          <div><dt>Paid so far</dt><dd>{money(sum.paid)}</dd></div>
+          <div><dt>Still to pay</dt><dd>{money(sum.toPay)}</dd></div>
           {sum.total ? (
             <div className={`left ${sum.left < 0 ? 'neg' : ''}`}>
               <dt>Left to allocate</dt>
-              <dd>{sum.left < 0 ? `−${gbp(-sum.left)}` : gbp(sum.left)}</dd>
+              <dd>{sum.left < 0 ? `−${money(-sum.left)}` : money(sum.left)}</dd>
             </div>
           ) : (
             <div className="left unset">
@@ -106,11 +106,11 @@ export function Budget() {
             <div className="cost-group" key={g.category}>
               <div className="cost-group-head">
                 <h3>{g.label}</h3>
-                <span>{gbp(g.total)}</span>
+                <span>{money(g.total)}</span>
               </div>
               {g.category === 'catering' && numbers.day > 0 && g.total > 0 && (
                 <p className="tiny per-head">
-                  About {gbp(Math.round(g.total / (numbers.day + numbers.evening)))} a head for {numbers.day} day
+                  About {money(Math.round(g.total / (numbers.day + numbers.evening)))} a head for {numbers.day} day
                   {numbers.evening ? ` + ${numbers.evening} evening` : ''} guests
                   {numbers.fromList ? ' on your guest list' : ' (your first guess — add guests for real numbers)'}.
                 </p>
@@ -154,7 +154,7 @@ export function Budget() {
                     onChange={(e) => dispatch({ type: 'updatePayment', id: p.id, patch: { notes: e.target.value } })}
                   />
                   <div className="tiny">
-                    <span style={{ textTransform: 'capitalize' }}>{p.kind}</span> · {gbp(p.amount)}
+                    <span style={{ textTransform: 'capitalize' }}>{p.kind}</span> · {money(p.amount)}
                     {p.paidDate ? ` · paid ${formatShort(p.paidDate)}` : p.dueDate ? ` · due ${formatShort(p.dueDate)}` : ''}
                     {taskTitle(p.taskKey) && (
                       <>
@@ -165,7 +165,7 @@ export function Budget() {
                   </div>
                   <div className="grid-2" style={{ marginTop: 8 }}>
                     <label className="field">
-                      <span>Amount (£)</span>
+                      <span>Amount ({currencySymbol()})</span>
                       <input type="number" value={p.amount || ''} onChange={(e) => dispatch({ type: 'updatePayment', id: p.id, patch: { amount: Number(e.target.value) } })} />
                     </label>
                     <label className="field">
@@ -223,11 +223,11 @@ function CostItem({ item, taskTitle }: { item: CommittedItem; taskTitle?: string
         <div className="cost-copy">
           <strong>{line.name}</strong>
           <span>
-            {item.cost ? `${gbp(item.paid)} paid` : 'Price not noted yet'}
-            {item.nextDue ? ` · next ${gbp(item.nextDue.amount)}${item.nextDue.dueDate ? ` due ${formatShort(item.nextDue.dueDate)}` : ''}` : item.cost && item.paid >= item.cost ? ' · all paid' : ''}
+            {item.cost ? `${money(item.paid)} paid` : 'Price not noted yet'}
+            {item.nextDue ? ` · next ${money(item.nextDue.amount)}${item.nextDue.dueDate ? ` due ${formatShort(item.nextDue.dueDate)}` : ''}` : item.cost && item.paid >= item.cost ? ' · all paid' : ''}
           </span>
         </div>
-        <span className="cost-amt">{gbp(item.cost)}</span>
+        <span className="cost-amt">{money(item.cost)}</span>
       </button>
       {open && (
         <div className="cost-edit">
@@ -237,7 +237,7 @@ function CostItem({ item, taskTitle }: { item: CommittedItem; taskTitle?: string
               <input value={line.name} onChange={(e) => update({ name: e.target.value })} />
             </label>
             <label className="field">
-              <span>Agreed price (£)</span>
+              <span>Agreed price ({currencySymbol()})</span>
               <input type="number" min={0} value={line.quoted || ''} onChange={(e) => update({ quoted: Math.max(0, Number(e.target.value) || 0) })} />
             </label>
             <label className="field">
@@ -276,7 +276,7 @@ function AddCost({ onDone }: { onDone: () => void }) {
   const [category, setCategory] = useState<BudgetLine['category']>('other')
   const [paid, setPaid] = useState(false)
   const save = () => {
-    const amount = Math.max(0, Number(price.replace(/[£,\s]/g, '')) || 0)
+    const amount = parseMoney(price)
     if (!name.trim() || !amount) return
     const id = uid('bl')
     dispatch({ type: 'upsertBudgetLine', line: { id, category, name: name.trim(), estimate: 0, quoted: amount, actual: 0, vatIncluded: true, notes: '' } })
@@ -296,7 +296,7 @@ function AddCost({ onDone }: { onDone: () => void }) {
           <input autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Wedding favours" />
         </label>
         <label className="field">
-          <span>Price (£)</span>
+          <span>Price ({currencySymbol()})</span>
           <input inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0" />
         </label>
         <label className="field">

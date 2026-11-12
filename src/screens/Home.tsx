@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { currentStage, STAGES } from '../data/checklist'
 import { daysBetween, daysUntil, formatLong, formatShort, todayIso as localToday } from '../data/legal'
 import { budgetSummary } from '../data/budget'
-import { gbp } from '../lib/money'
+import { money as fmtMoney } from '../lib/money'
 import { useStore } from '../state/store'
 import { comingUp, reminders } from '../data/taskDetails'
 import { catchUpBefore, isCatchUp, nextDeadlines, sortTasks } from '../data/plan'
@@ -221,7 +221,7 @@ export function Home() {
                     <strong>{r.title}</strong>
                     <span>{r.overdue ? 'Overdue · ' : ''}{r.sub}</span>
                   </div>
-                  {r.amount ? <span className="amt">{gbp(r.amount)}</span> : null}
+                  {r.amount ? <span className="amt">{fmtMoney(r.amount)}</span> : null}
                 </Link>
               )
             })}
@@ -238,12 +238,12 @@ export function Home() {
             </div>
           </div>
           <div className="amount">
-            {gbp(money.committed)}
+            {fmtMoney(money.committed)}
             <small>
               {money.total
                 ? money.left < 0
-                  ? `${gbp(-money.left)} over your ${gbp(money.total)} budget`
-                  : `of ${gbp(money.total)} · ${gbp(money.left)} left`
+                  ? `${fmtMoney(-money.left)} over your ${fmtMoney(money.total)} budget`
+                  : `of ${fmtMoney(money.total)} · ${fmtMoney(money.left)} left`
                 : 'No total budget set yet'}
             </small>
           </div>

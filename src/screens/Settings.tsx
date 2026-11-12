@@ -1,3 +1,5 @@
+import { CurrencyCard } from '../components/CurrencyCard'
+import { currencySymbol } from '../lib/money'
 import { AppearanceCard } from '../components/Appearance'
 import { SharingCard } from '../components/SharingCard'
 import { downloadText } from '../lib/csv'
@@ -65,7 +67,7 @@ export function Settings() {
             <input value={p.area} onChange={(e) => dispatch({ type: 'patchProfile', patch: { area: e.target.value } })} />
           </label>
           <label className="field">
-            <span>Total budget (£)</span>
+            <span>Total budget ({currencySymbol()})</span>
             <input type="number" min={0} placeholder="Not set" value={p.totalBudget || ''} onChange={(e) => dispatch({ type: 'patchProfile', patch: { totalBudget: Math.max(0, Number(e.target.value) || 0) } })} />
           </label>
           <label className="field">
@@ -115,6 +117,8 @@ export function Settings() {
       </section>
 
       <SharingCard />
+
+      <CurrencyCard />
 
       <AppearanceCard />
 

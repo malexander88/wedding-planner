@@ -17,6 +17,8 @@ import {
 } from '../data/legal'
 import { gbp } from '../lib/money'
 import { useStore } from '../state/store'
+import { compareToYear, oddsFor } from '../lib/climate'
+import { climatePlace, useClimate } from '../lib/useClimate'
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 type Availability = 'unknown' | 'available' | 'unavailable' | 'hold'
@@ -54,6 +56,9 @@ export function Dates() {
     setCursor(`${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`)
   }
   const candidates = state.profile.candidateDates
+  const place = climatePlace(state)
+  const climate = useClimate(place.lat, place.lng)
+  const odds = (iso: string) => (climate.status === 'ok' ? oddsFor(climate.data, iso) : null)
 
   const chooseDate = (iso: string) => {
     const check = checkWeddingDate(iso, today, pm)
@@ -91,6 +96,7 @@ export function Dates() {
             const past = check.level === 'past'
             const on = candidates.includes(iso)
             const hol = holidayName(iso)
+            const rain = odds(iso)
             return (
               <button
                 key={iso}
@@ -99,9 +105,10 @@ export function Dates() {
                 className={[on && 'on', isNiHoliday(iso) && 'holiday', past && 'past', check.level === 'blocked' && 'too-soon'].filter(Boolean).join(' ')}
                 onClick={() => (on ? dispatch({ type: 'removeCandidate', date: iso }) : !past && dispatch({ type: 'addCandidate', date: iso }))}
                 title={[hol, past ? 'Already passed' : check.level === 'blocked' ? 'Too soon to give notice' : ''].filter(Boolean).join(' · ') || iso}
-                aria-label={`${formatLong(iso)}${hol ? `, ${hol}` : ''}${past ? ', passed' : check.level === 'blocked' ? ', too soon to give notice' : ''}${on ? ', in your comparison' : ''}`}
+                aria-label={`${formatLong(iso)}${hol ? `, ${hol}` : ''}${past ? ', passed' : check.level === 'blocked' ? ', too soon to give notice' : ''}${on ? ', in your comparison' : ''}${!past && rain ? `, rain on ${rain.rain}% of past days` : ''}`}
               >
-                {Number(iso.slice(8))}
+                <span className="cal-num">{Number(iso.slice(8))}</span>
+                {!past && rain && <small className={`cal-rain ${climate.status === 'ok' ? compareToYear(climate.data, iso) ?? '' : ''}`} aria-hidden="true">{rain.rain}%</small>}
               </button>
             )
           })}
@@ -111,6 +118,7 @@ export function Dates() {
           <span><i className="lg-soon" /> Under 28 days — too soon to give notice</span>
           <span><i className="lg-past" /> Passed</span>
         </div>
+        <ClimateNote status={climate.status} place={place.label} years={climate.status === 'ok' ? `${climate.data.from}–${climate.data.to}` : ''} />
       </section>
 
       {candidates.length > 0 && (
@@ -137,6 +145,7 @@ export function Dates() {
                     {days >= 0 && <span className="pill neutral">{days} days away</span>}
                   </div>
                   {check.text && check.level !== 'past' && <p className={`date-warn ${check.level}`}>{check.text}</p>}
+                  <DayWeather iso={iso} odds={odds(iso)} vsYear={climate.status === 'ok' ? compareToYear(climate.data, iso) : null} />
                   <ul className="fee-lines">
                     {venueFees.length
                       ? venueFees.map(({ v, fee }) => {
@@ -223,6 +232,43 @@ export function Dates() {
             ))}
           </div>
         </section>
+      )}
+    </div>
+  )
+}
+
+function ClimateNote({ status, place, years }: { status: 'loading' | 'off' | 'ok'; place: string; years: string }) {
+  if (status === 'off') return <p className="tiny climate-note">Rain odds need a connection the first time — they’ll appear once you’re online.</p>
+  return (
+    <p className="tiny climate-note">
+      <span className="cal-rain-key">%</span> Historical rain odds, <strong>not a forecast</strong>: how often it rained (1 mm or more) in the week around
+      that date{years ? `, ${years}` : ''}, near {place}. <span className="cal-rain drier">Green</span> is drier than usual for here,{' '}
+      <span className="cal-rain wetter">blue</span> wetter. Weather data by{' '}
+      <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo.com</a> (ERA5, CC BY 4.0).
+      {status === 'loading' && ' Loading…'}
+    </p>
+  )
+}
+
+function DayWeather({ iso, odds, vsYear }: { iso: string; odds: ReturnType<typeof oddsFor>; vsYear: ReturnType<typeof compareToYear> }) {
+  if (!odds) return null
+  const bst = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', timeZoneName: 'short' }).format(new Date(iso + 'T12:00:00Z')).includes('BST')
+  return (
+    <div className="day-weather" aria-label="Weather history and sunset">
+      <div>
+        <span className="tiny">Rain in past years</span>
+        <strong>{odds.rain}%</strong>
+        <span className="tiny">
+          of days{odds.wet > 0 ? ` · heavy (5 mm+) ${odds.wet}%` : ''}
+          {vsYear && vsYear !== 'typical' ? ` · ${vsYear} than most of the year` : vsYear ? ' · about usual for here' : ''}
+        </span>
+      </div>
+      {odds.sunset && (
+        <div>
+          <span className="tiny">Sunset</span>
+          <strong>{odds.sunset}</strong>
+          <span className="tiny">{bst ? 'BST' : 'GMT'}</span>
+        </div>
       )}
     </div>
   )

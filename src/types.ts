@@ -56,6 +56,8 @@ export interface WeddingProfile {
   onboardingComplete: boolean
   /** Day the current wedding date was set; worked-out dates before it show as "catch up". */
   datesFrom?: string
+  /** The plan's one currency for every amount the couple types (default £). Official fees stay in £. */
+  currency?: 'GBP' | 'EUR'
 }
 
 export interface Household {

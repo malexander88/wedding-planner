@@ -21,7 +21,7 @@ import {
 } from '../data/venues'
 import { newSupplier, useStore } from '../state/store'
 import type { CouncilId, Supplier, SupplierCategory } from '../types'
-import { CategoryIcon, IconSearch } from '../components/Icons'
+import { CategoryIcon, IconChevron, IconSearch } from '../components/Icons'
 import { GoogleResults } from '../components/GoogleResults'
 import { placesEnabled, sessionPhoto, venuePhotoKey } from '../lib/places'
 import { CategoryArt, VenueArt } from '../components/VenueArt'
@@ -182,7 +182,16 @@ function VenueFinder({ params, set }: { params: URLSearchParams; set: (p: Record
       )}
 
       {view === 'mine' ? (
-        <ShortlistList suppliers={mine} empty="No venues on your shortlist yet. Tap a place, then “Save to shortlist”." />
+        <>
+          {mine.filter((s) => s.status !== 'rejected').length >= 2 && (
+            <Link to="/find/compare" className="card compare-cta">
+              <strong>Compare side by side</strong>
+              <span className="tiny">Capacity, prices, fees, distance, ratings and your notes for 2–4 venues.</span>
+              <IconChevron style={{ width: 16, height: 16 }} />
+            </Link>
+          )}
+          <ShortlistList suppliers={mine} empty="No venues on your shortlist yet. Tap a place, then “Save to shortlist”." />
+        </>
       ) : (
         <>
           <p className="tiny result-count" aria-live="polite">

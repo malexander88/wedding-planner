@@ -1,3 +1,4 @@
+import { CalendarCard, TaskCalendarLinks } from '../components/CalendarExport'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { STAGES } from '../data/checklist'
@@ -162,6 +163,8 @@ export function Checklist() {
           </span>
         </Link>
       )}
+
+      <CalendarCard />
 
       <div className="card plan-controls">
         {dated && (
@@ -400,6 +403,7 @@ function TaskRow({
           <button type="button" className="td-link" onClick={onEdit} aria-label={`Edit “${t.title}”`}>
             Edit
           </button>
+          <TaskCalendarLinks task={t} />
           {!t.done && t.officialUrl && (
             <a className="td-link" href={t.officialUrl} target="_blank" rel="noreferrer">
               {t.officialLabel || 'Official information'}

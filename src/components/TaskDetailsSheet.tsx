@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { withSymbol } from '../lib/money'
 import { applyTaskDetail, detailIdFor, findDetail, initialValues, legalWarnings, paymentStateFromPayments, supplierValues } from '../data/taskDetails'
 import {
   budgetCategory,
   CUSTOM_TEMPLATE_CHOICES,
-  fmtGbp,
+  fmtMoney,
   money,
   summaryLine,
   TEMPLATES,
@@ -224,12 +225,12 @@ export function TaskDetailsSheet({ task, mode, onClose }: { task: Task; mode: Sh
         {preview && (
           <div className="td-budget">
             <strong>
-              {fmtGbp(preview.total)} goes into Budget · {preview.cat}
+              {fmtMoney(preview.total)} goes into Budget · {preview.cat}
             </strong>
             <ul>
               {preview.pays.map((p) => (
                 <li key={p.id}>
-                  {p.kind === 'deposit' ? 'Deposit' : p.kind === 'balance' ? 'Balance' : 'Payment'} {fmtGbp(p.amount)}
+                  {p.kind === 'deposit' ? 'Deposit' : p.kind === 'balance' ? 'Balance' : 'Payment'} {fmtMoney(p.amount)}
                   {p.paidDate ? ` · paid ${formatShort(p.paidDate)}` : p.dueDate ? ` · due ${formatShort(p.dueDate)}` : ' · no due date yet'}
                 </li>
               ))}
@@ -301,7 +302,7 @@ function Field({
     return (
       <label className={`inline td-check${f.half ? ' half' : ' full'}`}>
         <input type="checkbox" checked={value === 'true'} onChange={(e) => onChange(e.target.checked ? 'true' : '')} />
-        <span>{f.label}</span>
+        <span>{withSymbol(f.label)}</span>
       </label>
     )
   }
@@ -334,7 +335,7 @@ function Field({
   }
   return (
     <label className={f.type === 'textarea' ? 'field full' : cls + (f.half ? '' : ' full')}>
-      <span>{f.label}</span>
+      <span>{withSymbol(f.label)}</span>
       {input}
       {f.hint && <small className="tiny">{f.hint}</small>}
     </label>

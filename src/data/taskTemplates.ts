@@ -1,3 +1,4 @@
+import { moneyExact, parseMoney } from '../lib/money'
 // Field templates for the details you note when ticking off a checklist task.
 // Each built-in task maps to a template (and, for bookings, a supplier category);
 // custom tasks pick one. Values are stored as strings in TaskDetail.values.
@@ -619,20 +620,19 @@ export function budgetCategory(t: TemplateDef, values: Record<string, string>): 
   return base as BudgetLine['category']
 }
 
+/** A typed amount in the plan's currency (see lib/money). */
 export function money(v: string | undefined): number {
-  if (!v) return 0
-  const n = Number(String(v).replace(/[£,\s]/g, ''))
-  return Number.isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : 0
+  return parseMoney(v)
 }
 
-const gbpFmt = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 2, minimumFractionDigits: 0 })
-export const fmtGbp = (n: number) => gbpFmt.format(n)
+/** Couple-entered amounts, in the plan's currency. */
+export const fmtMoney = (n: number) => moneyExact(n)
 
 function formatValue(f: FieldDef, v: string): string {
   if (!v) return ''
   switch (f.type) {
     case 'money':
-      return money(v) ? fmtGbp(money(v)) : ''
+      return money(v) ? fmtMoney(money(v)) : ''
     case 'date':
       return formatShort(v)
     case 'check':

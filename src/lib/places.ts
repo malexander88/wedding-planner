@@ -74,6 +74,7 @@ async function request<T>(body: Record<string, string>, fetcher: typeof fetch = 
 export const clearPlacesCache = () => {
   cache.clear()
   photos.clear()
+  ratings.clear()
 }
 
 /** Free "IDs only" text search: the best-matching place_id for a venue, or null. */
@@ -89,7 +90,7 @@ export async function placeDetails(placeId: string): Promise<PlaceDetails | null
 }
 export function fetchPlaceDetails(placeId: string): Promise<PlacesResult<PlaceDetails>> {
   return request<PlaceDetails>({ op: 'details', id: placeId }).then((r) => {
-    if (r.ok && r.data.photo) rememberPhoto(`place:${placeId}`, r.data.photo)
+    if (r.ok) rememberDetails(`place:${placeId}`, r.data)
     return r
   })
 }
@@ -104,6 +105,22 @@ export function rememberPhoto(key: string, photo: NonNullable<PlaceDetails['phot
 /** A Google photo for `place:<id>` or a venuePhotoKey(), if one was loaded this session; never fetches. */
 export function sessionPhoto(key: string | null | undefined): NonNullable<PlaceDetails['photo']> | null {
   return (key && photos.get(key)) || null
+}
+
+// Ratings already loaded this session (same rule: only from a place someone opened; memory only).
+const ratings = new Map<string, { rating: number; count?: number }>()
+/** Remember what a details call returned (photo and rating) for cards and the compare table. */
+export function rememberDetails(key: string, d: PlaceDetails) {
+  if (d.photo) rememberPhoto(key, d.photo)
+  if (typeof d.rating === 'number') ratings.set(key, { rating: d.rating, count: d.ratingCount })
+}
+/** A Google rating for `place:<id>` or a venuePhotoKey(), if a details call already returned one this session. */
+export function sessionRating(...keys: (string | null | undefined)[]): { rating: number; count?: number } | null {
+  for (const k of keys) {
+    const r = k && ratings.get(k)
+    if (r) return r
+  }
+  return null
 }
 
 /** Google Text Search within Northern Ireland: one call, up to 12 places. */

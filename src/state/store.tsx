@@ -14,6 +14,8 @@ import { activeTasks, EDIT_FIELDS, generatedSpecs, isTaskDone, mergeTasks, overr
 import { stableStringify } from '../sync/merge'
 import { sanitizeGuest, UNSORTED_ID } from '../data/guests'
 import { applyTaskDetail } from '../data/taskDetails'
+import { switchCurrency } from '../data/currency'
+import { setPlanCurrency } from '../lib/money'
 import { uid } from '../lib/ids'
 import { backupState, indexedDbStorage, saveStateNow } from '../storage/indexeddb'
 import { isBlankPlan } from '../data/blank'
@@ -83,6 +85,8 @@ export function emptyState(): AppState {
 export type Action =
   | { type: 'hydrate'; state: AppState }
   | { type: 'patchProfile'; patch: Partial<WeddingProfile> }
+  /** Switch the plan currency: convert every stored amount at `rate`, or (rate null) just relabel. */
+  | { type: 'setCurrency'; currency: 'GBP' | 'EUR'; rate: number | null }
   | { type: 'completeOnboarding'; profile: WeddingProfile }
   | { type: 'setDate'; date?: string }
   | { type: 'addCandidate'; date: string }
@@ -220,6 +224,8 @@ function baseReducer(state: AppState, action: Action): AppState {
         next.taskDone = { ...next.taskDone, 'vision-budget': true }
       return next
     }
+    case 'setCurrency':
+      return touch(switchCurrency(state, action.currency, action.rate))
     case 'completeOnboarding': {
       const profile = { ...action.profile, onboardingComplete: true }
       // The answers already cover the first two Plan tasks.
@@ -633,6 +639,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const allTasks = useMemo(() => mergeTasks(state), [state])
   const tasks = useMemo(() => activeTasks(allTasks), [allTasks])
   const ready = loadStatus !== 'loading'
+  // Formatting reads the plan currency synchronously, so set it before children render.
+  setPlanCurrency(state.profile.currency)
   const value = useMemo(
     () => ({ state, ready, loadStatus, dispatch, tasks, allTasks, wipeIntent }),
     [state, ready, loadStatus, dispatch, tasks, allTasks],

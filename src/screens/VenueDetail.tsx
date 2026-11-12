@@ -1,8 +1,10 @@
+import { HygieneCard } from '../components/HygieneCard'
+import { venueQuery } from '../lib/useHygiene'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { directoryVenue, directionsUrl, distanceKm, formatKm, venuePlace, venueTypeOne, type DirectoryVenue } from '../data/venues'
 import { GoogleAttribution, Stars } from '../components/GoogleResults'
-import { fetchPlaceDetails, findPlaceId, placesEnabled, problemText, rememberPhoto, venuePhotoKey, type PlaceDetails } from '../lib/places'
+import { fetchPlaceDetails, findPlaceId, placesEnabled, problemText, rememberDetails, venuePhotoKey, type PlaceDetails } from '../lib/places'
 import { newSupplier, useStore } from '../state/store'
 import { IconBack } from '../components/Icons'
 import { VenueArt } from '../components/VenueArt'
@@ -83,6 +85,7 @@ function VenuePage({ v }: { v: DirectoryVenue }) {
         </div>
         <div className="grid">
           <CouncilFeesCard v={{ ...v, area: v.town }} />
+          {v.kind !== 'registrar' && <HygieneCard query={venueQuery(v)} label={v.name} />}
           <VenueMapCard v={v} />
         </div>
       </div>
@@ -99,7 +102,7 @@ export function GoogleCard({ v, placeId, onId }: { v: Pick<DirectoryVenue, 'name
       const id = placeId ?? (await findPlaceId(v.name, v.town))
       if (id && id !== placeId) onId?.(id)
       const r = id ? await fetchPlaceDetails(id) : null
-      if (r?.ok && r.data.photo) rememberPhoto(venuePhotoKey(v.name, v.town), r.data.photo)
+      if (r?.ok) rememberDetails(venuePhotoKey(v.name, v.town), r.data)
       if (live) setD(r?.ok ? r.data : r?.problem === 'limit' ? 'limit' : null)
     })()
     return () => {

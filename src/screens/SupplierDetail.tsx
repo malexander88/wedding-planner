@@ -1,3 +1,5 @@
+import { HygieneCard } from '../components/HygieneCard'
+import { supplierQuery } from '../lib/useHygiene'
 import { useEffect, useLayoutEffect, useRef, useState, type TextareaHTMLAttributes } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { CATALOGUE } from '../data/catalogue'
@@ -8,7 +10,7 @@ import { GoogleCard } from './VenueDetail'
 import { HIDDEN_EXTRAS } from '../data/hiddenExtras'
 import { draftEnquiry } from '../lib/enquiry'
 import { uid } from '../lib/ids'
-import { gbp } from '../lib/money'
+import { currencySymbol, gbp, money } from '../lib/money'
 import { useStore } from '../state/store'
 import type { Quote, Supplier, SupplierStatus } from '../types'
 import { COUNCILS } from '../data/legal'
@@ -85,6 +87,7 @@ export function SupplierDetail() {
   // so an untouched copy reads as empty notes here (the stored record isn't rewritten).
   const notesShown = starter?.note && supplier.notes.trim() === starter.note.trim() ? '' : supplier.notes
   const fee = venueFee(supplier)
+  const hygieneQ = supplierQuery(supplier)
   const latest = quotes[quotes.length - 1]
   const flowIndex = FLOW.indexOf(supplier.status)
 
@@ -226,6 +229,8 @@ export function SupplierDetail() {
         <GoogleCard v={dir ?? { name: supplier.name, town: supplier.area }} placeId={supplier.placeId} onId={(placeId) => dispatch({ type: 'updateSupplier', id: supplier.id, patch: { placeId } })} />
       )}
 
+      {hygieneQ && <HygieneCard query={hygieneQ} label={supplier.name} />}
+
       <section className="card">
         <h2>Your notes</h2>
         <AutoGrowTextarea
@@ -248,7 +253,7 @@ export function SupplierDetail() {
                 <input type="text" value={quoteForm.label} onChange={(e) => setQuoteForm({ ...quoteForm, label: e.target.value })} />
               </label>
               <label className="field">
-                <span>Amount (£)</span>
+                <span>Amount ({currencySymbol()})</span>
                 <input type="number" value={quoteForm.amount} onChange={(e) => setQuoteForm({ ...quoteForm, amount: e.target.value })} />
               </label>
             </div>
@@ -327,7 +332,7 @@ export function SupplierDetail() {
                       <strong>{owner?.name}</strong>
                       <div className="tiny">{q.label}</div>
                     </div>
-                    <span className="stat" style={{ fontSize: '1.25rem' }}>{gbp(q.amount)}</span>
+                    <span className="stat" style={{ fontSize: '1.25rem' }}>{money(q.amount)}</span>
                   </div>
                   <p className="tiny">{q.vatIncluded ? 'VAT included' : 'Plus VAT'}</p>
                   {q.inclusions && <p>Included: {q.inclusions}</p>}
@@ -376,7 +381,7 @@ export function SupplierDetail() {
               {latest ? ` for ${gbp(latest.amount)}` : ''}, create deposit and balance payments, and drop a placeholder onto the run sheet.
             </p>
             <label className="field">
-              <span>Deposit (£)</span>
+              <span>Deposit ({currencySymbol()})</span>
               <input type="number" value={deposit} onChange={(e) => setDeposit(Number(e.target.value))} />
             </label>
             <label className="field">

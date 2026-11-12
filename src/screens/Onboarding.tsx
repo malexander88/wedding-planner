@@ -1,3 +1,4 @@
+import { currencySymbol } from '../lib/money'
 import { useState } from 'react'
 import { BrandMark } from '../components/Icons'
 import { useNavigate } from 'react-router-dom'
@@ -91,7 +92,7 @@ export function Onboarding() {
           <h2>Your budget</h2>
           <p>One overall figure for the whole day. As you book things, the Budget tab shows how much is committed against it. Not sure yet? Leave it blank and add it later.</p>
           <label className="field">
-            <span>Total budget (£) — optional</span>
+            <span>Total budget ({currencySymbol()}) — optional</span>
             <input
               type="number"
               inputMode="numeric"

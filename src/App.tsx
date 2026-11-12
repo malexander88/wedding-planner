@@ -1,3 +1,4 @@
+import { VenueCompare } from './screens/VenueCompare'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { Budget } from './screens/Budget'
@@ -58,6 +59,7 @@ function ReadyApp() {
         <Route path="/plan" element={<Checklist />} />
         <Route path="/dates" element={<Dates />} />
         <Route path="/find" element={<Suppliers />} />
+        <Route path="/find/compare" element={<VenueCompare />} />
         <Route path="/find/place/:venueId" element={<VenueDetail />} />
         <Route path="/find/:id" element={<SupplierDetail />} />
         <Route path="/budget" element={<Budget />} />
