@@ -10,6 +10,7 @@ import { Dates } from './screens/Dates'
 import { Guests } from './screens/Guests'
 import { Home } from './screens/Home'
 import { Onboarding } from './screens/Onboarding'
+import { Pair } from './screens/Pair'
 import { Settings } from './screens/Settings'
 import { SupplierDetail } from './screens/SupplierDetail'
 import { VenueDetail } from './screens/VenueDetail'
@@ -68,6 +69,7 @@ function ReadyApp() {
         <Route path="/budget" element={<Budget />} />
         <Route path="/guests" element={<Guests />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/pair" element={<Pair />} />
         <Route path="/activity" element={<Activity />} />
         <Route path="/seating" element={<Seating />} />
         <Route path="/run-sheet" element={<RunSheet />} />

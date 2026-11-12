@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { JoinPartnerPanel } from './JoinPartnerPanel'
 import { QrCode } from './QrCode'
 import { useSync, type SyncStatus } from '../sync/SyncProvider'
 
@@ -24,10 +25,9 @@ const STATUS_TEXT: Record<SyncStatus, { label: string; tone: string }> = {
   revoked: { label: 'Link replaced', tone: 'warn' },
 }
 
-export function SharingCard() {
+export function SharingCard({ title = 'Pair with your partner' }: { title?: string }) {
   const sync = useSync()
   const [copied, setCopied] = useState(false)
-  const [paste, setPaste] = useState('')
   const [confirmRotate, setConfirmRotate] = useState(false)
   const st = STATUS_TEXT[sync.status]
 
@@ -54,7 +54,7 @@ export function SharingCard() {
   return (
     <section className="card sharing">
       <div className="sec-head">
-        <h2>Sharing</h2>
+        <h2>{title}</h2>
         <span className={`pill ${st.tone}`}>{st.label}</span>
       </div>
 
@@ -67,32 +67,23 @@ export function SharingCard() {
       {sync.configured && !sync.paired && (
         <>
           <p>
-            Keep one plan across both your phones — no accounts or passwords. This phone makes a private link; open it on your partner’s phone and you’re done.
+            Keep one plan across both your phones — no accounts or passwords. One of you shares from this screen; the other scans the QR code
+            or opens the link.
           </p>
-          <div className="btn-row">
-            <button className="btn" type="button" onClick={() => void sync.startSharing()} disabled={sync.status === 'syncing'}>
-              {sync.status === 'syncing' ? 'Setting up…' : 'Share with my partner'}
-            </button>
-          </div>
-          <details className="fold" style={{ marginTop: 12 }}>
-            <summary>Got a link from your partner?</summary>
-            <div className="fold-body">
-              <label className="field">
-                <span>Paste the link</span>
-                <input
-                  type="url"
-                  inputMode="url"
-                  autoComplete="off"
-                  value={paste}
-                  onChange={(e) => setPaste(e.target.value)}
-                  placeholder="https://…#join=…"
-                />
-              </label>
-              <button className="btn secondary" type="button" onClick={() => void sync.joinWith(paste).then((ok) => ok && setPaste(''))}>
-                Join the shared plan
+          <div className="pair-choice">
+            <div className="pair-option">
+              <h3>Share this phone’s plan</h3>
+              <p className="tiny">Makes a private link and QR code for your partner.</p>
+              <button className="btn" type="button" onClick={() => void sync.startSharing()} disabled={sync.status === 'syncing'}>
+                {sync.status === 'syncing' ? 'Setting up…' : 'Show our QR code and link'}
               </button>
             </div>
-          </details>
+            <div className="pair-option" id="join-partner">
+              <h3>Join your partner’s plan</h3>
+              <p className="tiny">Already started on their phone? Scan their code or paste their link.</p>
+              <JoinPartnerPanel />
+            </div>
+          </div>
         </>
       )}
 
@@ -103,7 +94,7 @@ export function SharingCard() {
               <QrCode value={sync.link} label="QR code for the sharing link" />
               <div className="share-copy">
                 <p style={{ marginTop: 0 }}>
-                  Scan this with your partner’s phone camera, or send them the link. Anyone with this link can see and change the plan, so keep it between the two of you.
+                  On your partner’s phone, open Wedding Planner and tap Join your partner’s plan → Scan their QR code, or send them the link. Anyone with this link can see and change the plan, so keep it between the two of you.
                 </p>
                 <input type="text" readOnly value={sync.link} aria-label="Sharing link" onFocus={(e) => e.currentTarget.select()} />
                 <div className="btn-row" style={{ marginTop: 10 }}>
@@ -154,15 +145,10 @@ export function SharingCard() {
           )}
 
           {sync.status === 'revoked' && (
-            <details className="fold" open style={{ marginTop: 12 }}>
-              <summary>Paste the new link</summary>
-              <div className="fold-body">
-                <input type="url" value={paste} onChange={(e) => setPaste(e.target.value)} placeholder="https://…#join=…" />
-                <div className="btn-row" style={{ marginTop: 10 }}>
-                  <button className="btn" type="button" onClick={() => void sync.joinWith(paste)}>Join again</button>
-                </div>
-              </div>
-            </details>
+            <div className="notice" style={{ marginTop: 12 }}>
+              <p style={{ marginTop: 0 }}>This link was replaced. Scan or paste the new one from your partner’s phone.</p>
+              <JoinPartnerPanel cta="Join again" />
+            </div>
           )}
 
           <button className="text-btn quiet-action" type="button" onClick={() => void sync.stopSharing()}>

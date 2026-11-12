@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.util.Base64;
 import android.view.View;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -50,6 +52,9 @@ public class MainActivity extends Activity {
     static final String BASE = "/wedding-planner/";
     static final String START = "https://" + HOST + BASE;
     private static final int REQ_FILE = 41;
+    private static final int REQ_CAMERA = 42;
+    /** A camera request from the page (QR scanning) waiting on Android's permission prompt. */
+    private PermissionRequest pendingCamera;
     private static final int FOREST = 0xFF1F3B2D, FOREST_DARK = 0xFF0E1712, NAV_LIGHT = 0xFFFFF9F0;
 
     private WebView web;
@@ -71,7 +76,9 @@ public class MainActivity extends Activity {
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         s.setSupportMultipleWindows(false); // target=_blank goes through shouldOverrideUrlLoading
         s.setTextZoom(100);
-        s.setMediaPlaybackRequiresUserGesture(true);
+        // The only media is the muted camera preview used to scan a pairing QR code; it starts after the
+        // camera prompt, by which time the tap that opened the scanner no longer counts as a gesture.
+        s.setMediaPlaybackRequiresUserGesture(false);
         s.setUserAgentString(s.getUserAgentString() + " WeddingPlannerAndroid/" + version());
         web.addJavascriptInterface(new Bridge(), "WPAndroid");
         web.setWebViewClient(new Client());
@@ -231,6 +238,30 @@ public class MainActivity extends Activity {
     }
 
     private class Chrome extends WebChromeClient {
+        /** The page asks for the camera only to scan a partner's QR code. Only our own pages may ask. */
+        @Override
+        public void onPermissionRequest(PermissionRequest req) {
+            runOnUiThread(() -> {
+                Uri o = req.getOrigin();
+                boolean ours = o != null && "https".equals(o.getScheme()) && HOST.equals(o.getHost());
+                boolean videoOnly = true;
+                for (String r : req.getResources()) if (!PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(r)) videoOnly = false;
+                if (!ours || !videoOnly) { req.deny(); return; }
+                if (Build.VERSION.SDK_INT < 23 || checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    req.grant(new String[] { PermissionRequest.RESOURCE_VIDEO_CAPTURE });
+                    return;
+                }
+                if (pendingCamera != null) pendingCamera.deny();
+                pendingCamera = req;
+                requestPermissions(new String[] { android.Manifest.permission.CAMERA }, REQ_CAMERA);
+            });
+        }
+
+        @Override
+        public void onPermissionRequestCanceled(PermissionRequest req) {
+            if (req == pendingCamera) pendingCamera = null;
+        }
+
         @Override
         public boolean onShowFileChooser(WebView v, ValueCallback<Uri[]> cb, FileChooserParams params) {
             if (fileCallback != null) fileCallback.onReceiveValue(null);
@@ -254,6 +285,19 @@ public class MainActivity extends Activity {
         if (req == REQ_FILE && fileCallback != null) {
             fileCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result, data));
             fileCallback = null;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int req, String[] perms, int[] results) {
+        super.onRequestPermissionsResult(req, perms, results);
+        if (req != REQ_CAMERA || pendingCamera == null) return;
+        PermissionRequest r = pendingCamera;
+        pendingCamera = null;
+        if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
+            r.grant(new String[] { PermissionRequest.RESOURCE_VIDEO_CAPTURE });
+        } else {
+            r.deny();
         }
     }
 

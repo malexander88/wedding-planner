@@ -85,6 +85,17 @@ export function IconGear(props: IconProps) {
   )
 }
 
+export function IconQr(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="4" y="4" width="6" height="6" rx="1" />
+      <rect x="14" y="4" width="6" height="6" rx="1" />
+      <rect x="4" y="14" width="6" height="6" rx="1" />
+      <path d="M14 14h2v2h-2zM18 14h2M14 18h2M18 18h2v2M16 16h2v2" />
+    </Svg>
+  )
+}
+
 export function IconCamera(props: IconProps) {
   return (
     <Svg {...props}>

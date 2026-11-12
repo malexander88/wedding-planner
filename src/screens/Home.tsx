@@ -5,6 +5,7 @@ import { daysBetween, daysUntil, formatLong, formatShort, todayIso as localToday
 import { budgetSummary } from '../data/budget'
 import { money as fmtMoney } from '../lib/money'
 import { useStore } from '../state/store'
+import { useSync } from '../sync/SyncProvider'
 import { comingUp, reminders } from '../data/taskDetails'
 import { catchUpBefore, isCatchUp, nextDeadlines, sortTasks } from '../data/plan'
 import { useTaskSheet } from '../components/TaskDetailsSheet'
@@ -25,6 +26,7 @@ import {
   IconLeaf,
   IconMusic,
   IconPalette,
+  IconQr,
   IconRings,
   IconSparkle,
   StageIcon,
@@ -57,6 +59,7 @@ function taskIcon(stage: string, title: string) {
 
 export function Home() {
   const { state, tasks, dispatch } = useStore()
+  const sync = useSync()
   const p = state.profile
   const a = p.partnerAName || 'Partner one'
   const b = p.partnerBName || 'Partner two'
@@ -141,6 +144,16 @@ export function Home() {
           <IconChevron />
         </Link>
       </section>
+
+      <Link to="/pair" className={`card pair-entry${sync.paired ? ' paired' : ''}`}>
+        <div className="well"><IconQr /></div>
+        <div className="grow">
+          <div className="kicker">{sync.paired ? 'Shared with your partner' : 'Plan together'}</div>
+          <strong>{sync.paired ? 'Show our QR code and link' : 'Pair with your partner'}</strong>
+          <span>{sync.paired ? 'For a new phone, or if your partner needs the link again.' : 'Show your QR code, or scan theirs to join their plan.'}</span>
+        </div>
+        <IconChevron />
+      </Link>
 
       {nextLegal && (
         <button type="button" className={`card legal-next${legalDays < 0 ? ' overdue' : legalDays <= 30 ? ' soon' : ''}`} onClick={() => openSheet(nextLegal, 'edit')}>

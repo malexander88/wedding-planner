@@ -1555,3 +1555,36 @@ a.day-tool small { color: var(--muted); font-size: 0.8rem; }
 }
 .seating-page { padding-bottom: 120px; }
 .seat-here, .st-guest, .hh-chip, .seat-table { scroll-margin-bottom: calc(var(--nav-h) + 96px); scroll-margin-top: 16px; }
+
+/* ---- Pairing: Home entry, welcome-screen join, share/join choice, QR scanner ---- */
+.pair-entry, .join-entry {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; cursor: pointer;
+  font: inherit; color: inherit; padding: 16px; text-decoration: none; border-left: 4px solid var(--forest-ink);
+}
+.pair-entry.paired { border-left-color: var(--ok); }
+.pair-entry .well, .join-entry .well {
+  width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--icon-well); color: var(--forest-ink); flex: none;
+}
+.pair-entry .well svg, .join-entry .well svg { width: 22px; height: 22px; }
+.pair-entry .grow, .join-entry .grow { flex: 1; min-width: 0; }
+.pair-entry strong, .join-entry strong { display: block; font-size: 1rem; margin: 2px 0; }
+.pair-entry span, .join-entry .grow span { display: block; font-size: 0.86rem; color: var(--muted); }
+.pair-entry > svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+.join-entry { margin-bottom: 14px; }
+.join-entry .btn { flex: none; pointer-events: none; }
+.pair-choice { display: grid; gap: 14px; margin-top: 4px; }
+.pair-option { border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
+.pair-option h3 { margin: 0 0 4px; font-size: 1.05rem; }
+.pair-option > .tiny { margin: 0 0 12px; }
+@media (min-width: 720px) { .pair-choice { grid-template-columns: 1fr 1fr; align-items: start; } }
+.join-panel > .btn { width: 100%; justify-content: center; }
+.join-panel > .btn + .btn { margin-top: 8px; }
+.join-panel > .btn.secondary { margin-top: 0; }
+.scanner { max-width: 420px; }
+.scanner-view { position: relative; border-radius: 16px; overflow: hidden; background: #000; aspect-ratio: 1 / 1; margin: 10px 0; }
+.scanner-view video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scanner-frame {
+  position: absolute; inset: 14%; border: 3px solid rgba(255, 255, 255, 0.9); border-radius: 18px;
+  box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.35);
+}

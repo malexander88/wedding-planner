@@ -1,6 +1,8 @@
 import { currencySymbol } from '../lib/money'
 import { useState } from 'react'
-import { BrandMark } from '../components/Icons'
+import { BrandMark, IconQr } from '../components/Icons'
+import { JoinPartnerPanel } from '../components/JoinPartnerPanel'
+import { useSync } from '../sync/SyncProvider'
 import { useNavigate } from 'react-router-dom'
 import type { CeremonyType, Season, StyleTag, WeddingProfile } from '../types'
 import { useStore } from '../state/store'
@@ -34,6 +36,8 @@ export function Onboarding() {
   const { state, dispatch } = useStore()
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
+  const sync = useSync()
+  const [joinMode, setJoinMode] = useState(false)
   const [p, setP] = useState<WeddingProfile>({ ...state.profile })
 
   const patch = (x: Partial<WeddingProfile>) => setP((cur) => ({ ...cur, ...x }))
@@ -41,6 +45,31 @@ export function Onboarding() {
   const finish = () => {
     dispatch({ type: 'completeOnboarding', profile: p })
     navigate('/')
+  }
+
+  if (joinMode) {
+    return (
+      <div className="wizard">
+        <div className="wizard-brand">
+          <div className="brand-mark"><BrandMark /></div>
+          <div className="brand-name">Wedding Planner</div>
+        </div>
+        <div className="kicker">Welcome</div>
+        <h1>Join your partner’s plan</h1>
+        <p>
+          On your partner’s phone, open Wedding Planner and tap <b>Pair with your partner</b> on Home. It shows a QR code and a link — scan the
+          code here, or paste the link they sent you.
+        </p>
+        <div className="card">
+          <JoinPartnerPanel cta="Join the shared plan" />
+        </div>
+        <div className="btn-row" style={{ marginTop: 18 }}>
+          <button className="btn ghost" type="button" onClick={() => setJoinMode(false)}>
+            Start our own plan instead
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -57,6 +86,17 @@ export function Onboarding() {
           <i key={i} className={i <= step ? 'on' : ''} />
         ))}
       </div>
+
+      {step === 0 && sync.configured && (
+        <button type="button" className="card join-entry" onClick={() => setJoinMode(true)}>
+          <div className="well"><IconQr /></div>
+          <div className="grow">
+            <strong>Join my partner’s plan</strong>
+            <span>Already started on their phone? Scan their QR code or paste their link.</span>
+          </div>
+          <span className="btn small">Join</span>
+        </button>
+      )}
 
       {step === 0 && (
         <div className="card">
