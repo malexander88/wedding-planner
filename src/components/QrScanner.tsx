@@ -9,7 +9,10 @@ interface BarcodeDetectorLike {
 
 /** Uses the phone's own QR reader where there is one, otherwise jsQR (loaded only when scanning). */
 async function makeDetector(): Promise<Detect> {
-  const BD = (window as unknown as { BarcodeDetector?: { new (o: { formats: string[] }): BarcodeDetectorLike; getSupportedFormats?: () => Promise<string[]> } }).BarcodeDetector
+  // Never inside an Android WebView (our APK or anyone else's): there BarcodeDetector binds to Google Play
+  // services' shape detection and crashes the host app unless it declares Play services. jsQR is fine.
+  const inWebView = /; wv\)/.test(navigator.userAgent) || '__wpAndroid' in window
+  const BD = inWebView ? undefined : (window as unknown as { BarcodeDetector?: { new (o: { formats: string[] }): BarcodeDetectorLike; getSupportedFormats?: () => Promise<string[]> } }).BarcodeDetector
   if (BD) {
     try {
       const formats = (await BD.getSupportedFormats?.()) ?? ['qr_code']

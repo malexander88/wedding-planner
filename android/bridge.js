@@ -32,6 +32,9 @@
   var B = window.WPAndroid
   if (!B) return
   window.__wpAndroid = true
+  // WebView's BarcodeDetector needs Google Play services declared by the host app and crashes it otherwise.
+  // The app reads QR codes with jsQR instead.
+  try { delete window.BarcodeDetector } catch (e) { /* ignore */ }
 
   // Printing (seating plan, run sheet) → Android print / Save as PDF.
   window.print = function () { B.print(document.title || 'Wedding Planner') }
